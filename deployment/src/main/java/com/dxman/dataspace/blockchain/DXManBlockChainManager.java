@@ -2,11 +2,8 @@ package com.dxman.dataspace.blockchain;
 
 import com.dxman.dataspace.base.DXManDataSpace;
 import java.util.List;
-import org.javalite.http.Http;
-import org.javalite.http.Post;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.javalite.http.*;
+import org.json.*;
 
 /**
  * @author Damian Arellanes
@@ -102,6 +99,28 @@ public class DXManBlockChainManager implements DXManDataSpace {
 
       JSONArray result = new JSONArray(get(url.toString()));
       return ((JSONObject)result.get(0)).getString("value");
+        
+    } catch (JSONException ex) { System.err.println(ex.toString()); }
+
+    return "";
+  }
+  
+  @Override
+  public String readParameter(String parameterId) {
+    
+    try {
+      
+      JSONObject query = new JSONObject();
+      query.put("$class", "com.dxman.blockchain.DXManParameter");
+      query.put("parameterId", parameterId);
+
+      StringBuilder url = new StringBuilder();
+      url.append(blockChainEndpoint)
+        .append("/api/DXManParameter/")
+        .append(parameterId);
+
+      JSONObject result = new JSONObject(get(url.toString()));
+      return result.getString("value");
         
     } catch (JSONException ex) { System.err.println(ex.toString()); }
 

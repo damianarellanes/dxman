@@ -5,6 +5,8 @@ import com.dxman.dataspace.base.DXManDataSpaceFactory;
 import com.dxman.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.californium.core.CoapClient;
 
 /**
@@ -29,13 +31,22 @@ public class DXManWorkflowManager {
       .registerTypeAdapterFactory(adapter).create();
   }
   
-  public void executeWorkflow(DXManWfSpec wfSpec, DXManWorkflowData wfData) {
+  public DXManWorkflowData executeWorkflow(DXManWfSpec wfSpec, 
+    DXManWorkflowData wfInputs, DXManWorkflowOutputs wfOutputs) {
     
-    wfData.forEach((paramId, value)->{
+    // Writes input parameters
+    wfInputs.forEach((paramId, value)->{
       dataSpace.writeParameter(paramId, value);
     });
         
     CoapClient cp = new CoapClient(wfSpec.getFlow().getUri());
     cp.post(GSON.toJson(wfSpec.getFlow()), 0);
+    
+    DXManWorkflowData outputValues = new DXManWorkflowData();
+    for(String outputId: wfOutputs) {      
+      outputValues.put(outputId, dataSpace.readParameter(outputId));
+    }
+    
+    return outputValues;
   } 
 }

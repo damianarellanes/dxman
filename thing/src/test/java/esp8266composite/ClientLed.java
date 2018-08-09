@@ -7,10 +7,10 @@ import org.json.JSONException;
 /**
  * @author Damian Arellanes
  */
-public class Client {
+public class ClientLed {
   
   private static final String INVCONNECTOR = "LedService";
-  private static final String STATUS_ID = "f167a6b1-2572-4320-87a4-9801aae28219";
+  private static final String STATUS_ID = "b3de59f9-dfd8-4fc7-8136-71c5e03433d9";
   private static final String STATUS_VALUE = "off";
   
   public static DXManWfSpec createWorkflowSpec() throws JSONException {
@@ -25,9 +25,11 @@ public class Client {
   public static void main(String[] args) throws URISyntaxException, MalformedURLException, JSONException {          
 
     DXManWorkflowManager wfManager = new DXManWorkflowManager();
-    DXManWorkflowData wfData = new DXManWorkflowData();
-    wfData.put(STATUS_ID, STATUS_VALUE);
+    DXManWorkflowData wfInputs = new DXManWorkflowData();
+    wfInputs.put(STATUS_ID, STATUS_VALUE);
     
-    wfManager.executeWorkflow(createWorkflowSpec(), wfData);
+    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
+    
+    wfManager.executeWorkflow(createWorkflowSpec(), wfInputs, wfOutputs);
   }
 }

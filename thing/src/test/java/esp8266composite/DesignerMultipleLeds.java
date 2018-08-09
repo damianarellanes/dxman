@@ -16,15 +16,15 @@ import java.util.*;
 /**
  * @author Damian Arellanes
  */
-public class Designer {
+public class DesignerMultipleLeds {
   
   private final DXManDeploymentManager deploymentManager;
   
-  public Designer() {
+  public DesignerMultipleLeds() {
     deploymentManager = new DXManDeploymentManager();
   }
   
-  private DXManAtomicServiceTemplate designAtomicLed() throws URISyntaxException {
+  private DXManAtomicServiceTemplate designAtomicLed(int ledNumber) throws URISyntaxException {
     
     // Designs operation "Led" with binding and parameters
     
@@ -47,40 +47,12 @@ public class Designer {
     
     // Designs the atomic service template for "LedService"
     DXManComputationUnit cu = new DXManComputationUnit();
-    DXManServiceInfo templateInfo = new DXManServiceInfo("LedService", "Category ESP8266", 86.79);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("LedService" + ledNumber, "Category ESP8266", 86.79);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
     DXManAtomicServiceTemplate ledServiceTemplate = new DXManAtomicServiceTemplate(templateInfo, cu, deploymentInfo);
     ledServiceTemplate.addOperation(ledOperation);
     
     return ledServiceTemplate;
-  }
-  
-  private DXManAtomicServiceTemplate designAtomicCalculator() throws URISyntaxException {
-    
-    // Designs operation "multiply" with binding and parameters
-    
-    DXManBindingInfo multiplyBinding = new DXManBindingInfo(
-      new URI("tcp://localhost:9090"), 
-      DXManEndpointType.RAW_SOCKET, 
-      DXManBindingContent.APPLICATION_JSON, 
-      DXManBindingContent.APPLICATION_JSON, 
-      "{\"operation\":\"multiply\", \"parameters\":[##n1##,##n2##]}", 
-      "{\"result\":##result##}"
-    );
-
-    DXManOperation multiply = new DXManOperation("multiply", multiplyBinding);
-    DXManParameter n1 = new DXManParameter("n1", DXManParameterType.INPUT, "double"); multiply.addParameter(n1);
-    DXManParameter n2 = new DXManParameter("n2", DXManParameterType.INPUT, "double"); multiply.addParameter(n2);                
-    DXManParameter result = new DXManParameter("result", DXManParameterType.OUTPUT, "double"); multiply.addParameter(result);
-    
-    // Designs the atomic service template for "MyCalculator"
-    DXManComputationUnit cu = new DXManComputationUnit();
-    DXManServiceInfo templateInfo = new DXManServiceInfo("MyCalculator", "Category Maths", 100);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
-    DXManAtomicServiceTemplate myCalculator = new DXManAtomicServiceTemplate(templateInfo, cu, deploymentInfo);
-    myCalculator.addOperation(multiply);
-    
-    return myCalculator;
   }
   
   private void deployTemplates(DXManServiceTemplate... templates) {
@@ -103,51 +75,40 @@ public class Designer {
   }
   
   // TODO This method should be in DXManDataDeployer
-  private void deployDataPipes(DXManAtomicServiceTemplate led, DXManAtomicServiceTemplate calculator) {
+  private void deployDataPipes(DXManAtomicServiceTemplate led) {
     
     DXManDataSpace dataSpace = DXManDataSpaceFactory.createBlockchainManager(
       "http://localhost:3000"
     );
     DXManDataDeployer dataDeployer = new DXManDataDeployer(dataSpace);
     String writerId = "Node1";
-    List<String> readerIds = Arrays.asList("2f8d4bdb-0b9e-493d-86a4-bdc441ff08cb", "Node3");
+    List<String> readerIds = Arrays.asList("b0c35bf6-ede7-494d-9bf9-299fa074ad3f", "Node3");
     
     // Data pipes for Led
     DXManOperation ledOperation = led.getOperations().get("led");    
     System.out.println("Data pipe for STATUS");
     dataDeployer.deployDataPipe(new DXManDataPipe(ledOperation.getParameters().get("status").getId(), writerId, readerIds));
-    dataDeployer.deployDataPipe(new DXManDataPipe(ledOperation.getParameters().get("return_value").getId(), writerId, readerIds));
-    dataDeployer.deployDataPipe(new DXManDataPipe(ledOperation.getParameters().get("id").getId(), writerId, readerIds));
-    dataDeployer.deployDataPipe(new DXManDataPipe(ledOperation.getParameters().get("name").getId(), writerId, readerIds));
-    dataDeployer.deployDataPipe(new DXManDataPipe(ledOperation.getParameters().get("hardware").getId(), writerId, readerIds));
-    dataDeployer.deployDataPipe(new DXManDataPipe(ledOperation.getParameters().get("connected").getId(), writerId, readerIds));
-    
-    // Data pipes for Calculator
-    DXManOperation multiply = calculator.getOperations().get("multiply");
-    System.out.println("Data pipe for N1");
-    dataDeployer.deployDataPipe(new DXManDataPipe(multiply.getParameters().get("n1").getId(), writerId, readerIds));
-    System.out.println("Data pipe for N2");
-    dataDeployer.deployDataPipe(new DXManDataPipe(multiply.getParameters().get("n2").getId(), writerId, readerIds));
-    System.out.println("Data pipe for RESULT");
-    dataDeployer.deployDataPipe(new DXManDataPipe(multiply.getParameters().get("result").getId(), writerId, readerIds));
   }
     
   public static void main(String[] args) throws URISyntaxException {
     
-    Designer designer = new Designer();
+    DesignerMultipleLeds designer = new DesignerMultipleLeds();
     
     // Designs and deploys atomic services
     
-    DXManAtomicServiceTemplate ledTemplate = designer.designAtomicLed();
-    DXManAtomicServiceTemplate calculatorTemplate = designer.designAtomicCalculator();
+    DXManAtomicServiceTemplate ledTemplate1 = designer.designAtomicLed(1);
+    DXManAtomicServiceTemplate ledTemplate2 = designer.designAtomicLed(2);
+    DXManAtomicServiceTemplate ledTemplate3 = designer.designAtomicLed(3);
     
-    designer.deployTemplates(ledTemplate, calculatorTemplate);
-    designer.deployDataPipes(ledTemplate, calculatorTemplate);
+    designer.deployTemplates(ledTemplate1, ledTemplate2, ledTemplate3);
+    designer.deployDataPipes(ledTemplate1);
+    designer.deployDataPipes(ledTemplate2);
+    designer.deployDataPipes(ledTemplate3);
         
     // Designs and deploys the composite service
     
     DXManCompositeServiceTemplate composite = designer.designSeqComposite(
-      ledTemplate, calculatorTemplate
+      ledTemplate1, ledTemplate2, ledTemplate3
     );
     designer.deployTemplates(composite);
     

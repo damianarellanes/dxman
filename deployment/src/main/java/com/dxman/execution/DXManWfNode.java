@@ -3,7 +3,7 @@ package com.dxman.execution;
 /**
  * @author Damian Arellanes
  */
-public class DXManWfNode {
+public abstract class DXManWfNode {
 
   private String id;
   private String uri;
@@ -14,6 +14,8 @@ public class DXManWfNode {
     this.id = id;
     this.uri = uri;
   }
+  
+  public abstract boolean isValid();
 
   public String getId() { return id; }
   public void setId(String id) { this.id = id; }

@@ -5,9 +5,9 @@ import com.dxman.design.connectors.common.*;
 /**
  * @author Damian Arellanes
  */
-public class DXManSequencerTemplate extends DXManConnectorTemplate {
+public class DXManSequencerTemplate extends DXManCompositionConnectorTemplate {
     
-  public DXManSequencerTemplate(DXManConnectorType type) {
+  public DXManSequencerTemplate() {
     super(DXManConnectorType.SEQUENCER);
   }    
 }

@@ -18,7 +18,7 @@ import org.json.JSONException;
 public class DXManESP8266ClientTest {
   
   private static String invConnector = "LedService";
-  private static String paramStatusId = "976c18a3-930b-49dd-8214-e6b4a4daab8c";
+  private static String paramStatusId = "82ab033d-e023-4445-b4a1-35a645c2b936";
   
   public static void setupInputValues() {      
     dxmanRuntime.getDataSpace().writeParameter(

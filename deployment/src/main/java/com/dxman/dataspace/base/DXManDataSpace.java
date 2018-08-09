@@ -14,5 +14,7 @@ public interface DXManDataSpace {
   
   public String readParameter(String parameterId, String readerId);
   
+  public String readParameter(String parameterId);
+  
   public void writeParameter(String parameterId, String newValue);
 }

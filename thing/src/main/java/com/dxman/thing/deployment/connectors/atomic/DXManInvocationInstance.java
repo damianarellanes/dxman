@@ -6,7 +6,9 @@ import com.dxman.design.distribution.*;
 import com.dxman.design.services.common.DXManServiceTemplate;
 import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
 import com.dxman.execution.DXManWfInvocation;
+import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.dxman.utils.DXManMap;
+import com.google.gson.Gson;
 
 /**
  * @author Damian Arellanes
@@ -17,9 +19,10 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
   private final DXManDataManager dataReader;
 
   public DXManInvocationInstance(DXManServiceTemplate managedService, 
-    DXManDataSpace dataSpace, String nodeAlias) {
+    DXManConnectorRequester requester, Gson gson, DXManDataSpace dataSpace, 
+    String nodeAlias) {
 
-    super(managedService);
+    super(managedService, requester, gson);
 
     invocationHandlers = new DXManMap<>();
     invocationHandlers.put(DXManProtocol.tcp, new SocketInvocator());
@@ -32,7 +35,7 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
   @Override
   public void activate(String workflowJSON) {
 
-    System.out.println("Invocation connector activated!");
+    System.err.println("Invocation connector activated!");
    
     // Reads the operation (from the event) to be invoked in this service
     DXManWfInvocation flow = gson.fromJson(workflowJSON, DXManWfInvocation.class);

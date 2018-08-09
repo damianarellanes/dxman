@@ -7,6 +7,7 @@ import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import com.dxman.thing.server.base.DXManDeployerDispatcher;
+import com.dxman.utils.DXManErrors;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -46,14 +47,17 @@ public class DXManCoapDeployerDispatcher extends CoapResource
     DXManDeploymentRequest deploymentRequest = 
       gson.fromJson(jsonService, DXManDeploymentRequest.class);
     
-    String connectorId = "DEPLOYMENT_ERROR";
+    String connectorId = DXManErrors.DEPLOYMENT_ERROR.toString();
     if(deploymentRequest.getServiceType().equals(DXManServiceType.ATOMIC)) {
       
       connectorId = deployer.deployAtomicService(
         deploymentRequest.getAtomicService()
       );
     } else if(deploymentRequest.getServiceType().equals(DXManServiceType.COMPOSITE)) {
-      // TODO deploy composite service
+      
+      connectorId = deployer.deployCompositeService(
+        deploymentRequest.getCompositeService()
+      );
     }
     
     return connectorId;

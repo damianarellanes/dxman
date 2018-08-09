@@ -2,12 +2,10 @@ package com.dxman.thing.deployment.connectors.common;
 
 
 import com.dxman.design.services.common.DXManServiceTemplate;
-import com.dxman.execution.DXManWfInvocation;
-import com.dxman.execution.DXManWfNode;
-import com.dxman.utils.DXManIDGenerator;
-import com.dxman.utils.RuntimeTypeAdapterFactory;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.dxman.execution.*;
+import com.dxman.thing.server.base.DXManConnectorRequester;
+import com.dxman.utils.*;
+import com.google.gson.*;
 
 /**
  * @author Damian Arellanes
@@ -15,21 +13,19 @@ import com.google.gson.GsonBuilder;
 public abstract class DXManConnectorInstance {
     
   private final String id;
-  private final DXManServiceTemplate managedService;    
+  private final DXManServiceTemplate managedService;
+  private final DXManConnectorRequester requester;
 
   protected final Gson gson;
 
-  public DXManConnectorInstance(DXManServiceTemplate managedService) {
+  public DXManConnectorInstance(DXManServiceTemplate managedService, 
+    DXManConnectorRequester requester, Gson gson) {
 
-    this.managedService = managedService;
-    this.id = DXManIDGenerator.generateConnectorID();
     //this.id = managedService.getInfo().getName();
-
-    RuntimeTypeAdapterFactory<DXManWfNode> adapter = RuntimeTypeAdapterFactory
-      .of(DXManWfNode.class, "wfnode")
-      .registerSubtype(DXManWfInvocation.class, "wfinvocation");
-    gson = new GsonBuilder().disableHtmlEscaping()
-      .registerTypeAdapterFactory(adapter).create();
+    this.id = DXManIDGenerator.generateConnectorID();
+    this.managedService = managedService;
+    this.requester = requester;
+    this.gson = gson;
   }
 
   public void init(String workflowJSON) {
@@ -48,8 +44,11 @@ public abstract class DXManConnectorInstance {
   }
 
   public abstract void activate(String workflowJSON);
+  
+  public void transferControl(DXManWfNode subworkflow, String uri) {        
+    requester.transferControl(subworkflow, uri);
+  }
 
   public String getId() { return id; }
-
   public DXManServiceTemplate getManagedService() { return managedService; }
 }

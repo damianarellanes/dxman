@@ -19,7 +19,7 @@ public class DXManDeploymentManager {
   
   public void deployServiceTemplate(DXManServiceTemplate template) {
     
-    // TODO change from deployer to deployer-UUID
+    // TODO change from deployer to deployer-UUID (/serviceName-serviceId)
     String thingTargetUri = "coap://" + 
       template.getDeploymentInfo().getThingIp() + ":" + 
       template.getDeploymentInfo().getThingPort() + "/deployer"; 
