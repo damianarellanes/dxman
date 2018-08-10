@@ -10,9 +10,11 @@ import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
  */
 public class DXManDeploymentRequest {
   
-  private final DXManServiceType serviceType;
+  private DXManServiceType serviceType;
   private DXManAtomicServiceTemplate atomicService;
   private DXManCompositeServiceTemplate compositeService;
+  
+  public DXManDeploymentRequest() {}
   
   public DXManDeploymentRequest(DXManServiceType serviceType, 
     DXManAtomicServiceTemplate atomicService) {
@@ -27,8 +29,19 @@ public class DXManDeploymentRequest {
   }
 
   public DXManServiceType getServiceType() { return serviceType; }
+  public void setServiceType(DXManServiceType serviceType) {
+    this.serviceType = serviceType;
+  }
+  
   public DXManAtomicServiceTemplate getAtomicService() { return atomicService; }
+  public void setAtomicService(DXManAtomicServiceTemplate atomicService) {
+    this.atomicService = atomicService;
+  }
+  
   public DXManCompositeServiceTemplate getCompositeService() {
     return compositeService;
-  }    
+  }
+  public void setCompositeService(DXManCompositeServiceTemplate compositeService) {
+    this.compositeService = compositeService;
+  }
 }

@@ -6,6 +6,7 @@ import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.execution.*;
 import com.dxman.thing.deployment.connectors.atomic.DXManInvocationInstance;
 import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
+import com.dxman.thing.deployment.connectors.composite.DXManParallelInstance;
 import com.dxman.thing.deployment.connectors.composite.DXManSequencerInstance;
 import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.dxman.thing.server.base.DXManConnectorRequesterFactory;
@@ -59,6 +60,11 @@ public class DXManDeployer {
           managedService, connectorRequester, gson
         );
         break;
+      case PARALLEL:
+        connectorInstance = new DXManParallelInstance(
+          managedService, connectorRequester, gson
+        );
+        break;  
     }
     
     server.deploy(connectorInstance);

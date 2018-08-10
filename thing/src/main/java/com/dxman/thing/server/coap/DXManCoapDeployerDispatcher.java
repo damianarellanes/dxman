@@ -1,6 +1,7 @@
 package com.dxman.thing.server.coap;
 
 import com.dxman.deployment.common.DXManDeploymentRequest;
+import com.dxman.design.connectors.composition.*;
 import com.dxman.design.services.common.DXManServiceType;
 import com.dxman.thing.deployment.common.DXManDeployer;
 import org.eclipse.californium.core.CoapResource;
@@ -8,8 +9,8 @@ import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import com.dxman.thing.server.base.DXManDeployerDispatcher;
 import com.dxman.utils.DXManErrors;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.dxman.utils.RuntimeTypeAdapterFactory;
+import com.google.gson.*;
 
 /**
  * @author Damian Arellanes
@@ -27,7 +28,28 @@ public class DXManCoapDeployerDispatcher extends CoapResource
     super(deployerResourceName);
     this.deployer = deployer;
     
-    gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+//    RuntimeTypeAdapterFactory<DXManServiceTemplate> adapter0
+//      = RuntimeTypeAdapterFactory   
+//      .of(DXManServiceTemplate.class)
+//      .registerSubtype(DXManAtomicServiceTemplate.class)
+//      .registerSubtype(DXManCompositeServiceTemplate.class);
+//    
+//    RuntimeTypeAdapterFactory<DXManConnectorTemplate> adapter1 
+//      = RuntimeTypeAdapterFactory   
+//      .of(DXManConnectorTemplate.class)
+//      .registerSubtype(DXManCompositionConnectorTemplate.class);
+    
+    RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter2 
+      = RuntimeTypeAdapterFactory   
+      .of(DXManCompositionConnectorTemplate.class, "classType")
+      .registerSubtype(DXManParallelTemplate.class, DXManParallelTemplate.class.getName())
+      .registerSubtype(DXManSequencerTemplate.class, DXManSequencerTemplate.class.getName());
+    
+    gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
+//      .registerTypeAdapterFactory(adapter0)
+//      .registerTypeAdapterFactory(adapter1)
+      .registerTypeAdapterFactory(adapter2)
+      .create();
   }
 
   @Override

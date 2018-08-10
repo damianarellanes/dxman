@@ -9,7 +9,8 @@ import java.util.*;
  */
 public class DXManCompositionConnectorTemplate extends DXManConnectorTemplate {
     
-  private final List<DXManServiceTemplate> subServices;
+  protected String classType = getClass().getName();   
+  private List<DXManServiceTemplate> subServices;
   
   public DXManCompositionConnectorTemplate(DXManConnectorType type) {
 
@@ -22,4 +23,7 @@ public class DXManCompositionConnectorTemplate extends DXManConnectorTemplate {
   }
   
   public List<DXManServiceTemplate> getSubServices() { return subServices; }
+  public void setSubServices(List<DXManServiceTemplate> subServices) {
+    this.subServices = subServices;
+  }
 }
