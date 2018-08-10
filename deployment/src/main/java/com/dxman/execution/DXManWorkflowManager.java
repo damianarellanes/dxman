@@ -5,8 +5,6 @@ import com.dxman.dataspace.base.DXManDataSpaceFactory;
 import com.dxman.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.californium.core.CoapClient;
 
 /**
@@ -23,12 +21,20 @@ public class DXManWorkflowManager {
       "http://localhost:3000"
     );
     
-    RuntimeTypeAdapterFactory<DXManWfNode> adapter = RuntimeTypeAdapterFactory
+    RuntimeTypeAdapterFactory<DXManWfNode> adapter1 = RuntimeTypeAdapterFactory
       .of(DXManWfNode.class, "wfnode")
+      .registerSubtype(DXManWfParallel.class, "wfparallel")
+      .registerSubtype(DXManWfSequencer.class, "wfsequencer")
+      //.registerSubtype(WfGuard.class, "wfguard")
       .registerSubtype(DXManWfInvocation.class, "wfinvocation");
+    RuntimeTypeAdapterFactory<DXManWfNodeCustom> adapter2 = RuntimeTypeAdapterFactory
+      .of(DXManWfNodeCustom.class, "wfnodecustom")
+      .registerSubtype(DXManWfParallelCustom.class, "wfparallelcustom")
+      .registerSubtype(DXManWfSequencerCustom.class, "wfsequencercustom");
     
     GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
-      .registerTypeAdapterFactory(adapter).create();
+      .registerTypeAdapterFactory(adapter1).registerTypeAdapterFactory(adapter2)
+      .create();
   }
   
   public DXManWorkflowData executeWorkflow(DXManWfSpec wfSpec, 

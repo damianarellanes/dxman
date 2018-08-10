@@ -3,8 +3,7 @@ package com.dxman.thing.deployment.common;
 import com.dxman.dataspace.base.DXManDataSpace;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
-import com.dxman.execution.DXManWfInvocation;
-import com.dxman.execution.DXManWfNode;
+import com.dxman.execution.*;
 import com.dxman.thing.deployment.connectors.atomic.DXManInvocationInstance;
 import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
 import com.dxman.thing.deployment.connectors.composite.DXManSequencerInstance;
@@ -70,10 +69,19 @@ public class DXManDeployer {
   private Gson createGson () {
     
     // TODO Create a unique solution to swicth between Coap, Rest, events, etc
-    RuntimeTypeAdapterFactory<DXManWfNode> adapter = RuntimeTypeAdapterFactory
+    RuntimeTypeAdapterFactory<DXManWfNode> adapter1 = RuntimeTypeAdapterFactory
       .of(DXManWfNode.class, "wfnode")
+      .registerSubtype(DXManWfParallel.class, "wfparallel")
+      .registerSubtype(DXManWfSequencer.class, "wfsequencer")
+      //.registerSubtype(WfGuard.class, "wfguard")
       .registerSubtype(DXManWfInvocation.class, "wfinvocation");
+    RuntimeTypeAdapterFactory<DXManWfNodeCustom> adapter2 = RuntimeTypeAdapterFactory
+      .of(DXManWfNodeCustom.class, "wfnodecustom")
+      .registerSubtype(DXManWfParallelCustom.class, "wfparallelcustom")
+      .registerSubtype(DXManWfSequencerCustom.class, "wfsequencercustom");    
+    
     return new GsonBuilder().disableHtmlEscaping()
-      .registerTypeAdapterFactory(adapter).create();
+      .registerTypeAdapterFactory(adapter1).registerTypeAdapterFactory(adapter2)
+      .create();
   }
 }
