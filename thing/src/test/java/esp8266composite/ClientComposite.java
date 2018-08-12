@@ -52,13 +52,13 @@ public class ClientComposite {
   public static void main(String[] args) throws JSONException {
     
     DXManWorkflowManager wfManager = new DXManWorkflowManager();
-    DXManWorkflowData wfInputs = new DXManWorkflowData();
+    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
     wfInputs.put(N1_ID, N1_VALUE);
     wfInputs.put(N2_ID, N2_VALUE);
     DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
     wfOutputs.add(RESULT_ID);
     
-    DXManWorkflowData result = wfManager.executeWorkflow(simpleWf(), wfInputs, wfOutputs
+    DXManWorkflowResult result = wfManager.executeWorkflow(simpleWf(), wfInputs, wfOutputs
     );
     
     result.forEach((outputId, outputVal) -> {    

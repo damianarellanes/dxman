@@ -37,8 +37,8 @@ public class DXManWorkflowManager {
       .create();
   }
   
-  public DXManWorkflowData executeWorkflow(DXManWfSpec wfSpec, 
-    DXManWorkflowData wfInputs, DXManWorkflowOutputs wfOutputs) {
+  public DXManWorkflowResult executeWorkflow(DXManWfSpec wfSpec, 
+    DXManWorkflowInputs wfInputs, DXManWorkflowOutputs wfOutputs) {
     
     // Writes input parameters
     wfInputs.forEach((paramId, value)->{
@@ -48,7 +48,7 @@ public class DXManWorkflowManager {
     CoapClient cp = new CoapClient(wfSpec.getFlow().getUri());
     cp.post(GSON.toJson(wfSpec.getFlow()), 0);
     
-    DXManWorkflowData outputValues = new DXManWorkflowData();
+    DXManWorkflowResult outputValues = new DXManWorkflowResult();
     for(String outputId: wfOutputs) {      
       outputValues.put(outputId, dataSpace.readParameter(outputId));
     }

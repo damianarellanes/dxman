@@ -29,13 +29,13 @@ public class ClientCalculator {
   public static void main(String[] args) throws URISyntaxException, MalformedURLException, JSONException {          
 
     DXManWorkflowManager wfManager = new DXManWorkflowManager();
-    DXManWorkflowData wfInputs = new DXManWorkflowData();
+    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
     wfInputs.put(N1_ID, N1_VALUE);
     wfInputs.put(N2_ID, N2_VALUE);
     DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
     wfOutputs.add(RESULT_ID);
     
-    DXManWorkflowData result = wfManager.executeWorkflow(
+    DXManWorkflowResult result = wfManager.executeWorkflow(
       createWorkflowSpec(), wfInputs, wfOutputs
     );
     

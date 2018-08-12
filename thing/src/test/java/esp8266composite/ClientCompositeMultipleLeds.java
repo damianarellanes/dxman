@@ -68,7 +68,7 @@ public class ClientCompositeMultipleLeds {
   public static void main(String[] args) throws JSONException {
     
     DXManWorkflowManager wfManager = new DXManWorkflowManager();
-    DXManWorkflowData wfInputs = new DXManWorkflowData();
+    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
     DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
     wfManager.executeWorkflow(simpleWf(), wfInputs, wfOutputs);
   }    

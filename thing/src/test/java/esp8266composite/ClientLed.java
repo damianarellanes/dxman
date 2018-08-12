@@ -25,7 +25,7 @@ public class ClientLed {
   public static void main(String[] args) throws URISyntaxException, MalformedURLException, JSONException {          
 
     DXManWorkflowManager wfManager = new DXManWorkflowManager();
-    DXManWorkflowData wfInputs = new DXManWorkflowData();
+    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
     wfInputs.put(STATUS_ID, STATUS_VALUE);
     
     DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();

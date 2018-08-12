@@ -28,17 +28,6 @@ public class DXManCoapDeployerDispatcher extends CoapResource
     super(deployerResourceName);
     this.deployer = deployer;
     
-//    RuntimeTypeAdapterFactory<DXManServiceTemplate> adapter0
-//      = RuntimeTypeAdapterFactory   
-//      .of(DXManServiceTemplate.class)
-//      .registerSubtype(DXManAtomicServiceTemplate.class)
-//      .registerSubtype(DXManCompositeServiceTemplate.class);
-//    
-//    RuntimeTypeAdapterFactory<DXManConnectorTemplate> adapter1 
-//      = RuntimeTypeAdapterFactory   
-//      .of(DXManConnectorTemplate.class)
-//      .registerSubtype(DXManCompositionConnectorTemplate.class);
-    
     RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter2 
       = RuntimeTypeAdapterFactory   
       .of(DXManCompositionConnectorTemplate.class, "classType")
@@ -46,8 +35,6 @@ public class DXManCoapDeployerDispatcher extends CoapResource
       .registerSubtype(DXManSequencerTemplate.class, DXManSequencerTemplate.class.getName());
     
     gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
-//      .registerTypeAdapterFactory(adapter0)
-//      .registerTypeAdapterFactory(adapter1)
       .registerTypeAdapterFactory(adapter2)
       .create();
   }

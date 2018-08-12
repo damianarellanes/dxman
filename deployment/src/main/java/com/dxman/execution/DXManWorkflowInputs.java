@@ -6,5 +6,5 @@ import com.dxman.utils.DXManMap;
  * <ParamId, Value>
  * @author Damian Arellanes
  */
-public class DXManWorkflowData extends DXManMap<String, String> {    
+public class DXManWorkflowInputs extends DXManMap<String, String> {    
 }
