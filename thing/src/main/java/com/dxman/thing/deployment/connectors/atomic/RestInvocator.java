@@ -23,7 +23,7 @@ public class RestInvocator implements InvocationHandler {
         if(bindingInfo.getContentType().equals(DXManBindingContent.QUERY_STRING)) {
           uri += jsonRequest;
         }
-        result = doGet(uri);
+        result = doGet(uri, bindingInfo.getAcceptType());
         break;            
       case HTTP_POST:
         result = doPost(bindingInfo.getEndpoint().toString(), jsonRequest);
@@ -32,19 +32,27 @@ public class RestInvocator implements InvocationHandler {
     return result;
   }
 
-  private String doGet(String uri) {
+  private String doGet(String uri, DXManBindingContent responseType) {
 
-      String responseStr;
-      Get response = Http.get(uri)
-        .header("Accept", "application/json");
+    String responseStr;
+    Get response = Http.get(uri);
+    
+    switch(responseType) {
+      case APPLICATION_JSON:
+        response.header("Accept", "application/json");
+        break;
+      case APPLICATION_XML:
+        response.header("Accept", "application/xml");
+        break;
+    }
+      
+    if(response.responseCode() != 200) {
+      responseStr = response.responseMessage();
+    } else {
+      responseStr = response.text();
+    }
 
-      if(response.responseCode() != 200) {
-        responseStr = response.responseMessage();
-      } else {
-        responseStr = response.text();
-      }
-
-      return responseStr;
+    return responseStr;
   }
 
   private String doPost(String uri, String content) {
