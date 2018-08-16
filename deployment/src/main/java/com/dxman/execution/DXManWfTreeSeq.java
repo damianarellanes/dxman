@@ -9,23 +9,15 @@ public abstract class DXManWfTreeSeq extends DXManWfTree {
   
   private int sequenceLength;
 
-  public DXManWfTreeSeq(String id, String uri, 
-    DXManWfTree... subWorkflows) {
+  public DXManWfTreeSeq(String id, String uri) {
     
-    super(id, uri, new DXManWfSequencer(id, uri), subWorkflows);
-    
+    super(id, uri, new DXManWfSequencer(id, uri));    
     sequenceLength = 0;
   }
   
-  protected void composeWf(String wfId, int... order) {
+  protected void composeWf(DXManWfTree wfTree, int... order) {
     
-    composeWf(wfId, new DXManWfSequencerCustom(order));    
-    sequenceLength += order.length;
-  }
-  
-  protected void composeWf(DXManWfInvocation inv, int... order) {
-    
-    composeWf(inv, new DXManWfSequencerCustom(order));    
+    composeWf(wfTree, new DXManWfSequencerCustom(order));
     sequenceLength += order.length;
   }
 
@@ -41,8 +33,7 @@ public abstract class DXManWfTreeSeq extends DXManWfTree {
   }
   
   @Override
-  public DXManWfResult execute(DXManWfManager wfManager)
-    throws JSONException {
+  public DXManWfResult execute(DXManWfManager wfManager) throws JSONException {
         
     DXManWfSpec wfSpec = build();
         

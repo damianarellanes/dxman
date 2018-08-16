@@ -8,19 +8,17 @@ import static leds.Config.*;
  */
 public class WfTreePar0 extends DXManWfTreePar {
 
-  public WfTreePar0(String id, String uri, 
-    DXManWfTree... subWorkflows) {
-    
-    super(id, uri, subWorkflows);
+  public WfTreePar0(String id, String uri) {    
+    super(id, uri);
   }
     
   @Override
   public void design() {  
         
-    DXManWfInvocation on2 = new DXManWfInvocation("on", CONNECTOR_CONFIGS.get("Led2").getUri());
-    DXManWfInvocation off2 = new DXManWfInvocation("off", CONNECTOR_CONFIGS.get("Led2").getUri());
-    DXManWfInvocation on3 = new DXManWfInvocation("on", CONNECTOR_CONFIGS.get("Led3").getUri());
-    DXManWfInvocation off3 = new DXManWfInvocation("off", CONNECTOR_CONFIGS.get("Led3").getUri());
+    DXManWfTreeInv on2 = new DXManWfTreeInv("on", CONNECTOR_CONFIGS.get("Led2").getUri());
+    DXManWfTreeInv off2 = new DXManWfTreeInv("off", CONNECTOR_CONFIGS.get("Led2").getUri());
+    DXManWfTreeInv on3 = new DXManWfTreeInv("on", CONNECTOR_CONFIGS.get("Led3").getUri());
+    DXManWfTreeInv off3 = new DXManWfTreeInv("off", CONNECTOR_CONFIGS.get("Led3").getUri());
     
     composeWf(on2, 2);
     composeWf(off2, 1);

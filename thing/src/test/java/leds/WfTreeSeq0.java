@@ -8,18 +8,17 @@ import static leds.Config.*;
  */
 public class WfTreeSeq0 extends DXManWfTreeSeq {
 
-  public WfTreeSeq0(String id, String uri, 
-    DXManWfTree... subWorkflows) {
-    super(id, uri, subWorkflows);
+  public WfTreeSeq0(String id, String uri) {
+    super(id, uri);
   }
   
   @Override
   public void design() {  
         
-    DXManWfInvocation on1 = new DXManWfInvocation("on", CONNECTOR_CONFIGS.get("Led0").getUri());
-    DXManWfInvocation off1 = new DXManWfInvocation("off", CONNECTOR_CONFIGS.get("Led0").getUri());
-    DXManWfInvocation on2 = new DXManWfInvocation("on", CONNECTOR_CONFIGS.get("Led1").getUri());
-    DXManWfInvocation off2 = new DXManWfInvocation("off", CONNECTOR_CONFIGS.get("Led1").getUri());
+    DXManWfTreeInv on1 = new DXManWfTreeInv("on", CONNECTOR_CONFIGS.get("Led0").getUri());
+    DXManWfTreeInv off1 = new DXManWfTreeInv("off", CONNECTOR_CONFIGS.get("Led0").getUri());
+    DXManWfTreeInv on2 = new DXManWfTreeInv("on", CONNECTOR_CONFIGS.get("Led1").getUri());
+    DXManWfTreeInv off2 = new DXManWfTreeInv("off", CONNECTOR_CONFIGS.get("Led1").getUri());
     
     composeWf(on1,1,4,8,10,12,14);
     composeWf(on2, 0,5);

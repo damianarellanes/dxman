@@ -7,18 +7,12 @@ import org.json.JSONException;
  */
 public abstract class DXManWfTreePar extends DXManWfTree {
   
-  public DXManWfTreePar(String id, String uri, 
-    DXManWfTree... subWorkflows) {
-    
-    super(id, uri, new DXManWfParallel(id, uri), subWorkflows);
+  public DXManWfTreePar(String id, String uri) {    
+    super(id, uri, new DXManWfParallel(id, uri));
   }
   
-  protected void composeWf(String wfId, int taskNumber) {  
-    composeWf(wfId, new DXManWfParallelCustom(taskNumber));
-  }
-  
-  protected void composeWf(DXManWfInvocation inv, int taskNumber) {    
-    composeWf(inv, new DXManWfParallelCustom(taskNumber));
+  protected void composeWf(DXManWfTree wfTree, int tasks) {    
+    composeWf(wfTree, new DXManWfParallelCustom(tasks));
   }
 
   @Override
@@ -29,8 +23,7 @@ public abstract class DXManWfTreePar extends DXManWfTree {
   }
   
   @Override
-  public DXManWfResult execute(DXManWfManager wfManager)
-    throws JSONException {
+  public DXManWfResult execute(DXManWfManager wfManager) throws JSONException {
     
     DXManWfSpec wfSpec = build();
         
