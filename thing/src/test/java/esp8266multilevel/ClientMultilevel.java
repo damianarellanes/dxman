@@ -17,8 +17,7 @@ public class ClientMultilevel {
     CompositeWfPar0 par0 = new CompositeWfPar0("par0", "coap://192.168.0.5:5683/PAR0");
     CompositeWfSeq1 seq2 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1");
     
-    
-    seq2.execute(wfManager).forEach((outputId, outputVal) -> {    
+    wfManager.executeWorkflow(seq2).forEach((outputId, outputVal) -> {    
       System.out.println(outputId + " --> " + outputVal);
     });
   }    

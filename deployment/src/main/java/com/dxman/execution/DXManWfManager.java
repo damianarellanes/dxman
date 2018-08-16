@@ -1,10 +1,8 @@
 package com.dxman.execution;
 
-import com.dxman.dataspace.base.DXManDataSpace;
-import com.dxman.dataspace.base.DXManDataSpaceFactory;
+import com.dxman.dataspace.base.*;
 import com.dxman.utils.RuntimeTypeAdapterFactory;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import org.eclipse.californium.core.CoapClient;
 
 /**
@@ -37,20 +35,20 @@ public class DXManWfManager {
       .create();
   }
   
-  public DXManWfResult executeWorkflow(DXManWfTree wfTree) {
+  public DXManWfResult executeWorkflow(DXManWfTree topWfTree) {
     
-    wfTree.build();
+    topWfTree.build();
     
     // Writes input parameters
-    wfTree.getInputs().forEach((paramId, value)->{
+    topWfTree.getInputs().forEach((paramId, value)->{
       dataSpace.writeParameter(paramId, value);
     });
         
-    CoapClient cp = new CoapClient(wfTree.getWfNode().getUri());
-    cp.post(GSON.toJson(wfTree.getWfNode()), 0);
+    CoapClient cp = new CoapClient(topWfTree.getWfNode().getUri());
+    cp.post(GSON.toJson(topWfTree.getWfNode()), 0);
     
     DXManWfResult outputValues = new DXManWfResult();
-    for(String outputId: wfTree.getOutputs()) {      
+    for(String outputId: topWfTree.getOutputs()) {      
       outputValues.put(outputId, dataSpace.readParameter(outputId));
     }
     

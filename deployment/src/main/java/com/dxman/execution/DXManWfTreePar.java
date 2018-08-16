@@ -9,8 +9,8 @@ public abstract class DXManWfTreePar extends DXManWfTree {
     super(new DXManWfParallel(id, uri));
   }
   
-  protected void composeWf(DXManWfTree wfTree, int tasks) {    
-    composeWf(wfTree, new DXManWfParallelCustom(tasks));
+  protected void composeWf(DXManWfTree subWfTree, int tasks) {    
+    composeWf(subWfTree, new DXManWfParallelCustom(tasks));
   }
 
   @Override

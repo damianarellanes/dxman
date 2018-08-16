@@ -13,9 +13,9 @@ public abstract class DXManWfTreeSeq extends DXManWfTree {
     sequenceLength = 0;
   }
   
-  protected void composeWf(DXManWfTree wfTree, int... order) {
+  protected void composeWf(DXManWfTree subWfTree, int... order) {
     
-    composeWf(wfTree, new DXManWfSequencerCustom(order));
+    composeWf(subWfTree, new DXManWfSequencerCustom(order));
     sequenceLength += order.length;
   }
 

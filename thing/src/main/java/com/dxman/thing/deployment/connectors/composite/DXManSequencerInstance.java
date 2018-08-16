@@ -32,7 +32,7 @@ public class DXManSequencerInstance extends DXManConnectorInstance {
     
     DXManWfSequencer flow = gson.fromJson(workflowJSON, DXManWfSequencer.class);
     
-    for(DXManWfNode subNode: flow.getSubnodes()) {
+    for(DXManWfNode subNode: flow.getSequence()) {
       transferControl(subNode, subNode.getUri());
     }
   }    

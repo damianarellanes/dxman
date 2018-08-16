@@ -11,10 +11,10 @@ public abstract class DXManWfTree {
     this.wfNode = wfNode;
   }
     
-  protected void composeWf(DXManWfTree wfTree, DXManWfNodeCustom custom) {
+  protected void composeWf(DXManWfTree subWfTree, DXManWfNodeCustom custom) {
    
-    wfTree.build();    
-    wfNode.getSubnodeMappers().add(new DXManWfNodeMapper(wfTree.getWfNode(), custom));
+    subWfTree.build();    
+    wfNode.getSubnodeMappers().add(new DXManWfNodeMapper(subWfTree.getWfNode(), custom));
   }
   
   public DXManWfNode getWfNode() { return wfNode; }

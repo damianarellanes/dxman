@@ -5,7 +5,7 @@ package com.dxman.execution;
  */
 public class DXManWfSequencer extends DXManWfNode {
  
-  private DXManWfNode[] subNodes;
+  private DXManWfNode[] sequence;
 
   public DXManWfSequencer() {}
 
@@ -23,24 +23,22 @@ public class DXManWfSequencer extends DXManWfNode {
       || ((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder().length == 0
       ))) { return false; }
     
-    return !getSubnodeMappers().isEmpty() && subNodes.length > 1;
+    return !getSubnodeMappers().isEmpty() && sequence.length > 1;
   }
   
   public void finishSequence(int sequenceLength) {
     
-    DXManWfNode[] sortedSubNodes = new DXManWfNode[sequenceLength];
+    sequence = new DXManWfNode[sequenceLength];
     getSubnodeMappers().forEach((subNodeMapper) -> {
       
       for(int index: ((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder()) {
-        sortedSubNodes[index] = subNodeMapper.getNode();
+        sequence[index] = subNodeMapper.getNode();
       }
     });
-    
-    this.subNodes = sortedSubNodes;
   }
   
-  public DXManWfNode[] getSubnodes() { return subNodes; }
-  public void setSubnodes(DXManWfNode[] subNodes) { 
-    this.subNodes = subNodes; 
+  public DXManWfNode[] getSequence() { return sequence; }
+  public void setSequence(DXManWfNode[] subNodes) { 
+    this.sequence = subNodes; 
   }
 }
