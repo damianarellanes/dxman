@@ -37,7 +37,7 @@ public abstract class DXManWfTree {
     wfNode.getSubnodeMappers().add(new DXManWfNodeMapper(inv, custom));
   }
   
-  public DXManWorkflowResult execute(DXManWorkflowManager wfManager)
+  public DXManWfResult execute(DXManWfManager wfManager)
     throws JSONException {
     return wfManager.executeWorkflow(build(), getInputs(), getOutputs());
   }
@@ -49,6 +49,6 @@ public abstract class DXManWfTree {
     
   public abstract void design();
   public abstract DXManWfSpec build();
-  public abstract DXManWorkflowInputs getInputs();
-  public abstract DXManWorkflowOutputs getOutputs();
+  public abstract DXManWfInputs getInputs();
+  public abstract DXManWfOutputs getOutputs();
 }

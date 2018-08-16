@@ -6,5 +6,5 @@ import java.util.ArrayList;
  * <ParamId>
  * @author Damian Arellanes
  */
-public class DXManWorkflowOutputs extends ArrayList<String> {    
+public class DXManWfOutputs extends ArrayList<String> {    
 }

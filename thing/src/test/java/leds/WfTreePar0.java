@@ -28,12 +28,12 @@ public class WfTreePar0 extends DXManWfTreePar {
   }
   
   @Override
-  public DXManWorkflowInputs getInputs() {
-    return new DXManWorkflowInputs();
+  public DXManWfInputs getInputs() {
+    return new DXManWfInputs();
   }
   
   @Override
-  public DXManWorkflowOutputs getOutputs() {
-    return new DXManWorkflowOutputs();
+  public DXManWfOutputs getOutputs() {
+    return new DXManWfOutputs();
   }
 }

@@ -22,16 +22,16 @@ public class CompositeWfSeq2 extends DXManWfTreeSeq {
   }
   
   @Override
-  public DXManWorkflowInputs getInputs() {
-    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
+  public DXManWfInputs getInputs() {
+    DXManWfInputs wfInputs = new DXManWfInputs();
     /*wfInputs.putAll(CompositeWfSeq1.getInputs());
     wfInputs.putAll(CompositeWfPar0.getInputs());*/
     return wfInputs;
   }
   
   @Override
-  public DXManWorkflowOutputs getOutputs() {    
-    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
+  public DXManWfOutputs getOutputs() {    
+    DXManWfOutputs wfOutputs = new DXManWfOutputs();
     /*wfOutputs.addAll(CompositeWfSeq1.getOutputs());
     wfOutputs.addAll(CompositeWfPar0.getOutputs());*/
     return wfOutputs;

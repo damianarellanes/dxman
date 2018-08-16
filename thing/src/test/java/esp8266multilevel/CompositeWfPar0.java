@@ -3,8 +3,8 @@ package esp8266multilevel;
 import com.dxman.execution.DXManWfInvocation;
 import com.dxman.execution.DXManWfTree;
 import com.dxman.execution.DXManWfTreePar;
-import com.dxman.execution.DXManWorkflowInputs;
-import com.dxman.execution.DXManWorkflowOutputs;
+import com.dxman.execution.DXManWfInputs;
+import com.dxman.execution.DXManWfOutputs;
 
 /**
  * @author Damian Arellanes
@@ -37,16 +37,16 @@ public class CompositeWfPar0 extends DXManWfTreePar {
   }
   
   @Override
-  public DXManWorkflowInputs getInputs() {
-    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
+  public DXManWfInputs getInputs() {
+    DXManWfInputs wfInputs = new DXManWfInputs();
     wfInputs.put(N1_ID_2, N1_VALUE_2);
     wfInputs.put(N2_ID_2, N2_VALUE_2);
     return wfInputs;
   }
   
   @Override
-  public DXManWorkflowOutputs getOutputs() {
-    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
+  public DXManWfOutputs getOutputs() {
+    DXManWfOutputs wfOutputs = new DXManWfOutputs();
     wfOutputs.add(RESULT_ID_2);
     return wfOutputs;
   }

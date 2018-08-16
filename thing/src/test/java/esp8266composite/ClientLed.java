@@ -24,11 +24,11 @@ public class ClientLed {
   
   public static void main(String[] args) throws URISyntaxException, MalformedURLException, JSONException {          
 
-    DXManWorkflowManager wfManager = new DXManWorkflowManager();
-    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
+    DXManWfManager wfManager = new DXManWfManager();
+    DXManWfInputs wfInputs = new DXManWfInputs();
     wfInputs.put(STATUS_ID, STATUS_VALUE);
     
-    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
+    DXManWfOutputs wfOutputs = new DXManWfOutputs();
     
     wfManager.executeWorkflow(createWorkflowSpec(), wfInputs, wfOutputs);
   }

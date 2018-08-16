@@ -41,7 +41,7 @@ public abstract class DXManWfTreeSeq extends DXManWfTree {
   }
   
   @Override
-  public DXManWorkflowResult execute(DXManWorkflowManager wfManager)
+  public DXManWfResult execute(DXManWfManager wfManager)
     throws JSONException {
         
     DXManWfSpec wfSpec = build();

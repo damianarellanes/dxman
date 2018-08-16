@@ -4,8 +4,8 @@ import com.dxman.execution.DXManWfInvocation;
 import com.dxman.execution.DXManWfSequencer;
 import com.dxman.execution.DXManWfTree;
 import com.dxman.execution.DXManWfTreeSeq;
-import com.dxman.execution.DXManWorkflowInputs;
-import com.dxman.execution.DXManWorkflowOutputs;
+import com.dxman.execution.DXManWfInputs;
+import com.dxman.execution.DXManWfOutputs;
 
 /**
  * @author Damian Arellanes
@@ -40,16 +40,16 @@ public class CompositeWfSeq1 extends DXManWfTreeSeq {
   }
   
   @Override
-  public DXManWorkflowInputs getInputs() {
-    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
+  public DXManWfInputs getInputs() {
+    DXManWfInputs wfInputs = new DXManWfInputs();
     wfInputs.put(N1_ID_1, N1_VALUE_1);
     wfInputs.put(N2_ID_1, N2_VALUE_1);
     return wfInputs;
   }
   
   @Override
-  public DXManWorkflowOutputs getOutputs() {
-    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
+  public DXManWfOutputs getOutputs() {
+    DXManWfOutputs wfOutputs = new DXManWfOutputs();
     wfOutputs.add(RESULT_ID_1);
     return wfOutputs;
   }    

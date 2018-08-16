@@ -40,7 +40,7 @@ public class ClientComposite extends DXManWfTreeSeq {
   
   public static void main(String[] args) throws JSONException {
     
-    DXManWorkflowManager wfManager = new DXManWorkflowManager();
+    DXManWfManager wfManager = new DXManWfManager();
     
     ClientComposite seq0 = new ClientComposite("seq0", "coap://192.168.0.5:5683/MyComposite");
     seq0.execute(wfManager).forEach((outputId, outputVal) -> {    
@@ -49,16 +49,16 @@ public class ClientComposite extends DXManWfTreeSeq {
   }    
 
   @Override
-  public DXManWorkflowInputs getInputs() {
-    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
+  public DXManWfInputs getInputs() {
+    DXManWfInputs wfInputs = new DXManWfInputs();
     wfInputs.put(N1_ID, N1_VALUE);
     wfInputs.put(N2_ID, N2_VALUE);
     return wfInputs;
   }
 
   @Override
-  public DXManWorkflowOutputs getOutputs() {
-    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
+  public DXManWfOutputs getOutputs() {
+    DXManWfOutputs wfOutputs = new DXManWfOutputs();
     wfOutputs.add(RESULT_ID);
     return wfOutputs;
   }

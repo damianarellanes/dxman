@@ -10,12 +10,12 @@ import org.eclipse.californium.core.CoapClient;
 /**
  * @author Damian Arellanes
  */
-public class DXManWorkflowManager {
+public class DXManWfManager {
   
   private final DXManDataSpace dataSpace;
   private final Gson GSON;
     
-  public DXManWorkflowManager() {
+  public DXManWfManager() {
     
     dataSpace = DXManDataSpaceFactory.createBlockchainManager(
       "http://localhost:3000"
@@ -37,8 +37,8 @@ public class DXManWorkflowManager {
       .create();
   }
   
-  public DXManWorkflowResult executeWorkflow(DXManWfSpec wfSpec, 
-    DXManWorkflowInputs wfInputs, DXManWorkflowOutputs wfOutputs) {
+  public DXManWfResult executeWorkflow(DXManWfSpec wfSpec, 
+    DXManWfInputs wfInputs, DXManWfOutputs wfOutputs) {
     
     // Writes input parameters
     wfInputs.forEach((paramId, value)->{
@@ -48,7 +48,7 @@ public class DXManWorkflowManager {
     CoapClient cp = new CoapClient(wfSpec.getFlow().getUri());
     cp.post(GSON.toJson(wfSpec.getFlow()), 0);
     
-    DXManWorkflowResult outputValues = new DXManWorkflowResult();
+    DXManWfResult outputValues = new DXManWfResult();
     for(String outputId: wfOutputs) {      
       outputValues.put(outputId, dataSpace.readParameter(outputId));
     }

@@ -10,7 +10,7 @@ public class ClientMultilevel {
   
   public static void main(String[] args) throws JSONException {
     
-    DXManWorkflowManager wfManager = new DXManWorkflowManager();        
+    DXManWfManager wfManager = new DXManWfManager();        
     
     CompositeWfSeq0 seq0 = new CompositeWfSeq0("seq0", "coap://192.168.0.5:5683/SEQ0");    
     CompositeWfSeq1 seq1 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1", seq0);

@@ -47,16 +47,16 @@ public class ClientCompositeMultipleLeds extends DXManWfTreeSeq {
   }
 
   @Override
-  public DXManWorkflowInputs getInputs() {
-    return new DXManWorkflowInputs();
+  public DXManWfInputs getInputs() {
+    return new DXManWfInputs();
   }
 
   @Override
-  public DXManWorkflowOutputs getOutputs() {
-    return new DXManWorkflowOutputs();
+  public DXManWfOutputs getOutputs() {
+    return new DXManWfOutputs();
   }
   
   public static void main(String[] args) throws JSONException {    
-    new ClientComposite("seq0", "coap://192.168.0.5:5683/MyComposite").execute(new DXManWorkflowManager());
+    new ClientComposite("seq0", "coap://192.168.0.5:5683/MyComposite").execute(new DXManWfManager());
   }
 }

@@ -44,17 +44,17 @@ public class ClientCompositeParallel {
   
   public static void main(String[] args) throws JSONException {
     
-    DXManWorkflowManager wfManager = new DXManWorkflowManager();    
-    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
+    DXManWfManager wfManager = new DXManWfManager();    
+    DXManWfInputs wfInputs = new DXManWfInputs();
     wfInputs.put(N1_ID_1, N1_VALUE_1);
     wfInputs.put(N2_ID_1, N2_VALUE_1);
     wfInputs.put(N1_ID_2, N1_VALUE_2);
     wfInputs.put(N2_ID_2, N2_VALUE_2);
-    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
+    DXManWfOutputs wfOutputs = new DXManWfOutputs();
     wfOutputs.add(RESULT_ID_1);
     wfOutputs.add(RESULT_ID_2);
     
-    DXManWorkflowResult result = wfManager.executeWorkflow(parallelWf(), wfInputs, wfOutputs);
+    DXManWfResult result = wfManager.executeWorkflow(parallelWf(), wfInputs, wfOutputs);
     
     result.forEach((outputId, outputVal) -> {    
       System.out.println(outputId + " --> " + outputVal);
