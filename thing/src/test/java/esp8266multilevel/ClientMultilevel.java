@@ -8,43 +8,17 @@ import org.json.JSONException;
  */
 public class ClientMultilevel {
   
-  public static DXManWorkflowResult executeSeq0(DXManWorkflowManager wfManager) throws JSONException {
-    
-    return wfManager.executeWorkflow(
-      CompositeWfSeq0.getWf(), 
-      CompositeWfSeq0.getInputs(), CompositeWfSeq0.getOutputs()
-    );
-  }
-  
-  public static DXManWorkflowResult executePar0(DXManWorkflowManager wfManager) throws JSONException {
-    
-    return wfManager.executeWorkflow(
-      CompositeWfPar0.getWf(), 
-      CompositeWfPar0.getInputs(), CompositeWfPar0.getOutputs()
-    );
-  }
-  
-  public static DXManWorkflowResult executeSeq1(DXManWorkflowManager wfManager) throws JSONException {
-    
-    return wfManager.executeWorkflow(
-      CompositeWfSeq1.getWf(), 
-      CompositeWfSeq1.getInputs(), CompositeWfSeq1.getOutputs()
-    );
-  }
-  
-  public static DXManWorkflowResult executeSeq2(DXManWorkflowManager wfManager) throws JSONException {
-    
-    return wfManager.executeWorkflow(
-      CompositeWfSeq2.getWf(), 
-      CompositeWfSeq2.getInputs(), CompositeWfSeq2.getOutputs()
-    );
-  }
-  
   public static void main(String[] args) throws JSONException {
     
     DXManWorkflowManager wfManager = new DXManWorkflowManager();        
     
-    executeSeq2(wfManager).forEach((outputId, outputVal) -> {    
+    CompositeWfSeq0 seq0 = new CompositeWfSeq0("seq0", "coap://192.168.0.5:5683/SEQ0");    
+    CompositeWfSeq1 seq1 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1", seq0);
+    CompositeWfPar0 par0 = new CompositeWfPar0("par0", "coap://192.168.0.5:5683/PAR0");
+    CompositeWfSeq1 seq2 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1", seq1, par0);
+    
+    
+    seq2.execute(wfManager).forEach((outputId, outputVal) -> {    
       System.out.println(outputId + " --> " + outputVal);
     });
   }    

@@ -1,20 +1,18 @@
 package com.dxman.execution;
 
-import java.util.ArrayList;
-
 /**
  * @author Damian Arellanes
  */
 public class DXManWfSequencerCustom extends DXManWfNodeCustom {
   
-  private ArrayList<Integer> order;
+  private int[] order;
   
   public DXManWfSequencerCustom() {}
 
-  public DXManWfSequencerCustom(ArrayList<Integer> order) {
+  public DXManWfSequencerCustom(int[] order) {
     this.order = order;
   }
 
-  public ArrayList<Integer> getOrder() { return order; }
-  public void setOrder(ArrayList<Integer> order) { this.order = order; }
+  public int[] getOrder() { return order; }
+  public void setOrder(int[] order) { this.order = order; }
 }

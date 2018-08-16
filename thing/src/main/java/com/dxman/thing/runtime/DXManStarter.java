@@ -35,6 +35,9 @@ public class DXManStarter {
       DXManConfiguration.DEPLOYER_RESOURCE /*+ "-" + thing.getId()*/, deployer
     );
     
+    System.out.println(thing.getAlias() + " listening at " 
+      + "http://" + thing.getIp() + ":" + thing.getPort());
+    
     return new DXManRuntime(thing, dataSpace);
   }
   
@@ -46,7 +49,7 @@ public class DXManStarter {
       config.load(input);
       
     } catch (IOException ex) {
-      System.err.println("Error loading the configuration file");
+      System.err.println("Error loading the configuration file: " + configPath);
       System.exit(DXManErrors.CONFIG_ERROR.ordinal());
     }
     

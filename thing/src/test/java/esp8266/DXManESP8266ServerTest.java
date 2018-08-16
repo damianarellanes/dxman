@@ -31,7 +31,7 @@ import org.eclipse.californium.core.CoapClient;
 public class DXManESP8266ServerTest {
             
   public static final DXManRuntime dxmanRuntime = DXManStarter.start(
-    "/home/darellanes/DX-MAN-Platform/examples/window.properties"
+    "/home/darellanes/DX-MAN-Platform/examples/alienware.properties"
   );
     
     public static DXManAtomicServiceTemplate deployAtomic() throws URISyntaxException, MalformedURLException {

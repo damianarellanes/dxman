@@ -134,7 +134,8 @@ public class DXManParallelInstance extends DXManConnectorInstance {
   @Override
   public void activate(String workflowJSON) {
     
-    System.err.println("Parallel connector activated!");
+    System.err.println(this.getManagedService().getInfo().getName() 
+      + " (Parallel Connector) activated [" + new Date() + "]");
     
     DXManWfParallel flow = gson.fromJson(workflowJSON, DXManWfParallel.class);
     subNodeMappers = flow.getSubnodeMappers();

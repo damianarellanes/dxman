@@ -9,6 +9,7 @@ import com.dxman.execution.DXManWfInvocation;
 import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.dxman.utils.DXManMap;
 import com.google.gson.Gson;
+import java.util.Date;
 
 /**
  * @author Damian Arellanes
@@ -16,11 +17,11 @@ import com.google.gson.Gson;
 public class DXManInvocationInstance extends DXManConnectorInstance {
         
   private final DXManMap<DXManProtocol, InvocationHandler> invocationHandlers;
-  private final DXManDataManager dataReader;
+  private final DXManDataManager dataManager;
 
   public DXManInvocationInstance(DXManServiceTemplate managedService, 
     DXManConnectorRequester requester, Gson gson, DXManDataSpace dataSpace, 
-    String nodeAlias) {
+    String thingAlias) {
 
     super(managedService, requester, gson);
 
@@ -28,15 +29,16 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     invocationHandlers.put(DXManProtocol.tcp, new SocketInvocator());
     invocationHandlers.put(DXManProtocol.http, new RestInvocator());
 
-    dataReader = new DXManDataManager(nodeAlias, dataSpace, 
+    dataManager = new DXManDataManager(thingAlias, dataSpace, 
       managedService.getOperations());
   }
 
   @Override
   public void activate(String workflowJSON) {
+    
+    System.err.println(this.getManagedService().getInfo().getName() 
+      + " (Invocation Connector) activated [" + new Date() + "]");
 
-    System.err.println("Invocation connector activated!");
-   
     // Reads the operation (from the event) to be invoked in this service
     DXManWfInvocation flow = gson.fromJson(workflowJSON, DXManWfInvocation.class);
     String operationName = flow.getId();
@@ -47,7 +49,7 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     DXManBindingInfo bindingInfo = operationToInvoke.getBindingInfo();
 
     // Gets the input parameters and constructs JSON request
-    String request = dataReader.read(operationToInvoke);
+    String request = dataManager.read(operationToInvoke);
 
     // Invokes the operation        
     String result = invocationHandlers.get(
@@ -57,6 +59,6 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     ).invokeJSON(bindingInfo, request);
 
     // Writes output parameters (if any)
-    dataReader.write(operationToInvoke, result);
+    dataManager.write(operationToInvoke, result);
   }
 }

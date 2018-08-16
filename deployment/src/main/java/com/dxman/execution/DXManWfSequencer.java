@@ -1,59 +1,44 @@
 package com.dxman.execution;
 
-import java.util.*;
-
 /**
  * @author Damian Arellanes
  */
 public class DXManWfSequencer extends DXManWfNode {
  
-  private List<DXManWfNodeMapper> subNodeMappers;
   private DXManWfNode[] subNodes;
 
   public DXManWfSequencer() {}
 
   public DXManWfSequencer(String id, String uri) {
-    super(id, uri);
-    subNodeMappers = new ArrayList<>();
+    super(id, uri);    
   }
   
   @Override
   public boolean isValid() {
     
-    if (!subNodeMappers.stream().noneMatch((subNodeMapper) -> 
+    if (!getSubnodeMappers().stream().noneMatch((subNodeMapper) -> 
       (subNodeMapper.getNode() == null || !subNodeMapper.getNode().isValid()
       || subNodeMapper.getCustom() == null
       || !subNodeMapper.getCustom().getClass().equals(DXManWfSequencerCustom.class)
-      || ((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder().isEmpty()
+      || ((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder().length == 0
       ))) { return false; }
     
-    return !subNodeMappers.isEmpty() && subNodes.length > 1;
+    return !getSubnodeMappers().isEmpty() && subNodes.length > 1;
   }
   
-  public void finishSequence() {
+  public void finishSequence(int sequenceLength) {
     
-    List<Integer> sequence = new ArrayList<>();    
-    subNodeMappers.forEach((subNodeMapper) -> {
-      sequence.addAll(((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder());
-    });
-    int max = Collections.max(sequence) + 1;
-
-    DXManWfNode[] sortedSubNodes = new DXManWfNode[max];
-    subNodeMappers.forEach((subNodeMapper) -> {
+    DXManWfNode[] sortedSubNodes = new DXManWfNode[sequenceLength];
+    getSubnodeMappers().forEach((subNodeMapper) -> {
       
-      ((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder()
-        .forEach((order) -> {
-          sortedSubNodes[order] = subNodeMapper.getNode();
-        });
+      for(int index: ((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder()) {
+        sortedSubNodes[index] = subNodeMapper.getNode();
+      }
     });
     
     this.subNodes = sortedSubNodes;
   }
-
-  public List<DXManWfNodeMapper> getSubnodeMappers() { return subNodeMappers; }
-  public void setSubnodeMappers(List<DXManWfNodeMapper> subNodeMappers) { 
-    this.subNodeMappers = subNodeMappers; 
-  }
+  
   public DXManWfNode[] getSubnodes() { return subNodes; }
   public void setSubnodes(DXManWfNode[] subNodes) { 
     this.subNodes = subNodes; 

@@ -7,42 +7,33 @@ import org.json.JSONException;
 /**
  * @author Damian Arellanes
  */
-public class CompositeWfSeq2 {
+public class CompositeWfSeq2 extends DXManWfTreeSeq {
   
-  private static final String SEQ2 = "SEQ2";
-  
-  public static DXManWfSpec getWf() throws JSONException {  
-        
-    // Defines a sequence using sub-workflows
-    DXManWfSequencer seq2 = new DXManWfSequencer(
-      "seq2", "coap://192.168.0.5:5683/" + SEQ2
-    );
-    seq2.getSubnodeMappers().add(
-      new DXManWfNodeMapper(CompositeWfSeq1.getWf().getFlow(), new DXManWfSequencerCustom(
-        new ArrayList<>(Arrays.asList(0)))
-      )
-    );
-    seq2.getSubnodeMappers().add(
-      new DXManWfNodeMapper(CompositeWfPar0.getWf().getFlow(), new DXManWfSequencerCustom(
-        new ArrayList<>(Arrays.asList(1)))
-      )
-    );
-    seq2.finishSequence();
-
-    return new DXManWfSpec("wf2", seq2);
+  public CompositeWfSeq2(String id, String uri, DXManWfTree... subWorkflows) {
+    super(id, uri, subWorkflows);
   }
   
-  public static DXManWorkflowInputs getInputs() {
+  @Override
+  public void design() {  
+        
+    // Defines a sequence using sub-workflows
+    composeWf("seq1", 0);
+    composeWf("par0", 1);
+  }
+  
+  @Override
+  public DXManWorkflowInputs getInputs() {
     DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
-    wfInputs.putAll(CompositeWfSeq1.getInputs());
-    wfInputs.putAll(CompositeWfPar0.getInputs());
+    /*wfInputs.putAll(CompositeWfSeq1.getInputs());
+    wfInputs.putAll(CompositeWfPar0.getInputs());*/
     return wfInputs;
   }
   
-  public static DXManWorkflowOutputs getOutputs() {    
+  @Override
+  public DXManWorkflowOutputs getOutputs() {    
     DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
-    wfOutputs.addAll(CompositeWfSeq1.getOutputs());
-    wfOutputs.addAll(CompositeWfPar0.getOutputs());
+    /*wfOutputs.addAll(CompositeWfSeq1.getOutputs());
+    wfOutputs.addAll(CompositeWfPar0.getOutputs());*/
     return wfOutputs;
   }    
 }

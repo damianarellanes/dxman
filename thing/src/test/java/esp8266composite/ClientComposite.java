@@ -1,15 +1,13 @@
 package esp8266composite;
 
 import com.dxman.execution.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import org.json.JSONException;
 
 /** 
  * TODO Change the design of operations: it should be an IP per operation
  * @author Damian Arellanes
  */
-public class ClientComposite {
+public class ClientComposite extends DXManWfTreeSeq {
     
   private static final String CALCULATOR_CONNECTOR = "MyCalculator";
   private static final String N1_ID = "4ee19e1c-213c-4c10-9f7f-2f207fcc0d74";
@@ -22,7 +20,12 @@ public class ClientComposite {
   
   private static final String SEQ_CONNECTOR = "MyComposite";
   
-  public static DXManWfSpec simpleWf() throws JSONException {
+  public ClientComposite(String id, String uri, DXManWfTree... subWorkflows) {
+    super(id, uri, subWorkflows);
+  }
+  
+  @Override
+  public void design() {
         
     DXManWfInvocation led = new DXManWfInvocation(
       "on", "coap://192.168.0.5:5683/" + LED_CONNECTOR
@@ -31,38 +34,32 @@ public class ClientComposite {
       "multiply", "coap://192.168.0.5:5683/" + CALCULATOR_CONNECTOR
     );
     
-    DXManWfSequencer seq0 = new DXManWfSequencer(
-      "seq0", "coap://192.168.0.5:5683/" + SEQ_CONNECTOR
-    );  
-    seq0.getSubnodeMappers().add(
-      new DXManWfNodeMapper(led, new DXManWfSequencerCustom(
-        new ArrayList<>(Arrays.asList(0)))
-      )
-    );
-    seq0.getSubnodeMappers().add(
-      new DXManWfNodeMapper(multiply, new DXManWfSequencerCustom(
-        new ArrayList<>(Arrays.asList(1)))
-      )
-    );
-    seq0.finishSequence();
-
-    return new DXManWfSpec("wf1", seq0);
+    composeWf(led, 0);
+    composeWf(multiply, 1);
   }
   
   public static void main(String[] args) throws JSONException {
     
     DXManWorkflowManager wfManager = new DXManWorkflowManager();
-    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
-    wfInputs.put(N1_ID, N1_VALUE);
-    wfInputs.put(N2_ID, N2_VALUE);
-    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
-    wfOutputs.add(RESULT_ID);
     
-    DXManWorkflowResult result = wfManager.executeWorkflow(simpleWf(), wfInputs, wfOutputs
-    );
-    
-    result.forEach((outputId, outputVal) -> {    
+    ClientComposite seq0 = new ClientComposite("seq0", "coap://192.168.0.5:5683/MyComposite");
+    seq0.execute(wfManager).forEach((outputId, outputVal) -> {    
       System.out.println(outputId + " --> " + outputVal);
     });
   }    
+
+  @Override
+  public DXManWorkflowInputs getInputs() {
+    DXManWorkflowInputs wfInputs = new DXManWorkflowInputs();
+    wfInputs.put(N1_ID, N1_VALUE);
+    wfInputs.put(N2_ID, N2_VALUE);
+    return wfInputs;
+  }
+
+  @Override
+  public DXManWorkflowOutputs getOutputs() {
+    DXManWorkflowOutputs wfOutputs = new DXManWorkflowOutputs();
+    wfOutputs.add(RESULT_ID);
+    return wfOutputs;
+  }
 }

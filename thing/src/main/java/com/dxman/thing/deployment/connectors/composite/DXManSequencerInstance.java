@@ -5,6 +5,7 @@ import com.dxman.execution.*;
 import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
 import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.google.gson.Gson;
+import java.util.Date;
 
 /**
  * @author Damian Arellanes
@@ -26,7 +27,8 @@ public class DXManSequencerInstance extends DXManConnectorInstance {
   @Override
   public void activate(String workflowJSON) {
     
-    System.err.println("Sequencer connector activated!");
+    System.err.println(this.getManagedService().getInfo().getName() 
+      + " (Sequencer Connector) activated [" + new Date() + "]");
     
     DXManWfSequencer flow = gson.fromJson(workflowJSON, DXManWfSequencer.class);
     

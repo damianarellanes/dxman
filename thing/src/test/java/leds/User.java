@@ -1,6 +1,7 @@
 package leds;
 
 import com.dxman.execution.*;
+import static leds.Config.CONNECTOR_CONFIGS;
 import org.json.JSONException;
 
 /**
@@ -8,36 +9,17 @@ import org.json.JSONException;
  */
 public class User {
   
-  public static DXManWorkflowResult executeSeq0(DXManWorkflowManager wfManager) throws JSONException {
-    
-    return wfManager.executeWorkflow(
-      CompositeWfSeq0.getWf(), 
-      CompositeWfSeq0.getInputs(), CompositeWfSeq0.getOutputs()
-    );
-  }
-  
-  public static DXManWorkflowResult executePar0(DXManWorkflowManager wfManager) throws JSONException {
-    
-    return wfManager.executeWorkflow(
-      CompositeWfPar0.getWf(), 
-      CompositeWfPar0.getInputs(), CompositeWfPar0.getOutputs()
-    );
-  }
-  
-  public static DXManWorkflowResult executeSeq1(DXManWorkflowManager wfManager) throws JSONException {
-    
-    return wfManager.executeWorkflow(
-      CompositeWfSeq1.getWf(), 
-      CompositeWfSeq1.getInputs(), CompositeWfSeq1.getOutputs()
-    );
-  }
-  
   public static void main(String[] args) throws JSONException {
     
-    DXManWorkflowManager wfManager = new DXManWorkflowManager();        
+    //new WfTreeSeq0("seq0", CONNECTOR_CONFIGS.get("SEQ0").getUri()).execute(new DXManWorkflowManager());
+    //new WfTreePar0("par0", CONNECTOR_CONFIGS.get("PAR0").getUri()).execute(new DXManWorkflowManager());
     
-    executeSeq1(wfManager).forEach((outputId, outputVal) -> {    
-      System.out.println(outputId + " --> " + outputVal);
-    });
+    WfTreeSeq1 wfSeq1 = new WfTreeSeq1(
+      "seq1", CONNECTOR_CONFIGS.get("SEQ1").getUri(),
+      new WfTreeSeq0("seq0", CONNECTOR_CONFIGS.get("SEQ0").getUri()),
+      new WfTreePar0("par0", CONNECTOR_CONFIGS.get("PAR0").getUri())
+    );
+    
+    wfSeq1.execute(new DXManWorkflowManager());  
   }    
 }
