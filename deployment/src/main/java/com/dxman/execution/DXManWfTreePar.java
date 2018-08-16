@@ -6,7 +6,7 @@ package com.dxman.execution;
 public abstract class DXManWfTreePar extends DXManWfTree {
   
   public DXManWfTreePar(String id, String uri) {    
-    super(id, uri, new DXManWfParallel(id, uri));
+    super(new DXManWfParallel(id, uri));
   }
   
   protected void composeWf(DXManWfTree wfTree, int tasks) {    
@@ -17,6 +17,6 @@ public abstract class DXManWfTreePar extends DXManWfTree {
   public DXManWfSpec build() {    
     
     design();
-    return new DXManWfSpec(getId()+"-wf-spec", getWfNode());
+    return new DXManWfSpec(getWfNode().getId()+"-wf-spec", getWfNode());
   }
 }

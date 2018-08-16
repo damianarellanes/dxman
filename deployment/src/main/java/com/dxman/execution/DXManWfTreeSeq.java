@@ -9,7 +9,7 @@ public abstract class DXManWfTreeSeq extends DXManWfTree {
 
   public DXManWfTreeSeq(String id, String uri) {
     
-    super(id, uri, new DXManWfSequencer(id, uri));    
+    super(new DXManWfSequencer(id, uri));    
     sequenceLength = 0;
   }
   
@@ -24,7 +24,7 @@ public abstract class DXManWfTreeSeq extends DXManWfTree {
     
     design();
     
-    DXManWfSpec wfSpec = new DXManWfSpec(getId()+"-wf-spec", getWfNode());
+    DXManWfSpec wfSpec = new DXManWfSpec(getWfNode().getId()+"-wf-spec", getWfNode());
     ((DXManWfSequencer)getWfNode()).finishSequence(sequenceLength);
     
     return wfSpec;

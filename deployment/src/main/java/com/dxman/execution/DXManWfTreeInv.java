@@ -6,7 +6,7 @@ package com.dxman.execution;
 public class DXManWfTreeInv extends DXManWfTree {
 
   public DXManWfTreeInv(String operation, String uri) {
-    super(operation, uri, new DXManWfInvocation(operation, uri));
+    super(new DXManWfInvocation(operation, uri));
   }
 
   @Override
@@ -16,7 +16,7 @@ public class DXManWfTreeInv extends DXManWfTree {
 
   @Override
   public DXManWfSpec build() {
-    return new DXManWfSpec(getId()+"-wf-spec", getWfNode());
+    return new DXManWfSpec(getWfNode().getId()+"-wf-spec", getWfNode());
   }
 
   @Override

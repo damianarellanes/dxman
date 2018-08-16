@@ -5,14 +5,9 @@ package com.dxman.execution;
  */
 public abstract class DXManWfTree {
   
-  private final String id;
-  private final String uri;
   private final DXManWfNode wfNode;
 
-  public DXManWfTree(String id, String uri, DXManWfNode wfNode) {
-    
-    this.id = id;
-    this.uri = uri;
+  public DXManWfTree(DXManWfNode wfNode) {
     this.wfNode = wfNode;
   }
     
@@ -22,8 +17,6 @@ public abstract class DXManWfTree {
     wfNode.getSubnodeMappers().add(new DXManWfNodeMapper(wfTree.getWfNode(), custom));
   }
   
-  public String getId() { return id; }
-  public String getUri() { return uri; }
   public DXManWfNode getWfNode() { return wfNode; }
     
   public abstract void design();
