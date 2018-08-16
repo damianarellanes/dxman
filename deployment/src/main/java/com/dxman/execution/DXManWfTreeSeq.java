@@ -5,18 +5,14 @@ package com.dxman.execution;
  */
 public abstract class DXManWfTreeSeq extends DXManWfTree {
   
-  private int sequenceLength;
-
-  public DXManWfTreeSeq(String id, String uri) {
-    
-    super(new DXManWfSequencer(id, uri));    
-    sequenceLength = 0;
+  public DXManWfTreeSeq(String id, String uri) {    
+    super(new DXManWfSequencer(id, uri));
   }
   
   protected void composeWf(DXManWfTree subWfTree, int... order) {
     
     composeWf(subWfTree, new DXManWfSequencerCustom(order));
-    sequenceLength += order.length;
+    ((DXManWfSequencer)getWfNode()).increaseSequenceBy(order.length);
   }
 
   @Override
@@ -25,7 +21,7 @@ public abstract class DXManWfTreeSeq extends DXManWfTree {
     design();
     
     DXManWfSpec wfSpec = new DXManWfSpec(getWfNode().getId()+"-wf-spec", getWfNode());
-    ((DXManWfSequencer)getWfNode()).finishSequence(sequenceLength);
+    ((DXManWfSequencer)getWfNode()).finishSequence();
     
     return wfSpec;
   }

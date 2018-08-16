@@ -6,6 +6,7 @@ package com.dxman.execution;
 public class DXManWfSequencer extends DXManWfNode {
  
   private DXManWfNode[] sequence;
+  private int sequenceLength = 0;
 
   public DXManWfSequencer() {}
 
@@ -26,7 +27,11 @@ public class DXManWfSequencer extends DXManWfNode {
     return !getSubnodeMappers().isEmpty() && sequence.length > 1;
   }
   
-  public void finishSequence(int sequenceLength) {
+  public void increaseSequenceBy(int addition) {
+    sequenceLength += addition;
+  }
+  
+  public void finishSequence() {
     
     sequence = new DXManWfNode[sequenceLength];
     getSubnodeMappers().forEach((subNodeMapper) -> {
