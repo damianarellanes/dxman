@@ -37,19 +37,20 @@ public class DXManWfManager {
       .create();
   }
   
-  public DXManWfResult executeWorkflow(DXManWfSpec wfSpec, 
-    DXManWfInputs wfInputs, DXManWfOutputs wfOutputs) {
+  public DXManWfResult executeWorkflow(DXManWfTree wfTree) {
+    
+    wfTree.build();
     
     // Writes input parameters
-    wfInputs.forEach((paramId, value)->{
+    wfTree.getInputs().forEach((paramId, value)->{
       dataSpace.writeParameter(paramId, value);
     });
         
-    CoapClient cp = new CoapClient(wfSpec.getFlow().getUri());
-    cp.post(GSON.toJson(wfSpec.getFlow()), 0);
+    CoapClient cp = new CoapClient(wfTree.getWfNode().getUri());
+    cp.post(GSON.toJson(wfTree.getWfNode()), 0);
     
     DXManWfResult outputValues = new DXManWfResult();
-    for(String outputId: wfOutputs) {      
+    for(String outputId: wfTree.getOutputs()) {      
       outputValues.put(outputId, dataSpace.readParameter(outputId));
     }
     

@@ -9,16 +9,18 @@ import org.json.JSONException;
  */
 public class CompositeWfSeq2 extends DXManWfTreeSeq {
   
-  public CompositeWfSeq2(String id, String uri, DXManWfTree... subWorkflows) {
-    super(id, uri, subWorkflows);
+  public CompositeWfSeq2(String id, String uri) {
+    super(id, uri);
   }
   
   @Override
   public void design() {  
         
-    // Defines a sequence using sub-workflows
-    composeWf("seq1", 0);
-    composeWf("par0", 1);
+    CompositeWfSeq1 seq1 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1");
+    CompositeWfPar0 par0 = new CompositeWfPar0("par0", "coap://192.168.0.5:5683/PAR0");
+    
+    composeWf(seq1, 0);
+    composeWf(par0, 1);
   }
   
   @Override

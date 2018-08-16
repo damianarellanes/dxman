@@ -13,9 +13,9 @@ public class ClientMultilevel {
     DXManWfManager wfManager = new DXManWfManager();        
     
     CompositeWfSeq0 seq0 = new CompositeWfSeq0("seq0", "coap://192.168.0.5:5683/SEQ0");    
-    CompositeWfSeq1 seq1 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1", seq0);
+    CompositeWfSeq1 seq1 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1");
     CompositeWfPar0 par0 = new CompositeWfPar0("par0", "coap://192.168.0.5:5683/PAR0");
-    CompositeWfSeq1 seq2 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1", seq1, par0);
+    CompositeWfSeq1 seq2 = new CompositeWfSeq1("seq1", "coap://192.168.0.5:5683/SEQ1");
     
     
     seq2.execute(wfManager).forEach((outputId, outputVal) -> {    

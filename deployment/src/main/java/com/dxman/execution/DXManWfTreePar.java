@@ -1,7 +1,5 @@
 package com.dxman.execution;
 
-import org.json.JSONException;
-
 /**
  * @author Damian Arellanes
  */
@@ -20,14 +18,5 @@ public abstract class DXManWfTreePar extends DXManWfTree {
     
     design();
     return new DXManWfSpec(getId()+"-wf-spec", getWfNode());
-  }
-  
-  @Override
-  public DXManWfResult execute(DXManWfManager wfManager) throws JSONException {
-    
-    DXManWfSpec wfSpec = build();
-        
-    // Executes the workflow
-    return wfManager.executeWorkflow(wfSpec, getInputs(), getOutputs());
   }
 }

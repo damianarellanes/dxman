@@ -1,7 +1,5 @@
 package com.dxman.execution;
 
-import org.json.JSONException;
-
 /**
  * @author Damian Arellanes
  */
@@ -22,10 +20,6 @@ public abstract class DXManWfTree {
    
     wfTree.build();    
     wfNode.getSubnodeMappers().add(new DXManWfNodeMapper(wfTree.getWfNode(), custom));
-  }
-  
-  public DXManWfResult execute(DXManWfManager wfManager) throws JSONException {
-    return wfManager.executeWorkflow(build(), getInputs(), getOutputs());
   }
   
   public String getId() { return id; }

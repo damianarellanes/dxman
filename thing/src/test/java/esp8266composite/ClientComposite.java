@@ -20,17 +20,17 @@ public class ClientComposite extends DXManWfTreeSeq {
   
   private static final String SEQ_CONNECTOR = "MyComposite";
   
-  public ClientComposite(String id, String uri, DXManWfTree... subWorkflows) {
-    super(id, uri, subWorkflows);
+  public ClientComposite(String id, String uri) {
+    super(id, uri);
   }
   
   @Override
   public void design() {
         
-    DXManWfInvocation led = new DXManWfInvocation(
+    DXManWfTreeInv led = new DXManWfTreeInv(
       "on", "coap://192.168.0.5:5683/" + LED_CONNECTOR
     );
-    DXManWfInvocation multiply = new DXManWfInvocation(
+    DXManWfTreeInv multiply = new DXManWfTreeInv(
       "multiply", "coap://192.168.0.5:5683/" + CALCULATOR_CONNECTOR
     );
     

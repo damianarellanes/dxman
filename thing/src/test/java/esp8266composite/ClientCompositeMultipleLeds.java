@@ -13,30 +13,30 @@ public class ClientCompositeMultipleLeds extends DXManWfTreeSeq {
   private static final String LED3_CONNECTOR = "LedService3";
   private static final String SEQ_CONNECTOR = "MyComposite";
   
-  public ClientCompositeMultipleLeds(String id, String uri, DXManWfTree... subWorkflows) {
-    super(id, uri, subWorkflows);
+  public ClientCompositeMultipleLeds(String id, String uri) {
+    super(id, uri);
   }
   
   @Override
   public void design() {  
         
     // Defines the subnodes for the workflow tree
-    DXManWfInvocation on1 = new DXManWfInvocation(
+    DXManWfTreeInv on1 = new DXManWfTreeInv(
       "on", "coap://192.168.0.5:5683/" + LED1_CONNECTOR
     );
-    DXManWfInvocation off1 = new DXManWfInvocation(
+    DXManWfTreeInv off1 = new DXManWfTreeInv(
       "off", "coap://192.168.0.5:5683/" + LED1_CONNECTOR
     );
-    DXManWfInvocation on2 = new DXManWfInvocation(
+    DXManWfTreeInv on2 = new DXManWfTreeInv(
       "on", "coap://192.168.0.5:5683/" + LED2_CONNECTOR
     );
-    DXManWfInvocation off2 = new DXManWfInvocation(
+    DXManWfTreeInv off2 = new DXManWfTreeInv(
       "off", "coap://192.168.0.5:5683/" + LED2_CONNECTOR
     );
-    DXManWfInvocation on3 = new DXManWfInvocation(
+    DXManWfTreeInv on3 = new DXManWfTreeInv(
       "on", "coap://192.168.0.5:5683/" + LED3_CONNECTOR
     );
-    DXManWfInvocation off3 = new DXManWfInvocation(
+    DXManWfTreeInv off3 = new DXManWfTreeInv(
       "off", "coap://192.168.0.5:5683/" + LED3_CONNECTOR
     );
     
