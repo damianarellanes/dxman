@@ -20,12 +20,12 @@ public class WfTreeSeq0 extends DXManWfTreeSeq {
     DXManWfTreeInv on2 = new DXManWfTreeInv("on", CONNECTOR_CONFIGS.get("Led1").getUri());
     DXManWfTreeInv off2 = new DXManWfTreeInv("off", CONNECTOR_CONFIGS.get("Led1").getUri());
     
-    composeWf(on1, 0,2,4);
-    composeWf(off1, 1,3);
-    /*composeWf(on1,1,4,8,10,12,14);
+    /*composeWf(on1, 0,2,4);
+    composeWf(off1, 1,3);*/
+    composeWf(on1,1,4,8,10,12,14);
     composeWf(on2, 0,5);
     composeWf(off1, 2,6,9,11,13);
-    composeWf(off2, 3,7);*/
+    composeWf(off2, 3,7);
   }
   
   @Override

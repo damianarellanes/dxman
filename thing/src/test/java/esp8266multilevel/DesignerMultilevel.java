@@ -2,7 +2,6 @@ package esp8266multilevel;
 
 import com.dxman.dataspace.base.DXManDataSpace;
 import com.dxman.dataspace.base.DXManDataSpaceFactory;
-import esp8266composite.*;
 import com.dxman.deployment.common.DXManDeploymentManager;
 import com.dxman.deployment.data.DXManDataDeployer;
 import com.dxman.design.connectors.composition.DXManParallelTemplate;

@@ -26,7 +26,7 @@ public class Designer {
     // Designs operation "Led" with binding and parameters
     
     DXManBindingInfo onOperationBinding = new DXManBindingInfo(
-      new URI("http://" + serviceIP + ":808" + (ledNumber+1) + "/led/api/on"), 
+      new URI("http://" + serviceIP + ":808" + (ledNumber+1) + "/led-microservice/api/on"), 
       DXManEndpointType.HTTP_GET, 
       DXManBindingContent.NO_CONTENT, 
       DXManBindingContent.PLAIN, 
@@ -34,7 +34,7 @@ public class Designer {
       ""
     );
     DXManBindingInfo offOperationBinding = new DXManBindingInfo(
-      new URI("http://" + serviceIP + ":808" + (ledNumber+1) + "/led/api/off"), 
+      new URI("http://" + serviceIP + ":808" + (ledNumber+1) + "/led-microservice/api/off"), 
       DXManEndpointType.HTTP_GET, 
       DXManBindingContent.NO_CONTENT, 
       DXManBindingContent.PLAIN, 

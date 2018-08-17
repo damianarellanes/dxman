@@ -13,7 +13,7 @@ public class Reset {
     for(int i = 1; i <= 4; i++) {
       
       System.out.println("Switching off led" + (i-1));
-      Get response = Http.get("http://localhost:808" + i + "/led/api/off");
+      Get response = Http.get("http://localhost:808" + i + "/led-microservice/api/off");
       
       System.out.println(response.responseCode());
     }

@@ -23,7 +23,7 @@ public class Config {
     CONNECTOR_CONFIGS.put("Led2", new ConnectorConfig("IC2", PI, LED_IMPL_ENDPOINT));
     CONNECTOR_CONFIGS.put("Led3", new ConnectorConfig("IC3", PI, LED_IMPL_ENDPOINT));
     CONNECTOR_CONFIGS.put("SEQ0", new ConnectorConfig("SEQ0", ALIENWARE));
-    CONNECTOR_CONFIGS.put("PAR0", new ConnectorConfig("PAR0", ALIENWARE));
+    CONNECTOR_CONFIGS.put("PAR0", new ConnectorConfig("PAR0", PI));
     CONNECTOR_CONFIGS.put("SEQ1", new ConnectorConfig("SEQ1", ALIENWARE));
   }
   
