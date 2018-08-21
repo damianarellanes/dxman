@@ -55,12 +55,7 @@ public class DXManWfManager {
         DXManWfInvocation opNode = new DXManWfInvocation(
           opName,
           op.getBindingInfo().getEndpoint().toString()
-        );
-                
-        /*DXManWorkflowTreeNode opNode = new DXManWorkflowTreeInv( 
-          opName,
-          op.getBindingInfo().getEndpoint().toString()
-        );*/
+        );            
         parentWfNode.composeWf(opNode, new DXManWfNodeCustom() {});
       });
       
