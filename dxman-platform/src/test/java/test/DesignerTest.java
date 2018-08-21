@@ -185,13 +185,10 @@ public class DesignerTest {
     
 //    deploymentManager.deployCompositeService(post);
 
+    
     WfTreeTest wf = new WfTreeTest(customer);
-    wfManager.generateWT(wf.getCompositeService(), wf);        
-    
-    wf.design();
     DXManDataAlgorithm alg = new DXManDataAlgorithm();
-    
-    wf.get("SEQ3").deploy(alg);
+    wfManager.buildWorkflowTree(wf, alg);
     
     System.out.println("-----INPUTS-------");
     System.out.println(alg.getReaders().get("IC1.createRecord.name"));//SEQ3.createRecord.name

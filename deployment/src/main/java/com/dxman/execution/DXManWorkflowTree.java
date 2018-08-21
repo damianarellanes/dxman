@@ -1,5 +1,6 @@
 package com.dxman.execution;
 
+import com.dxman.deployment.data.DXManDataAlgorithm;
 import com.dxman.design.data.DXManDataChannel;
 import com.dxman.design.data.DXManDataChannelPoint;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
