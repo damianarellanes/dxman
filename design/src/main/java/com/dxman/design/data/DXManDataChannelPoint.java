@@ -12,7 +12,14 @@ public class DXManDataChannelPoint {
 
   public DXManDataChannelPoint(String parameterId, String parameterName, 
     String operationName, String serviceName) {
-    this.parameterId = serviceName + "." + operationName + "." + parameterName; // TODO change this to only parameterId
+    
+    // TODO change this to only parameterId
+    if(operationName.isEmpty()) {
+      this.parameterId = serviceName + "." + parameterName; 
+    } else {
+      this.parameterId = serviceName + "." + operationName + "." + parameterName; 
+    }
+    
     this.parameterName = parameterName;
     this.operationName = operationName;
     this.serviceName = serviceName;

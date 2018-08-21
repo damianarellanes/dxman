@@ -113,9 +113,7 @@ public class DXManWfManager {
         }
 
         DXManDataChannel dc = new DXManDataChannel(origin, destination);
-        wfNode.getDataChannels().add(dc);        
-        
-        //System.out.println(dc);
+        wfNode.getDataChannels().add(dc);
       });
     });
   }

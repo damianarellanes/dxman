@@ -1,5 +1,7 @@
 package test;
 
+import com.dxman.design.data.DXManDataChannelPoint;
+import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.execution.DXManWorkflowTree;
 import com.dxman.execution.DXManWfInputs;
 import com.dxman.execution.DXManWfOutputs;
@@ -9,8 +11,12 @@ import com.dxman.execution.DXManWfOutputs;
  */
 public class WfTreeTest extends DXManWorkflowTree {
 
+  public WfTreeTest(DXManCompositeServiceTemplate compositeService) {
+    super(compositeService);
+  }
+
   @Override
-  public void design() {
+  public void designControl() {
     
     customiseOrder("SEQ3", "createRecord", 0);
     customiseOrder("SEQ3", "SEQ2", 1);    
@@ -18,8 +24,28 @@ public class WfTreeTest extends DXManWorkflowTree {
     customiseOrder("SEQ2", "sendWelcEmail", 1);
     customiseOrder("SEQ1", "sendWelcStd", 0);
     customiseOrder("SEQ1", "sendWelcFast", 1);
+  }
+  
+  @Override
+  public void designData() {
     
-    //addDataChannel("Post.sendWelcStd.addr", "Courier1.sendWelcStd.addr");
+    // SEQ1.sendWelcStd.addr --> SEQ1.addr 
+    DXManDataChannelPoint origin = new DXManDataChannelPoint(
+      "SEQ1.sendWelcStd.addr", "addr", "sendWelcStd", "SEQ1"
+    );
+    DXManDataChannelPoint destination = new DXManDataChannelPoint(
+      "SEQ1.addr", "addr", "", "SEQ1"
+    );
+    addDataChannel("SEQ1", origin, destination);
+    
+    // // SEQ1.sendWelcFast.addr --> SEQ1.addr 
+    DXManDataChannelPoint origin2 = new DXManDataChannelPoint(
+      "SEQ1.sendWelcFast.addr", "addr", "sendWelcFast", "SEQ1"
+    );
+    DXManDataChannelPoint destination2 = new DXManDataChannelPoint(
+      "SEQ1.addr", "addr", "", "SEQ1"
+    );
+    addDataChannel("SEQ1", origin2, destination2);
   }
 
   @Override

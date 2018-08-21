@@ -185,8 +185,8 @@ public class DesignerTest {
     
 //    deploymentManager.deployCompositeService(post);
 
-    WfTreeTest wf = new WfTreeTest();
-    wfManager.generateWT(customer, wf);        
+    WfTreeTest wf = new WfTreeTest(customer);
+    wfManager.generateWT(wf.getCompositeService(), wf);        
     
     wf.design();
     DXManDataAlgorithm alg = new DXManDataAlgorithm();
@@ -202,6 +202,8 @@ public class DesignerTest {
     System.out.println(alg.getReaders().get("IC3.sendWelcFast.addr"));//SEQ3.sendWelcFast.addr
     System.out.println(alg.getReaders().get("IC3.sendWelcFast.name"));//SEQ3.sendWelcFast.name
     System.out.println(alg.getReaders().get("IC4.sendWelcEmail.email"));//SEQ3.sendWelcEmail.email
+    
+    System.out.println(alg.getReaders().get("SEQ1.addr"));//SEQ3.sendWelcStd.addr
     System.out.println("-----OUTPUTS-------");
     System.out.println(alg.getReaders().get("SEQ3.sendWelcStd.res"));//IC2.sendWelcStd.res
     System.out.println(alg.getReaders().get("SEQ3.sendWelcFast.res"));//IC3.sendWelcFast.res
