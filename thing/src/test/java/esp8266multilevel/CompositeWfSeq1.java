@@ -6,7 +6,7 @@ import com.dxman.execution.*;
 /**
  * @author Damian Arellanes
  */
-public class CompositeWfSeq1 extends DXManWfTreeSeq {
+public class CompositeWfSeq1 extends DXManWorkflowTreeSeq {
   
   private final String SEQ0_CONNECTOR = "SEQ0";
   private final String CALC1_CONNECTOR = "Calculator1";
@@ -24,7 +24,7 @@ public class CompositeWfSeq1 extends DXManWfTreeSeq {
   public void design() {  
         
     // Defines the subnodes for the workflow tree
-    DXManWfTreeInv multiply1 = new DXManWfTreeInv(
+    DXManWorkflowTreeInv multiply1 = new DXManWorkflowTreeInv(
       "multiply", "coap://192.168.0.5:5683/" + CALC1_CONNECTOR            
     );
     CompositeWfSeq0 seq0 = new CompositeWfSeq0(

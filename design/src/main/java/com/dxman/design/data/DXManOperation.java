@@ -1,13 +1,14 @@
 package com.dxman.design.data;
 
 import com.dxman.design.distribution.DXManBindingInfo;
-import com.dxman.utils.DXManMap;
+import com.dxman.utils.*;
 
 /**
  * @author Damian Arellanes
  */
-public class DXManOperation {
+public class DXManOperation implements Cloneable {
         
+  private String id;
   private DXManBindingInfo bindingInfo;
   private String name;
   private DXManMap<String, DXManParameter> parameters = new DXManMap<>();
@@ -17,6 +18,7 @@ public class DXManOperation {
   public DXManOperation() {}
 
   public DXManOperation(String name, DXManBindingInfo bindingInfo) {    
+    this.id = DXManIDGenerator.generateOperationID(name);
     this.name = name;
     this.bindingInfo = bindingInfo;
   }
@@ -36,6 +38,9 @@ public class DXManOperation {
   public void setBindingInfo(DXManBindingInfo bindingInfo) {
     this.bindingInfo = bindingInfo;
   }
+  
+  public String getId() { return id; }
+  public void setId(String id) { this.id = id; }
 
   public String getName() { return name; }
   public void setName(String name) { this.name = name; }
@@ -59,5 +64,34 @@ public class DXManOperation {
   public String toString() {
     return "DXManOperation{" + "bindingInfo=" + bindingInfo + ", name=" + name 
       + ", parameters=" + parameters + '}';
+  }
+  
+  @Override
+  public DXManOperation clone() {
+
+    Object clone = null;
+    try {
+      clone = super.clone();
+    } 
+    catch(CloneNotSupportedException e) {
+      System.err.println(e.toString());
+    }
+
+    // Operations are unique regarless they make reference to any in sub-services
+    String newId = DXManIDGenerator.generateOperationID(name);               
+    ((DXManOperation) clone).setId(newId);
+    //((DXManOperation) clone).setName(name.split("\\.")[0] +"." + newId);
+
+    // Deep clone of inputs and outputs
+    ((DXManOperation)clone).setInputs(new DXManMap<>());        
+    for(DXManParameter input: inputs.values()) {
+      ((DXManOperation)clone).addParameter(input.clone());
+    }
+    ((DXManOperation)clone).setOutputs(new DXManMap<>());        
+    for(DXManParameter output: outputs.values()) {
+      ((DXManOperation)clone).addParameter(output.clone());
+    }        
+
+    return (DXManOperation) clone;
   }
 }

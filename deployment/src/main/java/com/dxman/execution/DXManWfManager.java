@@ -1,9 +1,11 @@
 package com.dxman.execution;
 
 import com.dxman.dataspace.base.*;
-import com.dxman.utils.RuntimeTypeAdapterFactory;
+import com.dxman.design.data.*;
+import com.dxman.design.services.common.*;
+import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
+import com.dxman.utils.*;
 import com.google.gson.*;
-import org.eclipse.californium.core.CoapClient;
 
 /**
  * @author Damian Arellanes
@@ -35,9 +37,118 @@ public class DXManWfManager {
       .create();
   }
   
-  public DXManWfResult executeWorkflow(DXManWfTree topWfTree) {
+  private void updateWorkflowTree(DXManWorkflowTree workflowTree, DXManWfNode wfNode) {
+    workflowTree.put(wfNode.getId(), wfNode);
+  }
+  
+  public DXManWfNode generateWT(DXManCompositeServiceTemplate composite, 
+      DXManWorkflowTree wt) {
     
-    topWfTree.build();
+    DXManWfNode parentWfNode = createWorkflowTreeInstance(composite);
+    
+    for(DXManServiceTemplate subService: 
+      composite.getCompositionConnector().getSubServices()) {
+      
+      // Adds the operations to the workflow tree      
+      subService.getOperations().forEach((opName, op)->{
+        
+        DXManWfInvocation opNode = new DXManWfInvocation(
+          opName,
+          op.getBindingInfo().getEndpoint().toString()
+        );
+                
+        /*DXManWorkflowTreeNode opNode = new DXManWorkflowTreeInv( 
+          opName,
+          op.getBindingInfo().getEndpoint().toString()
+        );*/
+        parentWfNode.composeWf(opNode, new DXManWfNodeCustom() {});
+      });
+      
+      DXManWfNode subWfNode;
+      if(subService.getType().equals(DXManServiceType.COMPOSITE)) {
+        
+        subWfNode = generateWT((DXManCompositeServiceTemplate) subService, wt);
+        parentWfNode.composeWf(subWfNode, new DXManWfNodeCustom() {});
+      }
+      
+      generateAlgebraicDataChannels(composite, subService, parentWfNode);
+    }
+    
+    updateWorkflowTree(wt, parentWfNode);
+    
+    return parentWfNode;
+  }
+  
+  public void generateAlgebraicDataChannels(
+    DXManCompositeServiceTemplate composite, DXManServiceTemplate subService,
+    DXManWfNode wfNode
+  ) {
+    
+    // Adds all the operations of subservices to composite service
+    subService.getOperations().forEach((opName, op)->{
+
+      DXManOperation compositeOp = op.clone();
+      composite.addOperation(compositeOp);
+
+      op.getParameters().forEach((parName, par)->{
+
+        // Generates a new id for the existent parameter (this should be done per workflow)
+        par.setId(DXManIDGenerator.generateParameterID(parName));
+                
+        DXManDataChannelPoint origin;
+        DXManDataChannelPoint destination;
+        if(par.getParameterType().equals(DXManParameterType.INPUT)) {
+
+          origin = new DXManDataChannelPoint(
+            compositeOp.getParameters().get(parName).getId(), parName, 
+            opName, composite.getInfo().getName()
+          );            
+          destination = new DXManDataChannelPoint(
+            par.getId(), parName, opName, subService.getInfo().getName()
+          );
+        } else {
+
+          origin = new DXManDataChannelPoint(
+            par.getId(), parName, opName, subService.getInfo().getName()
+          );
+          destination = new DXManDataChannelPoint(
+            compositeOp.getParameters().get(parName).getId(), parName,
+            opName, composite.getInfo().getName()
+          );
+        }
+
+        DXManDataChannel dc = new DXManDataChannel(origin, destination);
+        wfNode.getDataChannels().add(dc);        
+        
+        //System.out.println(dc);
+      });
+    });
+  }
+  
+  private DXManWfNode createWorkflowTreeInstance(DXManServiceTemplate service) {
+    
+    String id = service.getInfo().getName();
+    String uri = DXManIDGenerator.getCoapUri(
+      service.getDeploymentInfo().getThingIp(), 
+      service.getDeploymentInfo().getThingPort(), 
+      service.getInfo().getName());
+    
+    if(service.getType().equals(DXManServiceType.ATOMIC)) {
+      return new DXManWfInvocation(id, uri);      
+    } else {
+      
+      switch(((DXManCompositeServiceTemplate) service).getCompositionConnector().getType()) {
+      case SEQUENCER:
+        return new DXManWfSequencer(id, uri);
+    }
+    }
+    return null;    
+  }
+  
+  public DXManWfResult executeWorkflow(DXManWfNode topWfNode) {
+    
+    return null;
+    /*topWfTree.build();
     
     // Writes input parameters
     topWfTree.getInputs().forEach((paramId, value)->{
@@ -52,6 +163,6 @@ public class DXManWfManager {
       outputValues.put(outputId, dataSpace.readParameter(outputId));
     }
     
-    return outputValues;
+    return outputValues;*/
   } 
 }

@@ -6,7 +6,7 @@ import static leds.Config.CONNECTOR_CONFIGS;
 /**
  * @author Damian Arellanes
  */
-public class WfTreeSeq1 extends DXManWfTreeSeq {
+public class WfTreeSeq1 extends DXManWorkflowTreeSeq {
 
   public WfTreeSeq1(String id, String uri) {
     super(id, uri);

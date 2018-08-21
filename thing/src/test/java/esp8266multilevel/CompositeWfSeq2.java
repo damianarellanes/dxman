@@ -7,7 +7,7 @@ import org.json.JSONException;
 /**
  * @author Damian Arellanes
  */
-public class CompositeWfSeq2 extends DXManWfTreeSeq {
+public class CompositeWfSeq2 extends DXManWorkflowTreeSeq {
   
   public CompositeWfSeq2(String id, String uri) {
     super(id, uri);

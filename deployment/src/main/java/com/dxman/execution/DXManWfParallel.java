@@ -10,6 +10,10 @@ public class DXManWfParallel extends DXManWfNode {
   public DXManWfParallel(String id, String uri) {
     super(id, uri);
   }
+  
+  protected void composeWf(DXManWfNode subWfNode, int tasks) {    
+    composeWf(subWfNode, new DXManWfParallelCustom(tasks));
+  }
 
   @Override
   public boolean isValid() {
@@ -24,5 +28,10 @@ public class DXManWfParallel extends DXManWfNode {
     }
     
     return !getSubnodeMappers().isEmpty();
+  }
+  
+  @Override
+  public DXManWfSpec build() {
+    return new DXManWfSpec(getId()+"-wf-spec", this);
   }
 }

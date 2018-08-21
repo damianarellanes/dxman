@@ -137,7 +137,8 @@ public class DXManBlockChainManager implements DXManDataSpace {
       transaction.put("parameter", "com.dxman.blockchain.DXManParameter#" + parameterId);
       transaction.put("newValue", newValue);
 
-      Post result = post("http://localhost:3000/api/UpdateParameter", transaction.toString());
+      Post result = post(blockChainEndpoint + 
+        "/api/UpdateParameter", transaction.toString());
       
       if(result.responseCode() == 200) {
         System.out.println("Parameter " + parameterId + " has been updated!");

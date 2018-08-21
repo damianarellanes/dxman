@@ -1,16 +1,16 @@
 package esp8266multilevel;
 
 import com.dxman.execution.DXManWfInvocation;
-import com.dxman.execution.DXManWfTree;
-import com.dxman.execution.DXManWfTreeSeq;
+import com.dxman.execution.DXManWorkflowTreeNode;
+import com.dxman.execution.DXManWorkflowTreeSeq;
 import com.dxman.execution.DXManWfInputs;
 import com.dxman.execution.DXManWfOutputs;
-import com.dxman.execution.DXManWfTreeInv;
+import com.dxman.execution.DXManWorkflowTreeInv;
 
 /**
  * @author Damian Arellanes
  */
-public class CompositeWfSeq0 extends DXManWfTreeSeq {
+public class CompositeWfSeq0 extends DXManWorkflowTreeSeq {
   
   private final String LED1_CONNECTOR = "LedService1";
   private final String LED2_CONNECTOR = "LedService2";
@@ -22,16 +22,16 @@ public class CompositeWfSeq0 extends DXManWfTreeSeq {
   @Override
   public void design() {
     
-    DXManWfTreeInv on1 = new DXManWfTreeInv(
+    DXManWorkflowTreeInv on1 = new DXManWorkflowTreeInv(
       "on", "coap://192.168.0.5:5683/" + LED1_CONNECTOR
     );
-    DXManWfTreeInv off1 = new DXManWfTreeInv(
+    DXManWorkflowTreeInv off1 = new DXManWorkflowTreeInv(
       "off", "coap://192.168.0.5:5683/" + LED1_CONNECTOR
     );
-    DXManWfTreeInv on2 = new DXManWfTreeInv(
+    DXManWorkflowTreeInv on2 = new DXManWorkflowTreeInv(
       "on", "coap://192.168.0.5:5683/" + LED2_CONNECTOR
     );
-    DXManWfTreeInv off2 = new DXManWfTreeInv(
+    DXManWorkflowTreeInv off2 = new DXManWorkflowTreeInv(
       "off", "coap://192.168.0.5:5683/" + LED2_CONNECTOR
     );
 

@@ -27,6 +27,12 @@ public class DXManWfSequencer extends DXManWfNode {
     return !getSubnodeMappers().isEmpty() && sequence.length > 1;
   }
   
+  protected void composeWf(DXManWfNode subWfNode, int... order) {
+    
+    composeWf(subWfNode, new DXManWfSequencerCustom(order));
+    increaseSequenceBy(order.length);
+  }
+  
   public void increaseSequenceBy(int addition) {
     sequenceLength += addition;
   }
@@ -45,5 +51,14 @@ public class DXManWfSequencer extends DXManWfNode {
   public DXManWfNode[] getSequence() { return sequence; }
   public void setSequence(DXManWfNode[] subNodes) { 
     this.sequence = subNodes; 
+  }
+  
+  @Override
+  public DXManWfSpec build() {
+    
+    DXManWfSpec wfSpec = new DXManWfSpec(getId()+"-wf-spec", this);
+    finishSequence();
+    
+    return wfSpec;
   }
 }

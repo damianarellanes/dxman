@@ -13,4 +13,10 @@ public class DXManWfInvocation extends DXManWfNode {
   public boolean isValid() {
     return true;
   }
+
+  @Override
+  public DXManWfSpec build() {
+    return new DXManWfSpec(getId()+"-wf-spec", this);
+  }
+  
 }

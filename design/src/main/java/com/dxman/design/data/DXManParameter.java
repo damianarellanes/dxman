@@ -5,7 +5,7 @@ import com.dxman.utils.DXManIDGenerator;
 /**
  * @author Damian Arellanes
  */
-public class DXManParameter {
+public class DXManParameter implements Cloneable {
         
   private String id;
   private String name;
@@ -40,5 +40,18 @@ public class DXManParameter {
   @Override
   public String toString() {                
     return name + "|" + parameterType + "|" + valueType;
+  }
+  
+  @Override
+  public DXManParameter clone() {
+        
+    Object clone = null;
+    try { clone = super.clone(); } 
+    catch(CloneNotSupportedException e) { System.err.println(e.toString()); }
+
+    // Parameters are unique regarless they make reference to an existent one
+    ((DXManParameter) clone).setId(DXManIDGenerator.generateParameterID(name));
+
+    return (DXManParameter) clone;
   }
 }

@@ -1,15 +1,15 @@
 package esp8266multilevel;
 
 import com.dxman.execution.DXManWfInvocation;
-import com.dxman.execution.DXManWfTreePar;
+import com.dxman.execution.DXManWorkflowTreePar;
 import com.dxman.execution.DXManWfInputs;
 import com.dxman.execution.DXManWfOutputs;
-import com.dxman.execution.DXManWfTreeInv;
+import com.dxman.execution.DXManWorkflowTreeInv;
 
 /**
  * @author Damian Arellanes
  */
-public class CompositeWfPar0 extends DXManWfTreePar {
+public class CompositeWfPar0 extends DXManWorkflowTreePar {
   
   private final String LED3_CONNECTOR = "LedService3";
   private final String CALC2_CONNECTOR = "Calculator2";
@@ -27,13 +27,13 @@ public class CompositeWfPar0 extends DXManWfTreePar {
   public void design() {  
         
     // Defines the subnodes for the workflow tree
-    DXManWfTreeInv on3 = new DXManWfTreeInv(
+    DXManWorkflowTreeInv on3 = new DXManWorkflowTreeInv(
       "on", "coap://192.168.0.5:5683/" + LED3_CONNECTOR
     );
-    DXManWfTreeInv off3 = new DXManWfTreeInv(
+    DXManWorkflowTreeInv off3 = new DXManWorkflowTreeInv(
       "off", "coap://192.168.0.5:5683/" + LED3_CONNECTOR
     );
-    DXManWfTreeInv multiply2 = new DXManWfTreeInv(
+    DXManWorkflowTreeInv multiply2 = new DXManWorkflowTreeInv(
       "multiply", "coap://192.168.0.5:5683/" + CALC2_CONNECTOR
     );
     

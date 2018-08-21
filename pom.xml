@@ -12,6 +12,7 @@
     <module>design</module>
     <module>thing</module>
     <module>deployment</module>
+    <module>dxman-platform</module>
   </modules>
     
   <properties>

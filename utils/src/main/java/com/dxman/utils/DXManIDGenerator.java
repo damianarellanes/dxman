@@ -30,4 +30,12 @@ public class DXManIDGenerator {
   public static String generateParameterID(String name) {
     return generateRandomLong().toString();
   }
+  
+  public static String generateWorkflowID() {
+    return generateRandomLong().toString();
+  }
+  
+  public static String getCoapUri(String ip, int port, String resource) {    
+    return "coap://" +  ip + ":" +  port + "/" + resource;
+  }
 }

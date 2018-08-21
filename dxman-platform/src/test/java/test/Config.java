@@ -1,4 +1,4 @@
-package leds;
+package test;
 
 import java.util.HashMap;
 
@@ -12,19 +12,15 @@ public class Config {
   public static final String ALIENWARE = "192.168.0.5";
   
   /* Service Impl */
-  public static final String LED_IMPL_ENDPOINT = ALIENWARE;
+  public static final String COURIER_IMPL_ENDPOINT = ALIENWARE;
   
   /* Connectors deployment */  
   public static final HashMap<String, ConnectorConfig> CONNECTOR_CONFIGS;
   static {
     CONNECTOR_CONFIGS = new HashMap<>();
-    CONNECTOR_CONFIGS.put("Led0", new ConnectorConfig("IC0", ALIENWARE, LED_IMPL_ENDPOINT));
-    CONNECTOR_CONFIGS.put("Led1", new ConnectorConfig("IC1", ALIENWARE, LED_IMPL_ENDPOINT));
-    CONNECTOR_CONFIGS.put("Led2", new ConnectorConfig("IC2", ALIENWARE, LED_IMPL_ENDPOINT));
-    CONNECTOR_CONFIGS.put("Led3", new ConnectorConfig("IC3", ALIENWARE, LED_IMPL_ENDPOINT));
-    CONNECTOR_CONFIGS.put("SEQ0", new ConnectorConfig("SEQ0", ALIENWARE));
-    CONNECTOR_CONFIGS.put("PAR0", new ConnectorConfig("PAR0", ALIENWARE));
-    CONNECTOR_CONFIGS.put("SEQ1", new ConnectorConfig("SEQ1", ALIENWARE));
+    CONNECTOR_CONFIGS.put("Courier1", new ConnectorConfig("IC2", ALIENWARE, COURIER_IMPL_ENDPOINT));
+    CONNECTOR_CONFIGS.put("Courier2", new ConnectorConfig("IC3", ALIENWARE, COURIER_IMPL_ENDPOINT));
+    CONNECTOR_CONFIGS.put("SEQ1", new ConnectorConfig("SEQ1", ALIENWARE, COURIER_IMPL_ENDPOINT));
   }
   
   public static class ConnectorConfig {
