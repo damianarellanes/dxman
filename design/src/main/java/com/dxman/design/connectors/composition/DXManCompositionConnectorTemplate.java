@@ -12,9 +12,9 @@ public class DXManCompositionConnectorTemplate extends DXManConnectorTemplate {
   protected String classType = getClass().getName();   
   private List<DXManServiceTemplate> subServices;
   
-  public DXManCompositionConnectorTemplate(DXManConnectorType type) {
+  public DXManCompositionConnectorTemplate(String name, DXManConnectorType type) {
 
-    super(type);
+    super(name, type);
     this.subServices = new ArrayList<>();
   }
   

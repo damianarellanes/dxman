@@ -9,8 +9,8 @@ public class DXManParallelTemplate extends DXManCompositionConnectorTemplate {
   
   private DXManParallelType parallelType;
     
-  public DXManParallelTemplate(DXManParallelType parallelType) {
-    super(DXManConnectorType.PARALLEL);
+  public DXManParallelTemplate(String name, DXManParallelType parallelType) {
+    super(name, DXManConnectorType.PARALLEL);
     this.parallelType = parallelType;
   }    
 

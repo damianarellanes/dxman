@@ -119,7 +119,7 @@ public class DesignerTest {
   
   private static DXManCompositeServiceTemplate designPost() throws URISyntaxException {
     
-    DXManSequencerTemplate sequencer = new DXManSequencerTemplate();
+    DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ1");
     DXManAtomicServiceTemplate courier1 = designCourier(1, "sendWelcStd");
     DXManAtomicServiceTemplate courier2 = designCourier(2, "sendWelcFast");
     
@@ -134,7 +134,7 @@ public class DesignerTest {
   
   private static DXManCompositeServiceTemplate designSender() throws URISyntaxException {
     
-    DXManSequencerTemplate sequencer = new DXManSequencerTemplate();
+    DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ2");
     DXManCompositeServiceTemplate post = designPost();
     DXManAtomicServiceTemplate email = designEmail();
     
@@ -149,7 +149,7 @@ public class DesignerTest {
   
   private static DXManCompositeServiceTemplate designCustomer() throws URISyntaxException {
     
-    DXManSequencerTemplate sequencer = new DXManSequencerTemplate();
+    DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ3");
     DXManCompositeServiceTemplate sender = designSender();
     DXManAtomicServiceTemplate lpb = designLoyaltyPointsBank();
     
@@ -204,7 +204,7 @@ public class DesignerTest {
     
     // DEPLOY WORKFLOW FROM FILE
     deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    /*wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
+    wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get("SEQ3"), false);

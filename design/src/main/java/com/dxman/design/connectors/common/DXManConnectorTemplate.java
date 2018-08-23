@@ -8,11 +8,13 @@ import com.dxman.utils.DXManMap;
  */
 public class DXManConnectorTemplate {
   
+  private final String name;
   private final DXManConnectorType type;
   private final DXManMap<String, DXManParameter> inputs;
     
-  public DXManConnectorTemplate(DXManConnectorType type) {
+  public DXManConnectorTemplate(String name, DXManConnectorType type) {
 
+    this.name = name;
     this.type = type;
     inputs = new DXManMap<>();
   }
@@ -21,6 +23,7 @@ public class DXManConnectorTemplate {
     inputs.put(input.getName(), input);
   }
   
+  public String getName() { return name; }
   public DXManConnectorType getType() { return type; }
   public DXManMap<String, DXManParameter> getInputs() { return inputs; }
 }

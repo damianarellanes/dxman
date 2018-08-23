@@ -162,6 +162,9 @@ public class DXManWorkflowTreeDeployer {
   private DXManWfNode generateWorkflowTree(
     DXManCompositeServiceTemplate composite, DXManWorkflowTree wt) {
     
+    // Sets the id for the current service which is used as the resource for the server
+    composite.setId(DXManIDGenerator.generateServiceID());
+    
     DXManWfNode parentWfNode = createWfNodeInstance(
       composite, composite.getInfo().getName()
     );
@@ -190,10 +193,7 @@ public class DXManWorkflowTreeDeployer {
       }
       
       generateAlgebraicDataChannels(composite, subService, parentWfNode);
-    }        
-    
-    // Sets the id for the current service which is used as the resource for the server
-    composite.setId(DXManIDGenerator.generateServiceID());
+    }
     
     updateWorkflowTree(wt, parentWfNode);
     
@@ -208,7 +208,7 @@ public class DXManWorkflowTreeDeployer {
     String uri = DXManIDGenerator.getCoapUri(
       service.getDeploymentInfo().getThingIp(), 
       service.getDeploymentInfo().getThingPort(), 
-      service.getInfo().getName());
+      service.getId());
     
     if(service.getType().equals(DXManServiceType.ATOMIC)) {
       return new DXManWfInvocation(wfNodeId, uri);

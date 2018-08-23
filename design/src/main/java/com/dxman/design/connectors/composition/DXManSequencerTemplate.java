@@ -7,7 +7,7 @@ import com.dxman.design.connectors.common.*;
  */
 public class DXManSequencerTemplate extends DXManCompositionConnectorTemplate {
     
-  public DXManSequencerTemplate() {
-    super(DXManConnectorType.SEQUENCER);
+  public DXManSequencerTemplate(String name) {
+    super(name, DXManConnectorType.SEQUENCER);
   }    
 }
