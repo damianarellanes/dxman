@@ -194,17 +194,17 @@ public class DesignerTest {
     String workflowTreeFile = "/tmp/wfTree2";
     
     // GENERATE WORKFLOW FILES    
-    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
-    /*DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);
-    wfTree.setId("e00614ec-bc02-4d27-a130-7d275450c29a"); 
-    //wfTree.setId("WRONG!!!"); 
-    WfTreeTest wtEditor = new WfTreeTest(wfTree);
+    DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
+    WfTreeTest wtEditor = new WfTreeTest(wfTree, "e00614ec-bc02-4d27-a130-7d275450c29a");
+    //WfTreeTest wtEditor = new WfTreeTest(wfTree, "WRONG!!!");
+    //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILKE
     //deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    wfTreeManager.deployWorkflow(wtEditor, false);
+    wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get("SEQ3"), false);

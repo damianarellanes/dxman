@@ -12,8 +12,8 @@ import com.dxman.execution.DXManWfOutputs;
  */
 public class WfTreeTest extends DXManWorkflowTreeEditor {
 
-  public WfTreeTest(DXManWorkflowTree workflowTree) {
-    super(workflowTree);
+  public WfTreeTest(DXManWorkflowTree workflowTree, String wfId) {
+    super(workflowTree, wfId);
   }
 
   @Override

@@ -10,8 +10,9 @@ public abstract class DXManWorkflowTreeEditor {
   
   private final DXManWorkflowTree workflowTree;
   
-  public DXManWorkflowTreeEditor(DXManWorkflowTree workflowTree) {
+  public DXManWorkflowTreeEditor(DXManWorkflowTree workflowTree, String wfId) {
     this.workflowTree = workflowTree;
+    this.workflowTree.setId(wfId);
   }
   
   public void customiseOrder(String parentKey, String childKey, int... order) {    
