@@ -169,6 +169,9 @@ public class DXManWorkflowTreeDeployer {
     for(DXManServiceTemplate subService: 
       composite.getCompositionConnector().getSubServices()) {
       
+      // Sets the id for the subservice which is used as the resource for the server
+      subService.setId(DXManIDGenerator.generateServiceID());
+      
       // Adds the operations to the workflow tree      
       subService.getOperations().forEach((opName, op)->{
         
@@ -188,6 +191,9 @@ public class DXManWorkflowTreeDeployer {
       
       generateAlgebraicDataChannels(composite, subService, parentWfNode);
     }        
+    
+    // Sets the id for the current service which is used as the resource for the server
+    composite.setId(DXManIDGenerator.generateServiceID());
     
     updateWorkflowTree(wt, parentWfNode);
     

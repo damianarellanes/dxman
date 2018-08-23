@@ -21,8 +21,7 @@ public abstract class DXManConnectorInstance {
   public DXManConnectorInstance(DXManServiceTemplate managedService, 
     DXManConnectorRequester requester, Gson gson) {
 
-    //this.id = managedService.getInfo().getName();
-    this.id = DXManIDGenerator.generateConnectorID();
+    this.id = managedService.getId();
     this.managedService = managedService;
     this.requester = requester;
     this.gson = gson;

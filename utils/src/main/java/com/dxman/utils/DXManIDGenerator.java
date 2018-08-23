@@ -19,7 +19,7 @@ public class DXManIDGenerator {
     return generateRandomLong().toString();
   }
 
-  public static String generateServiceID(String name) {        
+  public static String generateServiceID() {        
     return generateRandomLong().toString();
   }
 

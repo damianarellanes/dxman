@@ -55,6 +55,10 @@ public class DXManDeploymentManager {
       );
     }
     
-    new CoapClient(thingTargetUri).post(GSON.toJson(deploymentRequest), 0);
+    String connectorId = new CoapClient(thingTargetUri)
+      .post(GSON.toJson(deploymentRequest), 0)
+      .getResponseText();
+    
+    System.out.println("Connector deployed: " + connectorId);
   }
 }

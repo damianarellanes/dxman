@@ -24,9 +24,7 @@ public class DXManCoapServer implements DXManServer {
   @Override
   public DXManConnectorDispatcher deploy(DXManConnectorInstance connectorInstance) {
 
-    // TODO Change from serviceName to connectorId (to run multiple instances)
-    String connectorResourceName = 
-      connectorInstance.getManagedService().getInfo().getName();
+    String connectorResourceName = connectorInstance.getId();
     
     DXManCoapConnectorDispatcher d = new DXManCoapConnectorDispatcher(
       connectorInstance, connectorResourceName
@@ -34,7 +32,7 @@ public class DXManCoapServer implements DXManServer {
     
     DXManCoapSingleton.get().add(d);
     
-    System.out.println("Connector deployed: /" + connectorResourceName);
+    System.out.println("Connector [name] deployed: /" + connectorResourceName);
 
     return d;
   }
