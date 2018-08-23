@@ -191,15 +191,15 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDeployer wfTreeManager = new DXManWorkflowTreeDeployer("http://localhost:3000");
-    String workflowTreeFile = "/tmp/wfTree1";
+    String workflowTreeFile = "/tmp/wfTree2";
     
     // GENERATE WORKFLOW FILES    
-    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
-    DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);
-    //wfTree.setId("e00614ec-bc02-4d27-a130-7d275450c29a"); 
-    wfTree.setId("WRONG!!!"); 
+    /*DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);
+    wfTree.setId("e00614ec-bc02-4d27-a130-7d275450c29a"); 
+    //wfTree.setId("WRONG!!!"); 
     WfTreeTest wtEditor = new WfTreeTest(wfTree);
     
     // DEPLOY WORKFLOW FROM FILKE

@@ -176,10 +176,9 @@ public class DXManWorkflowTreeDeployer {
         parentWfNode.addSubWfNode(opNode, new DXManWfNodeCustom() {});
       });
       
-      DXManWfNode subWfNode;
       if(subService.getType().equals(DXManServiceType.COMPOSITE)) {
         
-        subWfNode = generateWorkflowTree(
+        DXManWfNode subWfNode = generateWorkflowTree(
           (DXManCompositeServiceTemplate) subService, wt
         );
         parentWfNode.addSubWfNode(subWfNode, new DXManWfNodeCustom() {});
