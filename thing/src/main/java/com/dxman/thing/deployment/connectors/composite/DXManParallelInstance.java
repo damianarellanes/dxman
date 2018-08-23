@@ -122,7 +122,8 @@ public class DXManParallelInstance extends DXManConnectorInstance {
   public DXManParallelInstance(DXManCompositeServiceTemplate managedService, 
     DXManConnectorRequester requester, Gson gson) {
     
-    super(managedService, requester, gson);
+    super(managedService, managedService.getCompositionConnector().getName(),
+      requester, gson);
     
     invocationContext = new InvocationContext();    
     invocationContext.setInvocation(

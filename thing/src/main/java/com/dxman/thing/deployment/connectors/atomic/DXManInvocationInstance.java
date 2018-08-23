@@ -3,7 +3,7 @@ package com.dxman.thing.deployment.connectors.atomic;
 import com.dxman.dataspace.base.DXManDataSpace;
 import com.dxman.design.data.DXManOperation;
 import com.dxman.design.distribution.*;
-import com.dxman.design.services.common.DXManServiceTemplate;
+import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
 import com.dxman.execution.DXManWfInvocation;
 import com.dxman.thing.server.base.DXManConnectorRequester;
@@ -20,11 +20,12 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
   private final DXManDataManager dataManager;
 
   // TODO remove thingAlias from constructor arguments
-  public DXManInvocationInstance(DXManServiceTemplate managedService, 
+  public DXManInvocationInstance(DXManAtomicServiceTemplate managedService, 
     DXManConnectorRequester requester, Gson gson, DXManDataSpace dataSpace, 
     String thingAlias) {
 
-    super(managedService, requester, gson);
+    super(managedService, managedService.getInvocationConnector().getName(),
+      requester, gson);
 
     invocationHandlers = new DXManMap<>();
     invocationHandlers.put(DXManProtocol.tcp, new SocketInvocator());

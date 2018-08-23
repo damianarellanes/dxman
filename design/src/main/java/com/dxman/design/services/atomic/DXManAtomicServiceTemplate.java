@@ -1,5 +1,6 @@
 package com.dxman.design.services.atomic;
 
+import com.dxman.design.connectors.atomic.DXManInvocationTemplate;
 import com.dxman.design.distribution.DXManDeploymentInfo;
 import com.dxman.design.services.common.*;
 
@@ -8,6 +9,7 @@ import com.dxman.design.services.common.*;
  */
 public class DXManAtomicServiceTemplate extends DXManServiceTemplate {
     
+  private DXManInvocationTemplate invocationConnector;
   private DXManComputationUnit computationUnit;
 
   public DXManAtomicServiceTemplate() {
@@ -16,12 +18,20 @@ public class DXManAtomicServiceTemplate extends DXManServiceTemplate {
       new DXManDeploymentInfo());
   }
 
-  public DXManAtomicServiceTemplate(DXManServiceInfo info, 
+  public DXManAtomicServiceTemplate(DXManServiceInfo info, String connectorName,
     DXManComputationUnit computationUnit, DXManDeploymentInfo deploymentInfo) {
     
     super(info, DXManServiceType.ATOMIC, deploymentInfo);
+    this.invocationConnector = new DXManInvocationTemplate(connectorName);
     this.computationUnit = computationUnit;
   };
+  
+  public DXManInvocationTemplate getInvocationConnector() {
+    return invocationConnector;
+  }
+  public void setInvocationConnector(DXManInvocationTemplate invocationConnector) {
+    this.invocationConnector = invocationConnector;
+  }
 
   public DXManComputationUnit getComputationUnit() { return computationUnit; }
   public void setComputationUnit(DXManComputationUnit computationUnit) {

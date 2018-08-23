@@ -13,15 +13,17 @@ import com.google.gson.*;
 public abstract class DXManConnectorInstance {
     
   private final String id;
+  private final String name;
   private final DXManServiceTemplate managedService;
   private final DXManConnectorRequester requester;
 
   protected final Gson gson;
 
-  public DXManConnectorInstance(DXManServiceTemplate managedService, 
+  public DXManConnectorInstance(DXManServiceTemplate managedService, String name,
     DXManConnectorRequester requester, Gson gson) {
 
     this.id = managedService.getId();
+    this.name = name;
     this.managedService = managedService;
     this.requester = requester;
     this.gson = gson;
@@ -49,5 +51,6 @@ public abstract class DXManConnectorInstance {
   }
 
   public String getId() { return id; }
+  public String getName() { return name; }
   public DXManServiceTemplate getManagedService() { return managedService; }
 }

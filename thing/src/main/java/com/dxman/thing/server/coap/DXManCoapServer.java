@@ -32,7 +32,8 @@ public class DXManCoapServer implements DXManServer {
     
     DXManCoapSingleton.get().add(d);
     
-    System.out.println("Connector [name] deployed: /" + connectorResourceName);
+    System.out.println("Connector " + connectorInstance.getName() 
+      + " deployed: /" + connectorResourceName);
 
     return d;
   }

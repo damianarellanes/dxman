@@ -60,9 +60,9 @@ public class DesignerTest {
     DXManParameter id = new DXManParameter("id", DXManParameterType.OUTPUT, "string"); createRecord.addParameter(id);    
     
     DXManComputationUnit cu = new DXManComputationUnit();
-    DXManServiceInfo templateInfo = new DXManServiceInfo("IC1", "MusicCorp", 0);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("LoyaltyPointsBank", "MusicCorp", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
-    DXManAtomicServiceTemplate loyaltyPointsBank = new DXManAtomicServiceTemplate(templateInfo, cu, deploymentInfo);
+    DXManAtomicServiceTemplate loyaltyPointsBank = new DXManAtomicServiceTemplate(templateInfo, "IC1", cu, deploymentInfo);
     loyaltyPointsBank.addOperation(createRecord);
     
     return loyaltyPointsBank;
@@ -85,9 +85,9 @@ public class DesignerTest {
     DXManParameter res = new DXManParameter("res", DXManParameterType.OUTPUT, "string"); sendWelc.addParameter(res);
     
     DXManComputationUnit cu = new DXManComputationUnit();
-    DXManServiceInfo templateInfo = new DXManServiceInfo("IC"+(num+1), "MusicCorp", 0);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("Courier"+num, "MusicCorp", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
-    DXManAtomicServiceTemplate courier = new DXManAtomicServiceTemplate(templateInfo, cu, deploymentInfo);
+    DXManAtomicServiceTemplate courier = new DXManAtomicServiceTemplate(templateInfo, "IC"+(num+1), cu, deploymentInfo);
     courier.addOperation(sendWelc);
     
     return courier;
@@ -109,9 +109,9 @@ public class DesignerTest {
     //DXManParameter res = new DXManParameter("res", DXManParameterType.OUTPUT, "string"); sendWelcEmail.addParameter(res);
     
     DXManComputationUnit cu = new DXManComputationUnit();
-    DXManServiceInfo templateInfo = new DXManServiceInfo("IC4", "MusicCorp", 0);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("Email Service", "MusicCorp", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
-    DXManAtomicServiceTemplate emailService = new DXManAtomicServiceTemplate(templateInfo, cu, deploymentInfo);
+    DXManAtomicServiceTemplate emailService = new DXManAtomicServiceTemplate(templateInfo, "IC4", cu, deploymentInfo);
     emailService.addOperation(sendWelcEmail);
     
     return emailService;
@@ -125,7 +125,7 @@ public class DesignerTest {
     
     sequencer.composeServices(courier1, courier2);
     
-    DXManServiceInfo templateInfo = new DXManServiceInfo("SEQ1", "Example", 0);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("PostService", "Example", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
     
@@ -140,7 +140,7 @@ public class DesignerTest {
     
     sequencer.composeServices(post, email);
     
-    DXManServiceInfo templateInfo = new DXManServiceInfo("SEQ2", "Example", 0);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("SenderService", "Example", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
     
@@ -155,7 +155,7 @@ public class DesignerTest {
     
     sequencer.composeServices(sender, lpb);
     
-    DXManServiceInfo templateInfo = new DXManServiceInfo("SEQ3", "Example", 0);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("CustomerService", "Example", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
     
@@ -191,19 +191,19 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDeployer wfTreeManager = new DXManWorkflowTreeDeployer("http://localhost:3000");
-    String workflowTreeFile = "/tmp/wfTree2";
+    String workflowTreeFile = "/tmp/wfTree1";
     
     // GENERATE WORKFLOW FILES    
     //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
-    WfTreeTest wtEditor = new WfTreeTest(wfTree, "e00614ec-bc02-4d27-a130-7d275450c29a");
-    //WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
+    //WfTreeTest wtEditor = new WfTreeTest(wfTree, "e00614ec-bc02-4d27-a130-7d275450c29a");
+    WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
-    deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
     wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
