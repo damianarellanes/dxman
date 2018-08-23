@@ -3,7 +3,9 @@ package com.dxman.execution;
 /**
  * @author Damian Arellanes
  */
-public abstract class DXManWfNodeCustom {
+public class DXManWfNodeCustom {
+  
+  protected String classTypeWfNodeCustom = getClass().getName();
   
   public DXManWfNodeCustom() {}
 }

@@ -12,6 +12,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "services")
 public class DXManServiceTemplate {
     
+  protected String classTypeServ = getClass().getName();
+  
   @Id
   private String id;
   private DXManServiceInfo info;

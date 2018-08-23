@@ -1,5 +1,7 @@
 package test;
 
+import com.dxman.deployment.cli.DXManWorkflowTreeDeployer;
+import com.dxman.deployment.cli.DXManWorkflowTreeEditor;
 import com.dxman.deployment.common.DXManDeploymentManager;
 import com.dxman.deployment.data.DXManDataAlgorithm;
 import com.dxman.execution.DXManWorkflowTree;
@@ -17,10 +19,15 @@ import com.dxman.design.services.common.DXManServiceInfo;
 import com.dxman.design.services.common.DXManServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.execution.DXManWfInvocation;
-import com.dxman.execution.DXManWfManager;
 import com.dxman.execution.DXManWfNode;
+import com.dxman.execution.DXManWfNodeCustom;
 import com.dxman.execution.DXManWfNodeMapper;
+import com.dxman.execution.DXManWfParallel;
+import com.dxman.execution.DXManWfParallelCustom;
+import com.dxman.execution.DXManWfResult;
 import com.dxman.execution.DXManWfSequencer;
+import com.dxman.execution.DXManWfSequencerCustom;
+import com.dxman.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.GsonBuilder;
 import com.google.gson.*;
 import java.net.URI;
@@ -33,7 +40,7 @@ import org.javalite.http.Post;
  */
 public class DesignerTest {
   
-  public static DXManWfManager wfManager = new DXManWfManager();
+  public static DXManDeploymentManager deploymentManager = new DXManDeploymentManager();
   
   private static DXManAtomicServiceTemplate designLoyaltyPointsBank() throws URISyntaxException {
     
@@ -41,16 +48,16 @@ public class DesignerTest {
       new URI("http://localhost:8080/loyaltypointsbank-microservice/api/createRecord"), 
       DXManEndpointType.HTTP_POST, 
       DXManBindingContent.APPLICATION_JSON, 
-      DXManBindingContent.NO_CONTENT, 
-      "{\"id\":##id##, \"name\":##name##, \"address\":##addr##, \"email\":##email##,}", 
-      ""
+      DXManBindingContent.PLAIN, 
+      "{\"name\":\"##name##\", \"address\":\"##addr##\", \"email\":\"##email##\"}", 
+      "##id##"
     );
     
     DXManOperation createRecord = new DXManOperation("createRecord", createRecordBinding);
-    DXManParameter id = new DXManParameter("id", DXManParameterType.INPUT, "string"); createRecord.addParameter(id);
     DXManParameter name = new DXManParameter("name", DXManParameterType.INPUT, "string"); createRecord.addParameter(name);
     DXManParameter addr = new DXManParameter("addr", DXManParameterType.INPUT, "string"); createRecord.addParameter(addr);
-    DXManParameter email = new DXManParameter("email", DXManParameterType.INPUT, "string"); createRecord.addParameter(email);    
+    DXManParameter email = new DXManParameter("email", DXManParameterType.INPUT, "string"); createRecord.addParameter(email);
+    DXManParameter id = new DXManParameter("id", DXManParameterType.OUTPUT, "string"); createRecord.addParameter(id);    
     
     DXManComputationUnit cu = new DXManComputationUnit();
     DXManServiceInfo templateInfo = new DXManServiceInfo("IC1", "MusicCorp", 0);
@@ -168,9 +175,7 @@ public class DesignerTest {
   }
   
   public static void main(String[] args) throws URISyntaxException {
-    
-    DXManDeploymentManager deploymentManager = new DXManDeploymentManager();
-    
+        
     DXManAtomicServiceTemplate loyaltyPointsBank = designLoyaltyPointsBank();
     DXManCompositeServiceTemplate post = designPost();    
     DXManCompositeServiceTemplate sender = designSender();
@@ -181,16 +186,33 @@ public class DesignerTest {
 //    Post response = Http.post("http://localhost:8080/dxman-platform/api/deploy-atomic", GSON.toJson(loyaltyPointsBank));
 //    response.header("Content-type", "application/json");
 //    
-//    System.out.println(response.text());
+//    System.out.println(response.text());    
+            
+        
+    DXManWorkflowTreeDeployer wfTreeManager = new DXManWorkflowTreeDeployer("http://localhost:3000");
+    String workflowTreeFile = "/tmp/wfTree1";
     
-//    deploymentManager.deployCompositeService(post);
-
+    // GENERATE WORKFLOW FILES    
+    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
-    WfTreeTest wf = new WfTreeTest(customer);
-    DXManDataAlgorithm alg = new DXManDataAlgorithm();
-    wfManager.buildWorkflowTree(wf, alg);
+    // READS WORKFLOW FROM FILE
+    DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);
+    wfTree.setId("e00614ec-bc02-4d27-a130-7d275450c29a"); // Optional
+    WfTreeTest wtEditor = new WfTreeTest(wfTree);
     
-    System.out.println("-----INPUTS-------");
+    // DEPLOY WORKFLOW FROM FILKE
+    deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    wfTreeManager.deployWorkflowTree(wtEditor, false);
+    
+    // EXECUTES WORKFLOW FROM FILE
+    DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get("SEQ3"), false);
+    wfResult.forEach((outputId, outputVal) -> {    
+      System.out.println(outputId + " --> " + outputVal);
+    });
+    
+    //simulate(existingWt.getWt().get("SEQ3"));
+    
+    /*System.out.println("-----INPUTS-------");
     System.out.println(alg.getReaders().get("IC1.createRecord.name"));//SEQ3.createRecord.name
     System.out.println(alg.getReaders().get("IC1.createRecord.addr"));//SEQ3.createRecord.addr
     System.out.println(alg.getReaders().get("IC1.createRecord.email"));//SEQ3.createRecord.email
@@ -204,18 +226,7 @@ public class DesignerTest {
     System.out.println("-----OUTPUTS-------");
     System.out.println(alg.getReaders().get("SEQ3.sendWelcStd.res"));//IC2.sendWelcStd.res
     System.out.println(alg.getReaders().get("SEQ3.sendWelcFast.res"));//IC3.sendWelcFast.res
-    //System.out.println(alg.getReaders().get("SEQ3.sendWelcEmail.res"));//IC4.sendWelcEmail.email
-    
-    simulate(wf.get("SEQ3"));
-    
-    /*System.out.println(wf.get("SEQ3"));
-    wf.print("SEQ3", "createRecord");
-    wf.print("SEQ3", "SEQ2");*/
-    /*System.out.println(wf.get("SEQ2"));
-    wf.print("SEQ2", "SEQ1");
-    wf.print("SEQ2", "sendWelcEmail");
-    System.out.println(wf.get("SEQ1"));
-    wf.print("SEQ1", "sendWelcStd");
-    wf.print("SEQ1", "sendWelcFast");*/
+    System.out.println(alg.getReaders().get("SEQ3.createRecord.id"));//IC1.createRecord.id
+    //System.out.println(alg.getReaders().get("SEQ3.sendWelcEmail.res"));//IC4.sendWelcEmail.email*/
   }
 }

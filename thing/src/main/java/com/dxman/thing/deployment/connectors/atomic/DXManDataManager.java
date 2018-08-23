@@ -1,12 +1,10 @@
 package com.dxman.thing.deployment.connectors.atomic;
 
 import com.dxman.dataspace.base.DXManDataSpace;
-import com.dxman.design.data.DXManOperation;
-import com.dxman.design.data.DXManParameter;
+import com.dxman.design.data.*;
 import com.dxman.design.distribution.DXManBindingContent;
 import com.dxman.thing.deployment.connectors.atomic.DXManDataUtil.Precompiled;
-import com.dxman.utils.DXManConfiguration;
-import com.dxman.utils.DXManMap;
+import com.dxman.utils.*;
 import java.util.regex.Matcher;
 
 /**
@@ -14,21 +12,17 @@ import java.util.regex.Matcher;
  */
 public class DXManDataManager {
   
-  private final String readerId;
-  private final DXManDataSpace dataSpace;
-  
+  private final DXManDataSpace dataSpace;  
   private final DXManDataUtil dataUtil;
   
-  public DXManDataManager(String readerId, DXManDataSpace dataSpace, 
+  public DXManDataManager(DXManDataSpace dataSpace, 
     DXManMap<String, DXManOperation> operations) {
     
-    this.readerId = readerId;
-    this.dataSpace = dataSpace;
-    
+    this.dataSpace = dataSpace;    
     dataUtil = new DXManDataUtil(operations);
   }
   
-  public String read(DXManOperation operationToInvoke) {
+  public String read(String workflowId, DXManOperation operationToInvoke) {
     
     String request = operationToInvoke.getBindingInfo().getRequestTemplate();
     
@@ -36,7 +30,7 @@ public class DXManDataManager {
     for(DXManParameter input: operationToInvoke.getInputs().values()) {
 
       // Gets the value from the dataspace
-      String value = dataSpace.readParameter(input.getId(), readerId);
+      String value = dataSpace.readParameter(input.getId(), workflowId);
 
       // Replaces input values in the request template
       request = request.replaceAll(
@@ -49,7 +43,8 @@ public class DXManDataManager {
     return request;
   }
   
-  public void write(DXManOperation operationToInvoke, String response) {
+  public void write(String workflowId, DXManOperation operationToInvoke, 
+    String response) {
     
     if(operationToInvoke.getBindingInfo().getAcceptType()
       .equals(DXManBindingContent.NO_CONTENT)) return;
@@ -69,7 +64,7 @@ public class DXManDataManager {
           precompiled.getOutputIds()[i-1] + "-->" + matcher.group(i)
         );
         dataSpace.writeParameter(
-          precompiled.getOutputIds()[i-1], matcher.group(i)
+          precompiled.getOutputIds()[i-1], workflowId, matcher.group(i)
         );
       }
     } else {

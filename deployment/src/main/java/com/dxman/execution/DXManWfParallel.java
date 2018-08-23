@@ -7,14 +7,10 @@ public class DXManWfParallel extends DXManWfNode {
   
   public DXManWfParallel() {}
 
-  public DXManWfParallel(String id, String uri) {
-    super(id, uri);
+  public DXManWfParallel(String id, String uri, String workflowId) {
+    super(id, uri, workflowId);
   }
   
-  protected void composeWf(DXManWfNode subWfNode, int tasks) {    
-    composeWf(subWfNode, new DXManWfParallelCustom(tasks));
-  }
-
   @Override
   public boolean isValid() {
     

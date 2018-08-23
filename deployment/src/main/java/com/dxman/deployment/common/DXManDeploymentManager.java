@@ -20,8 +20,13 @@ public class DXManDeploymentManager {
   
   public void deployCompositeService(DXManCompositeServiceTemplate composite) {
         
-    composite.getCompositionConnector().getSubServices().forEach((service) -> {
-      deployServiceTemplate(service);
+    composite.getCompositionConnector().getSubServices().forEach((subService) -> {
+      
+      if(subService.getType().equals(DXManServiceType.COMPOSITE)) {
+        deployCompositeService((DXManCompositeServiceTemplate) subService);
+      } else {
+        deployServiceTemplate(subService);
+      }      
     });    
     deployServiceTemplate(composite);
   }

@@ -33,4 +33,19 @@ public class DXManCompositeServiceTemplate extends DXManServiceTemplate {
     compositionConnector) {
     this.compositionConnector = compositionConnector;
   }
+  
+  @Override
+  public String toString() {
+        
+    StringBuilder sb = new StringBuilder();
+            
+    sb.append("***************************************************\n");
+    sb.append("Service TEMPLATE: ").append(getInfo().getName()).append(" (COMPOSITE)\n");
+    sb.append("***************************************************\n");
+    sb.append("\n").append(getOperations().values());
+    sb.append("***************************************************\n");
+    sb.append("***************************************************\n\n\n");
+
+    return sb.toString();
+  }
 }

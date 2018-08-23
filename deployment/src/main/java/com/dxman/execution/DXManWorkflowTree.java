@@ -1,46 +1,31 @@
 package com.dxman.execution;
 
-import com.dxman.deployment.data.DXManDataAlgorithm;
-import com.dxman.design.data.DXManDataChannel;
-import com.dxman.design.data.DXManDataChannelPoint;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.utils.*;
 
 /**
  * @author Damian Arellanes
  */
-public abstract class DXManWorkflowTree extends  DXManMap<String, DXManWfNode> {
+public class DXManWorkflowTree {
+    
+  private String id;
+  private DXManMap<String, DXManWfNode> wt;
+  private DXManCompositeServiceTemplate compositeService;
   
-  private final DXManCompositeServiceTemplate compositeService;
+  public DXManWorkflowTree() {}
 
   public DXManWorkflowTree(DXManCompositeServiceTemplate compositeService) {
+    this.id = DXManIDGenerator.generateWorkflowID();
+    this.wt = new DXManMap();
     this.compositeService = compositeService;
   }
   
-  public void customiseOrder(String parentKey, String childKey, int... order) {    
-    
-    get(parentKey).customiseOrder(childKey, new DXManWfSequencerCustom(order));        
-    ((DXManWfSequencer)get(parentKey)).increaseSequenceBy(order.length);
-  }
+  public String getId() { return id; }
+  public void setId(String id) { this.id = id; }
   
-  public void addDataChannel(String parentKey, DXManDataChannelPoint origin, 
-    DXManDataChannelPoint destination) {
-    
-    get(parentKey).getDataChannels().add(
-      new DXManDataChannel(origin, destination)
-    );
-  }
+  public DXManMap<String, DXManWfNode> getWt() { return wt; }
+  public void setWt(DXManMap<String, DXManWfNode> wt) { this.wt = wt; }
   
-  public void design() {
-    designControl();
-    designData();
-  }
-  
-  public abstract void designControl();
-  public abstract void designData();
-  public abstract DXManWfInputs getInputs();
-  public abstract DXManWfOutputs getOutputs();
-
   public DXManCompositeServiceTemplate getCompositeService() {
     return compositeService;
   }

@@ -59,11 +59,18 @@ public class DXManOperation implements Cloneable {
   public void setOutputs(DXManMap<String, DXManParameter> outputs) { 
     this.outputs = outputs; 
   }
-
+  
   @Override
   public String toString() {
-    return "DXManOperation{" + "bindingInfo=" + bindingInfo + ", name=" + name 
-      + ", parameters=" + parameters + '}';
+
+    StringBuilder sb = new StringBuilder();
+    //sb.append("***************************************************\n");
+    sb.append("Operation: ").append(name).append("\n");
+    sb.append("\tInputs: ").append(inputs.values()).append("\n");
+    sb.append("\tOutputs: ").append(outputs.values()).append("\n");        
+    //sb.append("***************************************************\n");
+
+    return sb.toString();
   }
   
   @Override
@@ -80,9 +87,9 @@ public class DXManOperation implements Cloneable {
     // Operations are unique regarless they make reference to any in sub-services
     String newId = DXManIDGenerator.generateOperationID(name);               
     ((DXManOperation) clone).setId(newId);
-    //((DXManOperation) clone).setName(name.split("\\.")[0] +"." + newId);
 
     // Deep clone of inputs and outputs
+    ((DXManOperation)clone).setParameters(new DXManMap<>());
     ((DXManOperation)clone).setInputs(new DXManMap<>());        
     for(DXManParameter input: inputs.values()) {
       ((DXManOperation)clone).addParameter(input.clone());

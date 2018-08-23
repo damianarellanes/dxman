@@ -10,8 +10,33 @@ public class DXManWfSequencer extends DXManWfNode {
 
   public DXManWfSequencer() {}
 
-  public DXManWfSequencer(String id, String uri) {
-    super(id, uri);    
+  public DXManWfSequencer(String id, String uri, String workflowId) {
+    super(id, uri, workflowId);
+  }
+  
+  public void increaseSequenceBy(int addition) {
+    setSequenceLength(sequenceLength + addition);
+  }
+  
+  public void finishSequence() {
+    
+    setSequence(new DXManWfNode[sequenceLength]);
+    for(DXManWfNodeMapper subNodeMapper: getSubnodeMappers()) {
+      
+      if(subNodeMapper.getCustom() != null) {
+        for(int index: ((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder()) {
+          sequence[index] = subNodeMapper.getNode();
+        } 
+      }
+    }    
+  }
+  
+  public DXManWfNode[] getSequence() { return sequence; }
+  public void setSequence(DXManWfNode[] sequence) { this.sequence = sequence; }
+  
+  public int getSequenceLength() { return sequenceLength; }
+  public void setSequenceLength(int sequenceLength) {
+    this.sequenceLength = sequenceLength;
   }
   
   @Override
@@ -25,32 +50,6 @@ public class DXManWfSequencer extends DXManWfNode {
       ))) { return false; }
     
     return !getSubnodeMappers().isEmpty() && sequence.length > 1;
-  }
-  
-  protected void composeWf(DXManWfNode subWfNode, int... order) {
-    
-    composeWf(subWfNode, new DXManWfSequencerCustom(order));
-    increaseSequenceBy(order.length);
-  }
-  
-  public void increaseSequenceBy(int addition) {
-    sequenceLength += addition;
-  }
-  
-  public void finishSequence() {
-    
-    sequence = new DXManWfNode[sequenceLength];
-    getSubnodeMappers().forEach((subNodeMapper) -> {
-      
-      for(int index: ((DXManWfSequencerCustom)subNodeMapper.getCustom()).getOrder()) {
-        sequence[index] = subNodeMapper.getNode();
-      }
-    });
-  }
-  
-  public DXManWfNode[] getSequence() { return sequence; }
-  public void setSequence(DXManWfNode[] subNodes) { 
-    this.sequence = subNodes; 
   }
   
   @Override

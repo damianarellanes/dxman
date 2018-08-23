@@ -17,7 +17,7 @@ public class DXManParameter implements Cloneable {
   public DXManParameter(String name, DXManParameterType parameterType, 
     String valueType) {        
 
-    this.id = DXManIDGenerator.generateParameterID(name);
+    this.id = DXManIDGenerator.generateParameterID();
     this.name = name;
     this.parameterType = parameterType;
     this.valueType = valueType;
@@ -36,11 +36,6 @@ public class DXManParameter implements Cloneable {
 
   public String getValueType() { return valueType; }
   public void setValueType(String valueType) { this.valueType = valueType; }
-
-  @Override
-  public String toString() {                
-    return name + "|" + parameterType + "|" + valueType;
-  }
   
   @Override
   public DXManParameter clone() {
@@ -50,8 +45,13 @@ public class DXManParameter implements Cloneable {
     catch(CloneNotSupportedException e) { System.err.println(e.toString()); }
 
     // Parameters are unique regarless they make reference to an existent one
-    ((DXManParameter) clone).setId(DXManIDGenerator.generateParameterID(name));
+    ((DXManParameter) clone).setId(DXManIDGenerator.generateParameterID());
 
     return (DXManParameter) clone;
+  }
+  
+  @Override
+  public String toString() {                
+    return name + "|" + parameterType + "|" + valueType + "-->" + id;
   }
 }

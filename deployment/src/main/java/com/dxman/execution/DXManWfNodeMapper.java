@@ -4,7 +4,7 @@ package com.dxman.execution;
  * @author Damian Arellanes
  */
 public class DXManWfNodeMapper {
-    
+
   private DXManWfNode node;
   private DXManWfNodeCustom custom;
   

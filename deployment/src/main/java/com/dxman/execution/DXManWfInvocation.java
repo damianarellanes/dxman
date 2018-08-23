@@ -5,8 +5,8 @@ package com.dxman.execution;
  */
 public class DXManWfInvocation extends DXManWfNode {    
     
-  public DXManWfInvocation(String id, String uri) {
-    super(id, uri);
+  public DXManWfInvocation(String id, String uri, String workflowId) {
+    super(id, uri, workflowId);
   }
   
   @Override
@@ -17,6 +17,5 @@ public class DXManWfInvocation extends DXManWfNode {
   @Override
   public DXManWfSpec build() {
     return new DXManWfSpec(getId()+"-wf-spec", this);
-  }
-  
+  }  
 }

@@ -1,10 +1,8 @@
 package com.dxman.thing.deployment.connectors.atomic;
 
-import com.dxman.design.distribution.DXManBindingContent;
-import com.dxman.design.distribution.DXManBindingInfo;
-import org.javalite.http.Get;
-import org.javalite.http.Http;
-import org.javalite.http.Post;
+import com.dxman.design.distribution.*;
+import com.google.common.net.UrlEscapers;
+import org.javalite.http.*;
 
 /**
  * @author Damian Arellanes
@@ -15,18 +13,29 @@ public class RestInvocator implements InvocationHandler {
   public String invokeJSON(DXManBindingInfo bindingInfo, String jsonRequest) {
 
     String result = null;
+    String uri = bindingInfo.getEndpoint().toString();
     switch(bindingInfo.getType()) {
 
       case HTTP_GET:
-        
-        String uri = bindingInfo.getEndpoint().toString();
+                
         if(bindingInfo.getContentType().equals(DXManBindingContent.QUERY_STRING)) {
           uri += jsonRequest;
         }
+        
+        uri = UrlEscapers.urlFragmentEscaper().escape(uri);
         result = doGet(uri, bindingInfo.getAcceptType());
         break;            
       case HTTP_POST:
-        result = doPost(bindingInfo.getEndpoint().toString(), jsonRequest);
+        
+        String content = "";
+        if(bindingInfo.getContentType().equals(DXManBindingContent.QUERY_STRING)) {
+          uri += jsonRequest;
+        } else {
+          content = jsonRequest;
+        }
+        
+        uri = UrlEscapers.urlFragmentEscaper().escape(uri);
+        result = doPost(uri, content, bindingInfo.getContentType());
         break;
     }    
     return result;
@@ -34,7 +43,6 @@ public class RestInvocator implements InvocationHandler {
 
   private String doGet(String uri, DXManBindingContent responseType) {
 
-    String responseStr;
     Get response = Http.get(uri);
     
     switch(responseType) {
@@ -45,28 +53,24 @@ public class RestInvocator implements InvocationHandler {
         response.header("Accept", "application/xml");
         break;
     }
-      
-    if(response.responseCode() != 200) {
-      responseStr = response.responseMessage();
-    } else {
-      responseStr = response.text();
-    }
 
-    return responseStr;
+    return response.text();
   }
 
-  private String doPost(String uri, String content) {
+  private String doPost(String uri, String content, 
+    DXManBindingContent contentType) {
 
-    String responseStr;
-    Post response = Http.post(uri, content)
-      .header("Content-Type", "application/json");
-
-    if(response.responseCode() != 200) {
-      responseStr = response.responseMessage();
-    } else {
-      responseStr = response.text();
+    Post response = Http.post(uri, content);
+    
+    switch(contentType) {
+      case APPLICATION_JSON:
+        response.header("Content-Type", "application/json");
+        break;
+      case APPLICATION_XML:
+        response.header("Content-Type", "application/xml");
+        break;
     }
 
-    return responseStr;
+    return response.text();
   }
 }

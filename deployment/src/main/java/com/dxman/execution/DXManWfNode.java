@@ -7,22 +7,26 @@ import java.util.*;
 /**
  * @author Damian Arellanes
  */
-public abstract class DXManWfNode {
+public class DXManWfNode {
 
-  private String id;
+  protected String classTypeWfNode = getClass().getName();
+  
+  private String id;  
   private String uri;
+  private String workflowId;
   private List<DXManWfNodeMapper> subNodeMappers = new ArrayList<>();
   
-  private final List<DXManDataChannel> dataChannels = new ArrayList<>();
+  private List<DXManDataChannel> dataChannels = new ArrayList<>();
 
   public DXManWfNode() {}
 
-  public DXManWfNode(String id, String uri) {
-    this.id = id;
+  public DXManWfNode(String id, String uri, String workflowId) {    
+    this.id = id;    
     this.uri = uri;
+    this.workflowId = workflowId;
   }
   
-  public void customiseOrder(String childKey, DXManWfNodeCustom custom) {
+  public void customise(String childKey, DXManWfNodeCustom custom) {
     
     for(DXManWfNodeMapper subNodeMapper: subNodeMappers) {
       
@@ -32,26 +36,27 @@ public abstract class DXManWfNode {
     }
   }
   
-  protected void composeWf(DXManWfNode wfNode, DXManWfNodeCustom custom) {
+  public void addSubWfNode(DXManWfNode wfNode, DXManWfNodeCustom custom) {
        
     DXManWfNodeMapper subNodeMapper = new DXManWfNodeMapper(wfNode, custom);
     subNodeMappers.add(subNodeMapper);
   }
   
-  public void deploy(DXManDataAlgorithm alg) {
+  public void deploy(DXManDataAlgorithm alg, DXManWorkflowTree wt) {
     
     for(DXManWfNodeMapper subNodeMapper: subNodeMappers) {
       
+      // Deploy again if composite detected (i.e., if there are submappers)
       if(!subNodeMapper.getNode().getSubnodeMappers().isEmpty()) {
-        subNodeMapper.getNode().deploy(alg);
+        
+        subNodeMapper.setNode(wt.getWt().get(subNodeMapper.getNode().getId()));
+        subNodeMapper.getNode().deploy(alg, wt);
       }
     }    
     
-    dataChannels.forEach((dc) -> { alg.analyze(dc); });
+    dataChannels.forEach((dc) -> { alg.analyze(dc); });    
     
     build();
-    
-    System.out.println("Deploying: " + id);
   }
   
   public String getId() { return id; }
@@ -60,13 +65,19 @@ public abstract class DXManWfNode {
   public String getUri() { return uri; }
   public void setUri(String uri) { this.uri = uri; }  
   
+  public String getWorkflowId() { return workflowId; }  
+  public void setWorkflowId(String workflowId) { this.workflowId = workflowId; }
+  
   public List<DXManWfNodeMapper> getSubnodeMappers() { return subNodeMappers; }
   public void setSubnodeMappers(List<DXManWfNodeMapper> subNodeMappers) { 
     this.subNodeMappers = subNodeMappers; 
   }
   
   public List<DXManDataChannel> getDataChannels() { return dataChannels; }
-  
-  public abstract boolean isValid();
-  public abstract DXManWfSpec build();
+  public void setDataChannels(List<DXManDataChannel> dataChannels) {
+    this.dataChannels = dataChannels;
+  }
+    
+  public boolean isValid(){ return true; };
+  public DXManWfSpec build(){ return null; };
 }
