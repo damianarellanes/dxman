@@ -10,8 +10,8 @@ public class DXManWfSequencer extends DXManWfNode {
 
   public DXManWfSequencer() {}
 
-  public DXManWfSequencer(String id, String uri, String workflowId) {
-    super(id, uri, workflowId);
+  public DXManWfSequencer(String id, String uri) {
+    super(id, uri);
   }
   
   public void increaseSequenceBy(int addition) {

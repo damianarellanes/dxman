@@ -20,10 +20,9 @@ public class DXManWfNode {
 
   public DXManWfNode() {}
 
-  public DXManWfNode(String id, String uri, String workflowId) {    
+  public DXManWfNode(String id, String uri) {    
     this.id = id;    
     this.uri = uri;
-    this.workflowId = workflowId;
   }
   
   public void customise(String childKey, DXManWfNodeCustom custom) {
@@ -46,6 +45,9 @@ public class DXManWfNode {
     
     for(DXManWfNodeMapper subNodeMapper: subNodeMappers) {
       
+      // The workflowId of the subNode is the workflowtree id set by the user
+      subNodeMapper.getNode().setWorkflowId(wt.getId());
+      
       // Deploy again if composite detected (i.e., if there are submappers)
       if(!subNodeMapper.getNode().getSubnodeMappers().isEmpty()) {
         
@@ -53,6 +55,9 @@ public class DXManWfNode {
         subNodeMapper.getNode().deploy(alg, wt);
       }
     }    
+    
+    // The workflowId of this node is the workflowtree id set by the user
+    workflowId = wt.getId(); 
     
     dataChannels.forEach((dc) -> { alg.analyze(dc); });    
     

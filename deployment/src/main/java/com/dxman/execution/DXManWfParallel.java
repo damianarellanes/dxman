@@ -7,8 +7,8 @@ public class DXManWfParallel extends DXManWfNode {
   
   public DXManWfParallel() {}
 
-  public DXManWfParallel(String id, String uri, String workflowId) {
-    super(id, uri, workflowId);
+  public DXManWfParallel(String id, String uri) {
+    super(id, uri);
   }
   
   @Override

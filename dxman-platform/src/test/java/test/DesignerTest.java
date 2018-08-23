@@ -165,6 +165,7 @@ public class DesignerTest {
   public static void simulate(DXManWfNode wfNode) {
    
     System.out.println("Executing: " + wfNode.getUri());
+    System.out.println("Workflow ID: " + wfNode.getWorkflowId());
     
     if(wfNode.getClass().equals(DXManWfInvocation.class)) return;
     
@@ -197,12 +198,13 @@ public class DesignerTest {
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);
-    wfTree.setId("e00614ec-bc02-4d27-a130-7d275450c29a"); // Optional
+    //wfTree.setId("e00614ec-bc02-4d27-a130-7d275450c29a"); 
+    wfTree.setId("WRONG!!!"); 
     WfTreeTest wtEditor = new WfTreeTest(wfTree);
     
     // DEPLOY WORKFLOW FROM FILKE
-    deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    wfTreeManager.deployWorkflowTree(wtEditor, false);
+    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    wfTreeManager.deployWorkflow(wtEditor, false);
     
     // EXECUTES WORKFLOW FROM FILE
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get("SEQ3"), false);
@@ -210,7 +212,7 @@ public class DesignerTest {
       System.out.println(outputId + " --> " + outputVal);
     });
     
-    //simulate(existingWt.getWt().get("SEQ3"));
+    //simulate(wfTree.getWt().get("SEQ3"));
     
     /*System.out.println("-----INPUTS-------");
     System.out.println(alg.getReaders().get("IC1.createRecord.name"));//SEQ3.createRecord.name
