@@ -209,16 +209,16 @@ public class DesignerTest {
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
-    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    deploymentManager.deployCompositeService(wfTree.getCompositeService());
     wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
-    /*// EXECUTES WORKFLOW FROM FILE
-    DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get("SEQ3"), false);
+    // EXECUTES WORKFLOW FROM FILE
+    DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(wfTree.getCompositeService().getId()), false);
     wfResult.forEach((outputId, outputVal) -> {    
       System.out.println(outputId + " --> " + outputVal);
-    });*/
+    });
     
-    simulate(wfTree.getWt().get(wfTree.getCompositeService().getId()));
+    //simulate(wfTree.getWt().get(wfTree.getCompositeService().getId()));
     
     /*System.out.println("-----INPUTS-------");
     System.out.println(alg.getReaders().get("IC1.createRecord.name"));//SEQ3.createRecord.name

@@ -176,9 +176,9 @@ public class DXManWorkflowTreeDeployer {
       subService.setId(DXManIDGenerator.generateServiceID());
       
       // Adds the operations to the workflow tree      
-      subService.getOperations().forEach((opName, op)->{
+      subService.getOperations().forEach((opId, op)->{
         
-        DXManWfNode opNode = createWfNodeInstance(subService, op.getId(), opName);
+        DXManWfNode opNode = createWfNodeInstance(subService, opId, opId);
         parentWfNode.addSubWfNode(opNode, new DXManWfNodeCustom() {});
         
         updateWorkflowTree(wt, opNode);
@@ -234,7 +234,7 @@ public class DXManWorkflowTreeDeployer {
   ) {
     
     // Adds all the operations of subservices to composite service
-    subService.getOperations().forEach((opName, op)->{
+    subService.getOperations().forEach((opId, op)->{
 
       DXManOperation compositeOp = op.clone();
       composite.addOperation(compositeOp);

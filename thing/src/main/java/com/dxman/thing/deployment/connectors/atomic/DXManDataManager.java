@@ -53,7 +53,7 @@ public class DXManDataManager {
     response = response.replace("\n", "").replace("\r", "");
             
     Precompiled precompiled = dataUtil.getOperationPatterns()
-      .get(operationToInvoke.getName());
+      .get(operationToInvoke.getId());
     
     Matcher matcher = precompiled.getPattern().matcher(response);
     if(matcher.matches()) {

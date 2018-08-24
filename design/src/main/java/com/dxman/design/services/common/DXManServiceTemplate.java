@@ -35,7 +35,7 @@ public class DXManServiceTemplate {
   };
 
   public void addOperation(DXManOperation operation) {
-    operations.put(operation.getName(), operation);
+    operations.put(operation.getId(), operation);
   }
 
   public String getId() { return id; }
