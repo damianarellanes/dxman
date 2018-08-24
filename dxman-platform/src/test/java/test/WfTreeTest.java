@@ -3,6 +3,7 @@ package test;
 import com.dxman.deployment.cli.DXManWorkflowTreeEditor;
 import com.dxman.design.data.DXManDataChannelPoint;
 import com.dxman.execution.*;
+import com.dxman.execution.selector.DXManWfConditionOperator;
 
 /**
  * @author Damian Arellanes
@@ -18,68 +19,60 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
 
     // TODO the workflow tree can also include invocation nodes so the argument should be only the invocationNodeId
     
-    // CustomerService, LPB.createRecord
-    customiseOrder("7d2d1bfd-0cd3-4deb-8789-77e79ee4b17c", "60c04503-a393-43ad-ae0d-8a21667c4841", 0); 
+    /*// CustomerService, LPB.createRecord
+    customiseOrder("32dbf901-d80c-4855-8407-5b638e177975", "25fb08a3-a471-4492-a99d-2fc9f36c79ef", 0); 
     // CustomerService, SenderService
-    customiseOrder("7d2d1bfd-0cd3-4deb-8789-77e79ee4b17c", "18f28652-0d0f-41c8-9196-f722eaa81b85", 1);    
+    customiseOrder("32dbf901-d80c-4855-8407-5b638e177975", "c26cf571-636f-47d6-9734-a50857001d30", 1);    
     
     // SenderService, PostService
-    customiseOrder("18f28652-0d0f-41c8-9196-f722eaa81b85", "0002eded-5b85-4b07-b4d8-ca0940264b19", 0);
+    customiseOrder("c26cf571-636f-47d6-9734-a50857001d30", "5798c6d1-30cf-44cc-b69e-6fd92924aa3f", 0);
     // SenderService, EmailService.sendWelcEmail
-    customiseOrder("18f28652-0d0f-41c8-9196-f722eaa81b85", "295040c7-b796-4acd-9074-4de6ce48bf2c", 1);
-    // PostService, Courier1.sendWelcStd
-    customiseOrder("0002eded-5b85-4b07-b4d8-ca0940264b19", "30440a59-c486-44fe-9f21-3ae4fc1f8c5d", 0);
-    // PostService, Courier2.sendWelcFast
-    customiseOrder("0002eded-5b85-4b07-b4d8-ca0940264b19", "3f5a55c5-2675-4e0f-8385-9cf22abf3d24", 1);
+    customiseOrder("c26cf571-636f-47d6-9734-a50857001d30", "064eba5e-ec08-490d-8298-cbf0c51ba3d6", 1);*/
+    
+    // PostService, Courier1.sendWelcStd, SEL1.addr
+    customiseSelector("26c44521-6966-49b1-b5be-6a87d237b28e", "3becbdf1-0f35-4d58-9812-80dcb3307553", 
+      "7605fb00-a57c-4cfb-bf83-da51bf031ad7", DXManWfConditionOperator.EQUAL, "Oxford St");
+    // PostService, Courier2.sendWelcFast, SEL1.addr
+    customiseSelector("26c44521-6966-49b1-b5be-6a87d237b28e", "3c271298-1d6d-41fe-947d-450b52654529", 
+      "7605fb00-a57c-4cfb-bf83-da51bf031ad7", DXManWfConditionOperator.EQUAL, "Oxford St");
   }
   
   @Override
   public void designData() {
     
-    /*// SEQ1.sendWelcStd.addr --> SEQ1.addr 
+    // Post.sendWelcStd.addr --> SEL1.addr 
     DXManDataChannelPoint origin = new DXManDataChannelPoint(
-      "08c0e9f2-7bc4-46ca-9716-89303584a60e"
+      "acfbc24a-de0b-4129-8e5b-b8b435640355"
     );
     DXManDataChannelPoint destination = new DXManDataChannelPoint(
-      "SEQ1.addr"
+      "7605fb00-a57c-4cfb-bf83-da51bf031ad7"
     );
-    addDataChannel("SEQ1", origin, destination);
+    addDataChannel("26c44521-6966-49b1-b5be-6a87d237b28e", origin, destination);//Post,origin,dest
     
-    // SEQ1.sendWelcFast.addr --> SEQ1.addr 
+    // Post.sendWelcFast.addr --> SEL1.addr 
     DXManDataChannelPoint origin2 = new DXManDataChannelPoint(
-      "1a61a305-5f53-423c-b08b-aa9e6ff51f69"
+      "6a6cb221-a5d6-4581-b18f-874020a62d94"
     );
     DXManDataChannelPoint destination2 = new DXManDataChannelPoint(
-      "SEQ1.addr"
+      "7605fb00-a57c-4cfb-bf83-da51bf031ad7"
     );
-    addDataChannel("SEQ1", origin2, destination2);*/
+    addDataChannel("26c44521-6966-49b1-b5be-6a87d237b28e", origin2, destination2);//Post,origin,dest
   }
 
   @Override
   public DXManWfInputs getInputs() {
     DXManWfInputs wfInputs = new DXManWfInputs();
-    
-    /*wfInputs.put("SEQ3.createRecord.name", "Adela Molina");
-    wfInputs.put("SEQ3.sendWelcStd.name", "Adela Molina");
-    wfInputs.put("SEQ3.sendWelcFast.name", "Adela Molina");
-    
-    wfInputs.put("SEQ3.createRecord.addr", "Mexico");
-    wfInputs.put("SEQ3.sendWelcStd.addr", "Mexico");
-    wfInputs.put("SEQ3.sendWelcFast.addr", "Mexico");
-    
-    wfInputs.put("SEQ3.createRecord.email", "adela@yahoo.com");
-    wfInputs.put("SEQ3.sendWelcEmail.email", "adela@yahoo.com");*/
         
-    wfInputs.put("9879eff5-d765-4788-823a-883e2378b453", "Damian Arellanes"); // SEQ3.createRecord.name
-    wfInputs.put("dbea014f-510b-4820-8cc7-2819736e43b1", "Damian Arellanes"); // SEQ3.sendWelcStd.name
-    wfInputs.put("1ad3c5d0-a202-48a8-8951-37f099574d08", "Damian Arellanes"); // SEQ3.sendWelcFast.name
+//    wfInputs.put("a5caca64-98ef-411d-9ce8-e0010313ede8", "Damian Arellanes"); // Customer.createRecord.name
+//    wfInputs.put("0e13975a-6ea7-46da-af65-409ac51f8176", "Damian Arellanes"); // Customer.sendWelcStd.name
+//    wfInputs.put("e4f487d4-47a4-40e8-b754-3a1c500ba04b", "Damian Arellanes"); // Customer.sendWelcFast.name
     
-    wfInputs.put("028edfef-5a40-4923-ba14-54c00fed63aa", "Oxford St"); // SEQ3.createRecord.addr
-    wfInputs.put("6feffbce-bc3c-416f-b48a-23f2762ef4aa", "Oxford St"); // SEQ3.sendWelcStd.addr
-    wfInputs.put("33cfd0ad-d8a0-4ed8-be0d-652e5674aca3", "Oxford St"); // SEQ3.sendWelcFast.addr
+    wfInputs.put("4f24e81f-83a5-4f60-b40e-2d306487b5ce", "Oxford St 2"); // Customer.createRecord.addr
+    wfInputs.put("626773ea-b339-4a91-a2d9-e6043b831b68", "Oxford St 2"); // Customer.sendWelcStd.addr
+    //wfInputs.put("3e836a9f-3bf3-4383-8168-50362c82056f", "Oxford St"); // Customer.sendWelcFast.addr
     
-    wfInputs.put("b333186e-bfcf-48f4-a209-931fcd3d4117", "damian.arellanes@gmail.com"); // SEQ3.createRecord.email
-    wfInputs.put("2fb83ec4-4b25-42b4-9283-d895afdfd0c4", "damian.arellanes@gmail.com"); // SEQ3.sendWelcEmail.email
+//    wfInputs.put("cba1e6d0-251b-4628-9150-f167b58d557e", "damian.arellanes@gmail.com"); // Customer.createRecord.email
+//    wfInputs.put("e2bdc9fc-6ac8-4672-a3fc-9a025cf26e29", "damian.arellanes@gmail.com"); // Customer.sendWelcEmail.email
     return wfInputs;
   }
 
@@ -87,10 +80,10 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
   public DXManWfOutputs getOutputs() {
     
     DXManWfOutputs wfOutputs = new DXManWfOutputs();    
-    wfOutputs.add("95ca5d9f-f7ab-4da1-9fb6-2027c353a871"); // SEQ3.sendWelcStd.res
-    wfOutputs.add("714983d0-8620-4234-9d46-85a50b4628e4"); // SEQ3.sendWelcFast.res
-    wfOutputs.add("59459f65-d53b-40e1-b760-67462d230091"); // SEQ3.createRecord.id
-    //wfOutputs.add("SEQ3.sendWelcEmail.res");
+    wfOutputs.add("997309a8-fb2a-4859-a554-624983854b8f"); // Customer.sendWelcStd.res
+    wfOutputs.add("ef404cde-419c-4f25-90f9-c2a88a77dc39"); // Customer.sendWelcFast.res
+    wfOutputs.add("61ee32df-d117-411d-8d79-94ed73aaa45b"); // Customer.createRecord.id
+    //wfOutputs.add("Customer.sendWelcEmail.res");
     
     return wfOutputs;
   }

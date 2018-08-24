@@ -4,6 +4,7 @@ import com.dxman.deployment.cli.DXManWorkflowTreeDeployer;
 import com.dxman.deployment.cli.DXManWorkflowTreeEditor;
 import com.dxman.deployment.common.DXManDeploymentManager;
 import com.dxman.deployment.data.DXManDataAlgorithm;
+import com.dxman.design.connectors.composition.DXManSelectorTemplate;
 import com.dxman.execution.DXManWorkflowTree;
 import com.dxman.design.connectors.composition.DXManSequencerTemplate;
 import com.dxman.design.data.DXManOperation;
@@ -27,6 +28,8 @@ import com.dxman.execution.DXManWfParallelCustom;
 import com.dxman.execution.DXManWfResult;
 import com.dxman.execution.DXManWfSequencer;
 import com.dxman.execution.DXManWfSequencerCustom;
+import com.dxman.execution.selector.DXManWfSelector;
+import com.dxman.execution.selector.DXManWfSelectorCustom;
 import com.dxman.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.GsonBuilder;
 import com.google.gson.*;
@@ -119,15 +122,17 @@ public class DesignerTest {
   
   private static DXManCompositeServiceTemplate designPost() throws URISyntaxException {
     
-    DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ1");
+    DXManSelectorTemplate selector = new DXManSelectorTemplate("SEL1");
+    DXManParameter addr = new DXManParameter("addr", DXManParameterType.INPUT, "string"); selector.addInput(addr);
+            
     DXManAtomicServiceTemplate courier1 = designCourier(1, "sendWelcStd");
     DXManAtomicServiceTemplate courier2 = designCourier(2, "sendWelcFast");
     
-    sequencer.composeServices(courier1, courier2);
+    selector.composeServices(courier1, courier2);
     
     DXManServiceInfo templateInfo = new DXManServiceInfo("PostService", "Example", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
-    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
+    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, selector, deploymentInfo);
     
     return composite;
   }
@@ -173,12 +178,17 @@ public class DesignerTest {
       
       System.out.println("Operation: " + wfNode.getId());
       return;
+    } else if(wfNode.getClass().equals(DXManWfSequencer.class)) {
+      for(DXManWfNode subNode: ((DXManWfSequencer)wfNode).getSequence()) {      
+        simulate(subNode);
+      }    
+    } else if(wfNode.getClass().equals(DXManWfSelector.class)) {
+      for(DXManWfNodeMapper subNode: wfNode.getSubnodeMappers()) {      
+        System.out.println(((DXManWfSelectorCustom)subNode.getCustom()).getCondition());
+      }
     }
     
-    for(DXManWfNode subNode: ((DXManWfSequencer)wfNode).getSequence()) {
-      
-      simulate(subNode);
-    }    
+    
   }
   
   public static void main(String[] args) throws URISyntaxException {
@@ -197,7 +207,7 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDeployer wfTreeManager = new DXManWorkflowTreeDeployer("http://localhost:3000");
-    String workflowTreeFile = "/tmp/wfTree1";
+    String workflowTreeFile = "/tmp/wfTree3";
     
     // GENERATE WORKFLOW FILES    
     //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
@@ -213,7 +223,9 @@ public class DesignerTest {
     wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
-    DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(wfTree.getCompositeService().getId()), false);
+    //String topService = wfTree.getCompositeService().getId();
+    String topService = "26c44521-6966-49b1-b5be-6a87d237b28e";
+    DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService), true);
     wfResult.forEach((outputId, outputVal) -> {    
       System.out.println(outputId + " --> " + outputVal);
     });

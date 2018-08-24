@@ -17,12 +17,12 @@ import java.util.Date;
 public class DXManInvocationInstance extends DXManConnectorInstance {
         
   private final DXManMap<DXManProtocol, InvocationHandler> invocationHandlers;
-  private final DXManDataManager dataManager;
+  private final DXManInvocationDataManager invocationDataManager;
 
   // TODO remove thingAlias from constructor arguments
   public DXManInvocationInstance(DXManAtomicServiceTemplate managedService, 
-    DXManConnectorRequester requester, Gson gson, DXManDataSpace dataSpace, 
-    String thingAlias) {
+    DXManConnectorRequester requester, Gson gson, 
+    DXManInvocationDataManager invocationDataManager, String thingAlias) {
 
     super(managedService, managedService.getInvocationConnector().getName(),
       requester, gson);
@@ -31,7 +31,7 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     invocationHandlers.put(DXManProtocol.tcp, new SocketInvocator());
     invocationHandlers.put(DXManProtocol.http, new RestInvocator());
 
-    dataManager = new DXManDataManager(dataSpace, managedService.getOperations());
+    this.invocationDataManager = invocationDataManager;
   }
 
   @Override
@@ -50,7 +50,9 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     DXManBindingInfo bindingInfo = operationToInvoke.getBindingInfo();
 
     // Gets the input parameters and constructs JSON request
-    String request = dataManager.read(flow.getWorkflowId(), operationToInvoke);
+    String request = invocationDataManager.read(
+      flow.getWorkflowId(), operationToInvoke
+    );
 
     // Invokes the operation        
     String result = invocationHandlers.get(
@@ -60,6 +62,6 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     ).invokeJSON(bindingInfo, request);
 
     // Writes output parameters (if any)
-    dataManager.write(flow.getWorkflowId(), operationToInvoke, result);
+    invocationDataManager.write(flow.getWorkflowId(), operationToInvoke, result);
   }
 }

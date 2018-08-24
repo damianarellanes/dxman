@@ -16,7 +16,7 @@ public class DXManWfNode {
   private String workflowId;
   private List<DXManWfNodeMapper> subNodeMappers = new ArrayList<>();
   
-  private List<DXManDataChannel> dataChannels = new ArrayList<>();
+  private List<DXManDataChannel> dataChannels = new ArrayList<>(); // Remove and only keep in the service template
 
   public DXManWfNode() {}
 

@@ -10,12 +10,12 @@ import java.util.regex.Matcher;
 /**
  * @author Damian Arellanes
  */
-public class DXManDataManager {
+public class DXManInvocationDataManager {
   
   private final DXManDataSpace dataSpace;  
   private final DXManDataUtil dataUtil;
   
-  public DXManDataManager(DXManDataSpace dataSpace, 
+  public DXManInvocationDataManager(DXManDataSpace dataSpace, 
     DXManMap<String, DXManOperation> operations) {
     
     this.dataSpace = dataSpace;    

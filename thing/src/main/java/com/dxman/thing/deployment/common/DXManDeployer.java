@@ -4,7 +4,11 @@ import com.dxman.dataspace.base.DXManDataSpace;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.execution.*;
+import com.dxman.execution.selector.DXManWfSelector;
+import com.dxman.execution.selector.DXManWfSelectorCustom;
+import com.dxman.thing.deployment.connectors.atomic.DXManInvocationDataManager;
 import com.dxman.thing.deployment.connectors.atomic.DXManInvocationInstance;
+import com.dxman.thing.deployment.connectors.common.DXManConnectorDataManager;
 import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
 import com.dxman.thing.deployment.connectors.composite.*;
 import com.dxman.thing.server.base.*;
@@ -34,7 +38,9 @@ public class DXManDeployer {
     Gson gson = createGson();
     DXManInvocationInstance ic = new DXManInvocationInstance(
       managedService, DXManConnectorRequesterFactory.createCoapRequester(gson), 
-      gson, dataSpace, thingId
+      gson, 
+      new DXManInvocationDataManager(dataSpace, managedService.getOperations()), 
+      thingId
     );    
     
     server.deploy(ic);
@@ -56,6 +62,12 @@ public class DXManDeployer {
           managedService, connectorRequester, gson
         );
         break;
+      case SELECTOR:
+        connectorInstance = new DXManSelectorInstance(
+          managedService, new DXManConnectorDataManager(dataSpace), 
+          connectorRequester, gson
+        );
+        break;  
       case PARALLEL:
         connectorInstance = new DXManParallelInstance(
           managedService, connectorRequester, gson
@@ -85,13 +97,21 @@ public class DXManDeployer {
       .registerSubtype(DXManWfParallelCustom.class, DXManWfParallelCustom.class.getName())
       .registerSubtype(DXManWfSequencerCustom.class, DXManWfSequencerCustom.class.getName());*/
     
-    RuntimeTypeAdapterFactory<DXManWfNode> adapter3 = RuntimeTypeAdapterFactory
+    RuntimeTypeAdapterFactory<DXManWfNode> adapter2 = RuntimeTypeAdapterFactory
       .of(DXManWfNode.class)
       .registerSubtype(DXManWfParallel.class)
+      .registerSubtype(DXManWfSelector.class)
       .registerSubtype(DXManWfSequencer.class)
       .registerSubtype(DXManWfInvocation.class);
     
+    RuntimeTypeAdapterFactory<DXManWfNodeCustom> adapter3 = RuntimeTypeAdapterFactory
+      .of(DXManWfNodeCustom.class)
+      .registerSubtype(DXManWfParallelCustom.class)
+      .registerSubtype(DXManWfSelectorCustom.class)
+      .registerSubtype(DXManWfSequencerCustom.class);
+    
     return new GsonBuilder().disableHtmlEscaping()
+      .registerTypeAdapterFactory(adapter2)
       .registerTypeAdapterFactory(adapter3)
       .create();
   }

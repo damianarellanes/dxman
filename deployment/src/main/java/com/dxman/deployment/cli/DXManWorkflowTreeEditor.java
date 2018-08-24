@@ -2,13 +2,16 @@ package com.dxman.deployment.cli;
 
 import com.dxman.design.data.*;
 import com.dxman.execution.*;
+import com.dxman.execution.selector.DXManWfCondition;
+import com.dxman.execution.selector.DXManWfConditionOperator;
+import com.dxman.execution.selector.DXManWfSelectorCustom;
 
 /**
  * @author Damian Arellanes
  */
 public abstract class DXManWorkflowTreeEditor {
   
-  private final DXManWorkflowTree workflowTree;
+  private final DXManWorkflowTree workflowTree;  
   
   public DXManWorkflowTreeEditor(DXManWorkflowTree workflowTree, String wfId) {
     this.workflowTree = workflowTree;
@@ -25,10 +28,21 @@ public abstract class DXManWorkflowTreeEditor {
       .increaseSequenceBy(order.length);
   }
   
-  private void customiseParallel(String parentKey, String childKey, int tasks) {    
+  public void customiseParallel(String parentKey, String childKey, int tasks) {    
     
     workflowTree.getWt().get(parentKey).customise(
       childKey, new DXManWfParallelCustom(tasks)
+    );
+  }
+  
+  public void customiseSelector(String parentKey, String childKey, 
+    String parameterName, DXManWfConditionOperator operator, String value) {
+    
+    workflowTree.getWt().get(parentKey).customise(
+      childKey, 
+      new DXManWfSelectorCustom(
+        new DXManWfCondition(parameterName, operator, value)
+      )
     );
   }
   

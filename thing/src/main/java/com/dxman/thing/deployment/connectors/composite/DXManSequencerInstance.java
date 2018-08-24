@@ -12,18 +12,12 @@ import java.util.Date;
  */
 public class DXManSequencerInstance extends DXManConnectorInstance {
   
-  //private final List<DXManServiceTemplate> subServices = new ArrayList<>();
-
   public DXManSequencerInstance(DXManCompositeServiceTemplate managedService, 
     DXManConnectorRequester requester, Gson gson) {
     
     super(managedService, managedService.getCompositionConnector().getName(),
       requester, gson);
   }
-  
-  /*public void composeServices(DXManServiceTemplate... services) {
-    subServices.addAll(Arrays.asList(services));
-  }*/
 
   @Override
   public void activate(String workflowJSON) {

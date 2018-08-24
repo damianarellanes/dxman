@@ -1,5 +1,6 @@
 package com.dxman.design.services.composite;
 
+import com.dxman.design.connectors.common.DXManConnectorType;
 import com.dxman.design.services.common.DXManServiceTemplate;
 import com.dxman.design.connectors.composition.DXManCompositionConnectorTemplate;
 import com.dxman.design.distribution.DXManDeploymentInfo;
@@ -42,7 +43,11 @@ public class DXManCompositeServiceTemplate extends DXManServiceTemplate {
     sb.append("***************************************************\n");
     sb.append("Service TEMPLATE: ").append(getInfo().getName())
       .append(" (COMPOSITE)-->").append(getId()).append("\n");
-    sb.append("***************************************************\n");
+    sb.append("***************************************************\n");    
+    if(compositionConnector.getType().equals(DXManConnectorType.SELECTOR)) {
+      sb.append(compositionConnector).append("\n");
+      sb.append("***************************************************\n");       
+    }
     sb.append("\n").append(getOperations().values());
     sb.append("***************************************************\n");
     sb.append("***************************************************\n\n\n");
