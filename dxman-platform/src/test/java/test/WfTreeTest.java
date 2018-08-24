@@ -16,18 +16,18 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
   @Override
   public void designControl() {
     
-    customiseOrder("SEQ3", "createRecord", 0);
-    customiseOrder("SEQ3", "SEQ2", 1);    
+    customiseOrder("b1f7a495-35c3-423c-8385-abba0dfc42bf", "createRecord", 0);
+    /*customiseOrder("ebd8dac3-24b6-417b-a117-7efe6921bf89", "SEQ2", 1);    
     customiseOrder("SEQ2", "SEQ1", 0);
     customiseOrder("SEQ2", "sendWelcEmail", 1);
     customiseOrder("SEQ1", "sendWelcStd", 0);
-    customiseOrder("SEQ1", "sendWelcFast", 1);
+    customiseOrder("SEQ1", "sendWelcFast", 1);*/
   }
   
   @Override
   public void designData() {
     
-    // SEQ1.sendWelcStd.addr --> SEQ1.addr 
+    /*// SEQ1.sendWelcStd.addr --> SEQ1.addr 
     DXManDataChannelPoint origin = new DXManDataChannelPoint(
       "08c0e9f2-7bc4-46ca-9716-89303584a60e"
     );
@@ -43,7 +43,7 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
     DXManDataChannelPoint destination2 = new DXManDataChannelPoint(
       "SEQ1.addr"
     );
-    addDataChannel("SEQ1", origin2, destination2);
+    addDataChannel("SEQ1", origin2, destination2);*/
   }
 
   @Override

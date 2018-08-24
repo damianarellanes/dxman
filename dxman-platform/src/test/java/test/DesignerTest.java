@@ -166,6 +166,7 @@ public class DesignerTest {
    
     System.out.println("Executing: " + wfNode.getUri());
     System.out.println("Workflow ID: " + wfNode.getWorkflowId());
+    System.out.println("Node: " + wfNode.getId());
     
     if(wfNode.getClass().equals(DXManWfInvocation.class)) return;
     
@@ -194,7 +195,7 @@ public class DesignerTest {
     String workflowTreeFile = "/tmp/wfTree1";
     
     // GENERATE WORKFLOW FILES    
-    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
@@ -212,7 +213,7 @@ public class DesignerTest {
       System.out.println(outputId + " --> " + outputVal);
     });*/
     
-    simulate(wfTree.getWt().get("SEQ3"));
+    simulate(wfTree.getWt().get(wfTree.getCompositeService().getId()));
     
     /*System.out.println("-----INPUTS-------");
     System.out.println(alg.getReaders().get("IC1.createRecord.name"));//SEQ3.createRecord.name

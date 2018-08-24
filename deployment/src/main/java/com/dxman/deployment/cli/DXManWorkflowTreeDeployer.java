@@ -93,7 +93,7 @@ public class DXManWorkflowTreeDeployer {
     wtEditor.design();
     
     wtEditor.getWorkflowTree().getWt().get(
-      wtEditor.getWorkflowTree().getCompositeService().getCompositionConnector().getName()
+      wtEditor.getWorkflowTree().getCompositeService().getId()
     ).deploy(alg, wtEditor.getWorkflowTree());
     
     if(deployDataChannels)
@@ -166,7 +166,7 @@ public class DXManWorkflowTreeDeployer {
     composite.setId(DXManIDGenerator.generateServiceID());
     
     DXManWfNode parentWfNode = createWfNodeInstance(
-      composite, composite.getCompositionConnector().getName() // Find a better way for ids
+      composite, composite.getId()
     );
     
     for(DXManServiceTemplate subService: 
