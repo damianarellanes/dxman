@@ -194,25 +194,25 @@ public class DesignerTest {
     String workflowTreeFile = "/tmp/wfTree1";
     
     // GENERATE WORKFLOW FILES    
-    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
-    //WfTreeTest wtEditor = new WfTreeTest(wfTree, "e00614ec-bc02-4d27-a130-7d275450c29a");
-    WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
+    WfTreeTest wtEditor = new WfTreeTest(wfTree, "e00614ec-bc02-4d27-a130-7d275450c29a");
+    //WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
     //deploymentManager.deployCompositeService(wfTree.getCompositeService());
     wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
-    // EXECUTES WORKFLOW FROM FILE
+    /*// EXECUTES WORKFLOW FROM FILE
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get("SEQ3"), false);
     wfResult.forEach((outputId, outputVal) -> {    
       System.out.println(outputId + " --> " + outputVal);
-    });
+    });*/
     
-    //simulate(wfTree.getWt().get("SEQ3"));
+    simulate(wfTree.getWt().get("SEQ3"));
     
     /*System.out.println("-----INPUTS-------");
     System.out.println(alg.getReaders().get("IC1.createRecord.name"));//SEQ3.createRecord.name

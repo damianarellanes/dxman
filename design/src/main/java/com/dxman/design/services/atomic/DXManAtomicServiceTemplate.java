@@ -43,7 +43,8 @@ public class DXManAtomicServiceTemplate extends DXManServiceTemplate {
 
     StringBuilder sb = new StringBuilder();
     sb.append("***************************************************\n");
-    sb.append("Service TEMPLATE: ").append(getInfo().getName()).append(" (ATOMIC)\n");
+    sb.append("Service TEMPLATE: ").append(getInfo().getName())
+      .append(" (ATOMIC) -->").append(getId()).append("\n");
     sb.append(getOperations().values());
     sb.append("***************************************************\n");
     sb.append("***************************************************\n\n\n");
