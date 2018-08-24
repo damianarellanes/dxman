@@ -19,18 +19,18 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
     // TODO the workflow tree can also include invocation nodes so the argument should be only the invocationNodeId
     
     // CustomerService, LPB.createRecord
-    customiseOrder("361c2db2-570a-46ba-970c-0a38a953a8e3", "4c499646-8466-4558-a810-cdfce699ed72", 0); 
+    customiseOrder("7d2d1bfd-0cd3-4deb-8789-77e79ee4b17c", "60c04503-a393-43ad-ae0d-8a21667c4841", 0); 
     // CustomerService, SenderService
-    customiseOrder("361c2db2-570a-46ba-970c-0a38a953a8e3", "19c4f9a8-9e74-4935-bab0-4df6c70fe638", 1);    
+    customiseOrder("7d2d1bfd-0cd3-4deb-8789-77e79ee4b17c", "18f28652-0d0f-41c8-9196-f722eaa81b85", 1);    
     
     // SenderService, PostService
-    customiseOrder("19c4f9a8-9e74-4935-bab0-4df6c70fe638", "deb5da24-a6c0-4bca-8c2c-804c78ae6d3b", 0);
+    customiseOrder("18f28652-0d0f-41c8-9196-f722eaa81b85", "0002eded-5b85-4b07-b4d8-ca0940264b19", 0);
     // SenderService, EmailService.sendWelcEmail
-    customiseOrder("19c4f9a8-9e74-4935-bab0-4df6c70fe638", "96ca54ac-79f2-4905-b9b9-96d895c8e246", 1);
+    customiseOrder("18f28652-0d0f-41c8-9196-f722eaa81b85", "295040c7-b796-4acd-9074-4de6ce48bf2c", 1);
     // PostService, Courier1.sendWelcStd
-    customiseOrder("deb5da24-a6c0-4bca-8c2c-804c78ae6d3b", "edf8367d-6ce1-4fc7-91b5-cbbab389d348", 0);
+    customiseOrder("0002eded-5b85-4b07-b4d8-ca0940264b19", "30440a59-c486-44fe-9f21-3ae4fc1f8c5d", 0);
     // PostService, Courier2.sendWelcFast
-    customiseOrder("deb5da24-a6c0-4bca-8c2c-804c78ae6d3b", "feb2ba20-7e5a-4436-aff9-4d5725cf5154", 1);
+    customiseOrder("0002eded-5b85-4b07-b4d8-ca0940264b19", "3f5a55c5-2675-4e0f-8385-9cf22abf3d24", 1);
   }
   
   @Override
@@ -70,16 +70,16 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
     wfInputs.put("SEQ3.createRecord.email", "adela@yahoo.com");
     wfInputs.put("SEQ3.sendWelcEmail.email", "adela@yahoo.com");*/
         
-    wfInputs.put("4c8d974d-5c6b-4edd-8097-2cad2b60d730", "Damian Arellanes"); // SEQ3.createRecord.name
-    wfInputs.put("163742ee-584c-4bd6-845e-45e068b0543b", "Damian Arellanes"); // SEQ3.sendWelcStd.name
-    wfInputs.put("be1f1af4-5ccc-4348-9fe9-3e7ee165cc9b", "Damian Arellanes"); // SEQ3.sendWelcFast.name
+    wfInputs.put("9879eff5-d765-4788-823a-883e2378b453", "Damian Arellanes"); // SEQ3.createRecord.name
+    wfInputs.put("dbea014f-510b-4820-8cc7-2819736e43b1", "Damian Arellanes"); // SEQ3.sendWelcStd.name
+    wfInputs.put("1ad3c5d0-a202-48a8-8951-37f099574d08", "Damian Arellanes"); // SEQ3.sendWelcFast.name
     
-    wfInputs.put("1fc8b900-40e9-4ac5-bd8f-7ce8750f4fcc", "Oxford St"); // SEQ3.createRecord.addr
-    wfInputs.put("71a682e8-e394-41fa-820e-d2ff78f6dca2", "Oxford St"); // SEQ3.sendWelcStd.addr
-    wfInputs.put("b8d450f7-7a0c-4d4f-bdc4-f8854d1adbf2", "Oxford St"); // SEQ3.sendWelcFast.addr
+    wfInputs.put("028edfef-5a40-4923-ba14-54c00fed63aa", "Oxford St"); // SEQ3.createRecord.addr
+    wfInputs.put("6feffbce-bc3c-416f-b48a-23f2762ef4aa", "Oxford St"); // SEQ3.sendWelcStd.addr
+    wfInputs.put("33cfd0ad-d8a0-4ed8-be0d-652e5674aca3", "Oxford St"); // SEQ3.sendWelcFast.addr
     
-    wfInputs.put("f56eb7e4-74a2-4bac-9da5-d8517d88eea7", "damian.arellanes@gmail.com"); // SEQ3.createRecord.email
-    wfInputs.put("7d5b8d9e-8229-4b58-89bf-457fd8506204", "damian.arellanes@gmail.com"); // SEQ3.sendWelcEmail.email
+    wfInputs.put("b333186e-bfcf-48f4-a209-931fcd3d4117", "damian.arellanes@gmail.com"); // SEQ3.createRecord.email
+    wfInputs.put("2fb83ec4-4b25-42b4-9283-d895afdfd0c4", "damian.arellanes@gmail.com"); // SEQ3.sendWelcEmail.email
     return wfInputs;
   }
 
@@ -87,9 +87,9 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
   public DXManWfOutputs getOutputs() {
     
     DXManWfOutputs wfOutputs = new DXManWfOutputs();    
-    wfOutputs.add("701c2de8-0275-451f-8495-942da0e4a9d4"); // SEQ3.sendWelcStd.res
-    wfOutputs.add("54879ac4-822c-44d1-9781-50fea718dc2f"); // SEQ3.sendWelcFast.res
-    wfOutputs.add("80ee0e6c-9d24-4211-9f53-64acc3cdc5a2"); // SEQ3.createRecord.id
+    wfOutputs.add("95ca5d9f-f7ab-4da1-9fb6-2027c353a871"); // SEQ3.sendWelcStd.res
+    wfOutputs.add("714983d0-8620-4234-9d46-85a50b4628e4"); // SEQ3.sendWelcFast.res
+    wfOutputs.add("59459f65-d53b-40e1-b760-67462d230091"); // SEQ3.createRecord.id
     //wfOutputs.add("SEQ3.sendWelcEmail.res");
     
     return wfOutputs;

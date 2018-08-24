@@ -171,7 +171,7 @@ public class DesignerTest {
     
     if(wfNode.getClass().equals(DXManWfInvocation.class)) {
       
-      System.out.println("Operation: " + ((DXManWfInvocation)wfNode).getOperationName());
+      System.out.println("Operation: " + wfNode.getId());
       return;
     }
     
@@ -209,7 +209,7 @@ public class DesignerTest {
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
-    deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
     wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE

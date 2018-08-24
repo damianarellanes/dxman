@@ -5,16 +5,8 @@ package com.dxman.execution;
  */
 public class DXManWfInvocation extends DXManWfNode {  
 
-  private String operationName; // TODO remove
-    
   public DXManWfInvocation(String id, String uri, String operationName) {
     super(id, uri);
-    this.operationName = operationName;
-  }
-  
-  public String getOperationName() { return operationName; }
-  public void setOperationName(String operationName) {
-    this.operationName = operationName;
   }
   
   @Override
