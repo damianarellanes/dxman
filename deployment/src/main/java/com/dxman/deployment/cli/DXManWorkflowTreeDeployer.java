@@ -178,7 +178,7 @@ public class DXManWorkflowTreeDeployer {
       // Adds the operations to the workflow tree      
       subService.getOperations().forEach((opName, op)->{
         
-        DXManWfNode opNode = createWfNodeInstance(subService, opName);
+        DXManWfNode opNode = createWfNodeInstance(subService, op.getId());
         parentWfNode.addSubWfNode(opNode, new DXManWfNodeCustom() {});
       });
       

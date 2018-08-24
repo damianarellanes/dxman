@@ -41,7 +41,7 @@ public class DXManCompositeServiceTemplate extends DXManServiceTemplate {
             
     sb.append("***************************************************\n");
     sb.append("Service TEMPLATE: ").append(getInfo().getName())
-      .append(" (COMPOSITE) -->").append(getId()).append("\n");
+      .append(" (COMPOSITE)-->").append(getId()).append("\n");
     sb.append("***************************************************\n");
     sb.append("\n").append(getOperations().values());
     sb.append("***************************************************\n");

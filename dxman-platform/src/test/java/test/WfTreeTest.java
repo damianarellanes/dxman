@@ -16,7 +16,7 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
   @Override
   public void designControl() {
     
-    customiseOrder("b1f7a495-35c3-423c-8385-abba0dfc42bf", "createRecord", 0);
+    customiseOrder("a59bed22-e425-411d-a0be-7e4088f2f583", "99ce2a23-4fcd-4645-a0c0-681edb9c9154", 0);
     /*customiseOrder("ebd8dac3-24b6-417b-a117-7efe6921bf89", "SEQ2", 1);    
     customiseOrder("SEQ2", "SEQ1", 0);
     customiseOrder("SEQ2", "sendWelcEmail", 1);

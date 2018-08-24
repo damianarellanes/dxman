@@ -65,7 +65,7 @@ public class DXManOperation implements Cloneable {
 
     StringBuilder sb = new StringBuilder();
     //sb.append("***************************************************\n");
-    sb.append("Operation: ").append(name).append("\n");
+    sb.append("Operation: ").append(name).append("-->").append(id).append("\n");
     sb.append("\tInputs: ").append(inputs.values()).append("\n");
     sb.append("\tOutputs: ").append(outputs.values()).append("\n");        
     //sb.append("***************************************************\n");
