@@ -164,11 +164,16 @@ public class DesignerTest {
   
   public static void simulate(DXManWfNode wfNode) {
    
+    System.out.println("------------------------");
     System.out.println("Executing: " + wfNode.getUri());
     System.out.println("Workflow ID: " + wfNode.getWorkflowId());
-    System.out.println("Node: " + wfNode.getId());
+    System.out.println("Node: " + wfNode.getId());    
     
-    if(wfNode.getClass().equals(DXManWfInvocation.class)) return;
+    if(wfNode.getClass().equals(DXManWfInvocation.class)) {
+      
+      System.out.println("Operation: " + ((DXManWfInvocation)wfNode).getOperationName());
+      return;
+    }
     
     for(DXManWfNode subNode: ((DXManWfSequencer)wfNode).getSequence()) {
       

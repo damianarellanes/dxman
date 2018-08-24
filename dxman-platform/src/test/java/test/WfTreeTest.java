@@ -15,8 +15,9 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
 
   @Override
   public void designControl() {
-    
-    customiseOrder("a59bed22-e425-411d-a0be-7e4088f2f583", "99ce2a23-4fcd-4645-a0c0-681edb9c9154", 0);
+
+    // TODO the workflow tree can also include invocation nodes so the argument should be only the invocationNodeId
+    customiseOrder("02ed043e-8747-4c28-b3ce-e7789daf5e50", "aff3ac33-6e77-4249-b3c2-f30d60e6ad99", 0); // CustomerService, LPB.createRecord
     /*customiseOrder("ebd8dac3-24b6-417b-a117-7efe6921bf89", "SEQ2", 1);    
     customiseOrder("SEQ2", "SEQ1", 0);
     customiseOrder("SEQ2", "sendWelcEmail", 1);

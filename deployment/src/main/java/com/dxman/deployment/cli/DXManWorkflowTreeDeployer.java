@@ -166,7 +166,7 @@ public class DXManWorkflowTreeDeployer {
     composite.setId(DXManIDGenerator.generateServiceID());
     
     DXManWfNode parentWfNode = createWfNodeInstance(
-      composite, composite.getId()
+      composite, composite.getId(), ""
     );
     
     for(DXManServiceTemplate subService: 
@@ -178,8 +178,10 @@ public class DXManWorkflowTreeDeployer {
       // Adds the operations to the workflow tree      
       subService.getOperations().forEach((opName, op)->{
         
-        DXManWfNode opNode = createWfNodeInstance(subService, op.getId());
+        DXManWfNode opNode = createWfNodeInstance(subService, op.getId(), opName);
         parentWfNode.addSubWfNode(opNode, new DXManWfNodeCustom() {});
+        
+        updateWorkflowTree(wt, opNode);
       });
       
       if(subService.getType().equals(DXManServiceType.COMPOSITE)) {
@@ -203,15 +205,15 @@ public class DXManWorkflowTreeDeployer {
   }
   
   private DXManWfNode createWfNodeInstance(DXManServiceTemplate service, 
-    String wfNodeId) {
+    String wfNodeId, String operationName) {
     
     String uri = DXManIDGenerator.getCoapUri(
       service.getDeploymentInfo().getThingIp(), 
       service.getDeploymentInfo().getThingPort(), 
-      service.getId());
+      service.getId()); // TODO The uri should be to the operation not the service
     
     if(service.getType().equals(DXManServiceType.ATOMIC)) {
-      return new DXManWfInvocation(wfNodeId, uri);
+      return new DXManWfInvocation(wfNodeId, uri, operationName);
     } else {
       
       switch(((DXManCompositeServiceTemplate) service).getCompositionConnector().getType()) {

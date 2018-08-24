@@ -45,13 +45,13 @@ public class DXManWfNode {
     
     for(DXManWfNodeMapper subNodeMapper: subNodeMappers) {
       
-      // The workflowId of the subNode is the workflowtree id set by the user
+      // The workflowId of the subNode is the workflowtree id set by the user      
+      subNodeMapper.setNode(wt.getWt().get(subNodeMapper.getNode().getId()));
       subNodeMapper.getNode().setWorkflowId(wt.getId());
       
       // Deploy again if composite detected (i.e., if there are submappers)
       if(!subNodeMapper.getNode().getSubnodeMappers().isEmpty()) {
-        
-        subNodeMapper.setNode(wt.getWt().get(subNodeMapper.getNode().getId()));
+                
         subNodeMapper.getNode().deploy(alg, wt);
       }
     }    

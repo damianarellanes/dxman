@@ -42,7 +42,7 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
 
     // Reads the operation (from the event) to be invoked in this service
     DXManWfInvocation flow = gson.fromJson(workflowJSON, DXManWfInvocation.class);
-    String operationName = flow.getId();
+    String operationName = flow.getOperationName();
     DXManOperation operationToInvoke = getManagedService().getOperations()
       .get(operationName);
 
