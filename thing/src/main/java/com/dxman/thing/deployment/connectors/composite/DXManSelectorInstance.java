@@ -40,9 +40,9 @@ public class DXManSelectorInstance extends DXManConnectorInstance {
       
       DXManWfCondition condition = ((DXManWfSelectorCustom)subNodeMapper
         .getCustom()).getCondition();
-      System.out.println(condition);
       
-      if(connectorDataManager.matches(flow.getWorkflowId(), condition)) {
+      if(connectorDataManager.matches(flow.getWorkflowId(), 
+        flow.getWorkflowTimestamp(), condition)) {
         
         transferControl(
           subNodeMapper.getNode(), subNodeMapper.getNode().getUri()

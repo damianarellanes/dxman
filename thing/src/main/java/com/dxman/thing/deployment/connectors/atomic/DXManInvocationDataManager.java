@@ -22,7 +22,8 @@ public class DXManInvocationDataManager {
     dataUtil = new DXManDataUtil(operations);
   }
   
-  public String read(String workflowId, DXManOperation operationToInvoke) {
+  public String read(String workflowId, String workflowTimestamp, 
+    DXManOperation operationToInvoke) {
     
     String request = operationToInvoke.getBindingInfo().getRequestTemplate();
     
@@ -30,7 +31,8 @@ public class DXManInvocationDataManager {
     for(DXManParameter input: operationToInvoke.getInputs().values()) {
 
       // Gets the value from the dataspace
-      String value = dataSpace.readParameter(input.getId(), workflowId);
+      String value = dataSpace.readParameter(input.getId(), workflowId, 
+        workflowTimestamp);
 
       // Replaces input values in the request template
       request = request.replaceAll(

@@ -14,10 +14,11 @@ public class DXManConnectorDataManager {
     this.dataSpace = dataSpace;
   }
   
-  public boolean matches(String wfId, DXManWfCondition condition) {
+  public boolean matches(String wfId, String wfTimestamp, 
+    DXManWfCondition condition) {
         
     String dataSpaceVal = dataSpace.readParameter(
-      condition.getParameterId(), wfId
+      condition.getParameterId(), wfId, wfTimestamp
     );
     
     switch(condition.getOperator()) {

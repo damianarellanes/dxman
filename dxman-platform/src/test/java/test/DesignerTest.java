@@ -207,7 +207,7 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDeployer wfTreeManager = new DXManWorkflowTreeDeployer("http://localhost:3000");
-    String workflowTreeFile = "/tmp/wfTree3";
+    String workflowTreeFile = "/tmp/wfTree4";
     
     // GENERATE WORKFLOW FILES    
     //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
@@ -219,18 +219,20 @@ public class DesignerTest {
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
-    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    deploymentManager.deployCompositeService(wfTree.getCompositeService());
     wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
-    //String topService = wfTree.getCompositeService().getId();
-    String topService = "26c44521-6966-49b1-b5be-6a87d237b28e";
-    DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService), true);
+    String topService = wfTree.getCompositeService().getId();
+    //String topService = "eaf9c4c8-1e9f-458a-904c-c1c588036380";
+    DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService));
     wfResult.forEach((outputId, outputVal) -> {    
       System.out.println(outputId + " --> " + outputVal);
     });
     
-    //simulate(wfTree.getWt().get(wfTree.getCompositeService().getId()));
+    // TODO force to overwrite parameters in the blockchain, even if they already exist
+    
+    //simulate(wfTree.getWt().get(topService));
     
     /*System.out.println("-----INPUTS-------");
     System.out.println(alg.getReaders().get("IC1.createRecord.name"));//SEQ3.createRecord.name

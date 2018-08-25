@@ -9,10 +9,14 @@ public interface DXManDataSpace {
     
   public int registerThing(String id, String alias);
   
-  public void registerParameter(String parameterId, String workflowId, 
-    String value, List<String> readers);
+  public void registerParameters(List<DXManDataParameter> parameters, 
+    String workflowId);
   
-  public String readParameter(String parameterId, String workflowId);
+  public String readParameter(String parameterId, String workflowId, 
+    String workflowTimestamp);
+  
+  public void writeParameters(List<DXManDataParameter> parameters, 
+    String workflowId);
   
   public void writeParameter(String parameterId, String workflowId, 
     String newValue);

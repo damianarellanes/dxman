@@ -51,7 +51,7 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
 
     // Gets the input parameters and constructs JSON request
     String request = invocationDataManager.read(
-      flow.getWorkflowId(), operationToInvoke
+      flow.getWorkflowId(), flow.getWorkflowTimestamp(), operationToInvoke
     );
 
     // Invokes the operation        

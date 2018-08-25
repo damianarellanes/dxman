@@ -1,7 +1,11 @@
 package com.dxman.dataspace.blockchain;
 
+import com.dxman.dataspace.base.DXManDataParameter;
 import com.dxman.dataspace.base.DXManDataSpace;
 import static com.dxman.utils.DXManIDGenerator.generateParameterUUID;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import org.javalite.http.*;
 import org.json.*;
@@ -48,43 +52,57 @@ public class DXManBlockChainManager implements DXManDataSpace {
   }
   
   @Override
-  public void registerParameter(String parameterId, String workflowId, 
-    String value, List<String> readers) {
+  public void registerParameters(List<DXManDataParameter> parameters, String workflowId) {
     
-    try {
+    int from = 0, to = 0;
+    
+    // Registers 20 parameters at a time to avoid any issue with the blockchain server
+    while(to < parameters.size()) {
       
-      JSONObject parameter = new JSONObject();
-      parameter.put("$class", "com.dxman.blockchain.DXManParameter");
-      parameter.put("id", generateParameterUUID(parameterId, workflowId));
-      parameter.put("parameterId", parameterId);
-      parameter.put("workflowId", workflowId);
-      parameter.put("value", value);
-      JSONArray readersJSON = new JSONArray();
-      for(String readerId: readers) {
-                
-        readersJSON.put("com.dxman.blockchain.DXManParameter#" 
-          + generateParameterUUID(readerId, workflowId));
-      }
-      parameter.put("readers", readersJSON);
+      from = to;
+      to = from + 20;
 
-      Post result = post(
-        blockChainEndpoint + "/api/DXManParameter", 
-        parameter.toString()
-      );
-      
-      if(result.responseCode() == 200) {
-        System.out.println("Parameter " + parameterId + " added to the blockchain");
-      } else {
-        System.err.println(result.responseMessage());
-      }
-        
-    } catch (JSONException ex) {
-        System.err.println(ex.toString());
+      if(parameters.size() < to) to = parameters.size();
+  
+      try {
+
+        JSONObject transaction = new JSONObject();
+        transaction.put("$class", "com.dxman.blockchain.CreateParameters");
+        JSONArray parametersJSON = new JSONArray();
+        for(DXManDataParameter par: parameters.subList(from, to)) {
+
+          JSONObject parameterJSON = new JSONObject();
+          parameterJSON.put("$class", "com.dxman.blockchain.DXManParameter");
+          parameterJSON.put("id", par.getId());
+          parameterJSON.put("parameterId", par.getParameterId());
+          parameterJSON.put("workflowId", par.getWorkflowId());
+          parameterJSON.put("value", par.getValue());
+          JSONArray readersJSON = new JSONArray();
+          for(String readerId: par.getReaders()) {
+            readersJSON.put("com.dxman.blockchain.DXManParameter#" 
+              + generateParameterUUID(readerId, workflowId));
+          }
+          parameterJSON.put("readers", readersJSON);
+
+          parametersJSON.put(parameterJSON);
+        }
+
+        transaction.put("parameters", parametersJSON);
+
+        Post result = post(blockChainEndpoint + 
+          "/api/CreateParameters", transaction.toString());
+
+        if(result.responseCode() == 200) {
+          //System.out.println((to-from) + " parameters have been registered!");
+        }
+
+      } catch (JSONException ex) { System.err.println(ex.toString()); }
     }
   }
   
   @Override
-  public String readParameter(String parameterId, String workflowId) {
+  public String readParameter(String parameterId, String workflowId, 
+    String workflowTimestamp) {
     
     try {
       
@@ -97,14 +115,57 @@ public class DXManBlockChainManager implements DXManDataSpace {
       url.append(blockChainEndpoint)
         .append("/api/queries/selectWorkflowParameter")
         .append("?parameterId=").append(parameterId).append("&")
-        .append("workflowId=").append(workflowId);
-
+        .append("workflowId=").append(workflowId).append("&")
+        .append("workflowTimestamp=").append(workflowTimestamp);
+      
       JSONArray result = new JSONArray(get(url.toString()));
       return ((JSONObject)result.get(0)).getString("value");
         
     } catch (JSONException ex) { System.err.println(ex.toString()); }
 
-    return "";
+    return "ERROR READING PARAMETER!";
+  }
+  
+  @Override
+  public void writeParameters(List<DXManDataParameter> parameters, String workflowId) {
+    
+    int from = 0, to = 0;
+    
+    // Writes 20 parameters at a time to avoid any issue with the blockchain server
+    while(to < parameters.size()) {
+      
+      from = to;
+      to = from + 20;
+
+      if(parameters.size() < to) to = parameters.size();
+  
+      try {
+
+        JSONObject transaction = new JSONObject();
+        transaction.put("$class", "com.dxman.blockchain.UpdateParameters");
+        JSONArray updatesJSON = new JSONArray();
+        for(DXManDataParameter par: parameters.subList(from, to)) {
+
+          JSONObject updateJSON = new JSONObject();
+          updateJSON.put("$class", "com.dxman.blockchain.UpdateParameterConcept");
+          updateJSON.put("parameter", "com.dxman.blockchain.DXManParameter#" + 
+            par.getId());
+          updateJSON.put("newValue", par.getValue());
+      
+          updatesJSON.put(updateJSON);
+        }
+
+        transaction.put("updates", updatesJSON);
+
+        Post result = post(blockChainEndpoint + 
+          "/api/UpdateParameters", transaction.toString());
+
+        if(result.responseCode() == 200) {
+          System.out.println((to-from) + " parameters have been updated!");
+        }
+
+      } catch (JSONException ex) { System.err.println(ex.toString()); }
+    }
   }
   
   @Override
@@ -115,9 +176,12 @@ public class DXManBlockChainManager implements DXManDataSpace {
       
       JSONObject transaction = new JSONObject();
       transaction.put("$class", "com.dxman.blockchain.UpdateParameter");
-      transaction.put("parameter", "com.dxman.blockchain.DXManParameter#" + 
+      JSONObject updateJSON = new JSONObject();
+      updateJSON.put("$class", "com.dxman.blockchain.UpdateParameterConcept");
+      updateJSON.put("parameter", "com.dxman.blockchain.DXManParameter#" + 
         generateParameterUUID(parameterId, workflowId));
-      transaction.put("newValue", newValue);
+      updateJSON.put("newValue", newValue);
+      transaction.put("update", updateJSON);      
 
       Post result = post(blockChainEndpoint + 
         "/api/UpdateParameter", transaction.toString());
@@ -141,28 +205,57 @@ public class DXManBlockChainManager implements DXManDataSpace {
   
   public static void main(String[] args) {
     
-    DXManBlockChainManager blockchain = new DXManBlockChainManager("http://localhost:3000");
+    DXManBlockChainManager blockchain = new DXManBlockChainManager("http://localhost:3000");    
     
-    String par1UUID = generateParameterUUID("Par1", "MyWfId");
-    String par2UUID = generateParameterUUID("Par2", "MyWfId");
-    String par3UUID = generateParameterUUID("Par3", "MyWfId");
+    List<DXManDataParameter> parameters = new ArrayList<>();
+    parameters.add(new DXManDataParameter("Par1", "MyWfId", "Hello world initial", Arrays.asList("Par2", "Par3")));
+    parameters.add(new DXManDataParameter("Par2", "MyWfId", "null", new ArrayList<>()));
+    parameters.add(new DXManDataParameter("Par3", "MyWfId", "null", new ArrayList<>()));
     
-    List<String> readers = Arrays.asList(par2UUID, par3UUID);
+    //blockchain.registerParameters(parameters, "MyWfId");
+        
+    //"2018-01-02T11:42Z";
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    Instant instant = timestamp.toInstant();
+    
+    /*System.out.println("----------------UPDATING...----------");
+    blockchain.writeParameter("Par1", "MyWfId", "AN UPDATE HAS BEEN DONE!!!");*/
+    
+    List<DXManDataParameter> updates = new ArrayList<>();
+    updates.add(new DXManDataParameter("Par1", "MyWfId", "MULTIPLE UPDATES for everyone", new ArrayList<>()));
+    updates.add(new DXManDataParameter("Par3", "MyWfId", "Only for Par3", new ArrayList<>()));
+    updates.add(new DXManDataParameter("Par2", "MyWfId", "Only for Par2", new ArrayList<>()));
+    blockchain.writeParameters(updates, "MyWfId");    
+    
+    System.out.println("Par1-->" + blockchain.readParameter("Par1", "MyWfId", instant.toString()));
+    System.out.println("Par2-->" + blockchain.readParameter("Par2", "MyWfId", instant.toString()));
+    System.out.println("Par3-->" + blockchain.readParameter("Par3", "MyWfId", instant.toString()));
+    
+    /*String par1UUID = generateParameterUUID("Par1", "MyWfId");System.out.println("PAR1:" + par1UUID);
+    String par2UUID = generateParameterUUID("Par2", "MyWfId");System.out.println("PAR2:" + par2UUID);
+    String par3UUID = generateParameterUUID("Par3", "MyWfId");System.out.println("PAR3:" + par3UUID);
+    
+    List<String> readers = Arrays.asList("Par2", "Par3");
     blockchain.registerParameter("Par1", "MyWfId", "Hello World Initial", readers);
-    List<String> readers2 = new ArrayList<>();//Arrays.asList("Par100");
+    List<String> readers2 = new ArrayList<>();
     blockchain.registerParameter("Par2", "MyWfId", "null", readers2);
-    List<String> readers3 = new ArrayList<>(); //Arrays.asList("Par20000");
+    List<String> readers3 = new ArrayList<>();
     blockchain.registerParameter("Par3", "MyWfId", "null", readers3);
+
+    //"2018-01-02T11:42Z";
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    Instant instant = timestamp.toInstant();
+    //System.out.println(instant);
     
-    System.out.println("Par1-->" + blockchain.readParameter("Par1", "MyWfId"));
-    System.out.println("Par2-->" + blockchain.readParameter("Par2", "MyWfId"));
-    System.out.println("Par3-->" + blockchain.readParameter("Par3", "MyWfId"));
+    System.out.println("Par1-->" + blockchain.readParameter("Par1", "MyWfId", "2017-08-24T17:17:53.666Z"));
+    System.out.println("Par2-->" + blockchain.readParameter("Par2", "MyWfId", "2017-08-24T17:17:53.666Z"));
+    System.out.println("Par3-->" + blockchain.readParameter("Par3", "MyWfId", "2017-08-24T17:17:53.666Z"));
     
     System.out.println("----------------UPDATING...----------");
-    blockchain.writeParameter("Par1", "MyWfId", "ANOTHER UPDATE HAS BEEN DONE!!!");
+    blockchain.writeParameter("Par1", "MyWfId", "AN UPDATE HAS BEEN DONE!!!");
     
-    System.out.println("Par1-->" + blockchain.readParameter("Par1", "MyWfId"));
-    System.out.println("Par2-->" + blockchain.readParameter("Par2", "MyWfId"));
-    System.out.println("Par3-->" + blockchain.readParameter("Par3", "MyWfId"));
+    System.out.println("Par1-->" + blockchain.readParameter("Par1", "MyWfId", instant.toString()));
+    System.out.println("Par2-->" + blockchain.readParameter("Par2", "MyWfId", instant.toString()));
+    System.out.println("Par3-->" + blockchain.readParameter("Par3", "MyWfId", instant.toString()));*/
   }
 }

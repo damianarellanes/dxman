@@ -54,16 +54,19 @@ public class DXManWorkflowTreeDeployer {
   }
   
   public DXManWfResult executeWorkflow(DXManWorkflowTreeEditor wtEditor, 
-    DXManWfNode node, boolean updateInputs) {
+    DXManWfNode node) {
         
     String workflowId = wtEditor.getWorkflowTree().getId();
+    String workflowTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
     
     // Writes input parameters
-    if(updateInputs) {      
-      wtEditor.getInputs().forEach((paramId, value)->{
-        dataSpace.writeParameter(paramId, workflowId, value);
-      });
-    }    
+    System.out.println("Updating inputs in the blockchain...");
+    List<DXManDataParameter> dp = new ArrayList<>();
+    
+    wtEditor.getInputs().forEach((paramId, paramValue)->{
+      dp.add(new DXManDataParameter(paramId, workflowId, paramValue, new ArrayList<>()));
+    });
+    dataSpace.writeParameters(dp, workflowId);   
     
     RuntimeTypeAdapterFactory<DXManWfNode> adapter1 = RuntimeTypeAdapterFactory
       .of(DXManWfNode.class)
@@ -88,7 +91,7 @@ public class DXManWorkflowTreeDeployer {
     // Reads output parameters
     DXManWfResult outputValues = new DXManWfResult();
     for(String outputId: wtEditor.getOutputs()) {      
-      outputValues.put(outputId, dataSpace.readParameter(outputId, workflowId));
+      outputValues.put(outputId, dataSpace.readParameter(outputId, workflowId, workflowTimestamp));
     }
     
     return outputValues;
@@ -111,11 +114,15 @@ public class DXManWorkflowTreeDeployer {
   
   private void deployWorkflowDataChannels(DXManDataAlgorithm alg, String wfId) {
     
-    System.out.println("Deploying data channels for workflow " + wfId + "...");
+    /*System.out.println("Deploying data channels for workflow " + wfId + "...");
     
+    alg.getReaders().forEach((rId, writers) ->{
+      System.out.println("Deploying: " + rId + "--->" + writers);      
+    });*/
     // TODO Optimize this (perhaps sending the whole readers to every WfNode of the WfTree)
     // So every WfNode can access the data pipes from there
     DXManMap<String, String> alreadyDeployed = new DXManMap<>();
+    List<DXManDataParameter> parametersToDeploy = new ArrayList<>();
     alg.getWriters().forEach((writerId, readers) ->{
       
       //System.out.println("Deploying: " + writerId + "--->" + readers);      
@@ -127,16 +134,23 @@ public class DXManWorkflowTreeDeployer {
         //System.out.println("Deploying: " + reader); 
         if(alreadyDeployed.get(reader) == null) {
       
-          dataSpace.registerParameter(reader, wfId, "null", new ArrayList<>());
+          parametersToDeploy.add(new DXManDataParameter(
+            reader, wfId, "null", new ArrayList<>())
+          );
+          //dataSpace.registerParameter(reader, wfId, "null", new ArrayList<>());
           alreadyDeployed.put(reader, reader);
         }          
         setReaders.add(reader);        
       }
       
-      dataSpace.registerParameter(writerId, wfId, "null", setReaders);
-      alreadyDeployed.put(writerId, writerId);
-      
+      parametersToDeploy.add(new DXManDataParameter(
+        writerId, wfId, "null", setReaders)
+      );
+      //dataSpace.registerParameter(writerId, wfId, "null", setReaders);
+      alreadyDeployed.put(writerId, writerId);      
     });
+    
+    dataSpace.registerParameters(parametersToDeploy, wfId);
   }
   
   public DXManWorkflowTree readWorkflowTreeDescription(String fileName) {

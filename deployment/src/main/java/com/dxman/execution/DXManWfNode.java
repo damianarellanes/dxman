@@ -14,6 +14,7 @@ public class DXManWfNode {
   private String id;  
   private String uri;
   private String workflowId;
+  private String workflowTimestamp;
   private List<DXManWfNodeMapper> subNodeMappers = new ArrayList<>();
   
   private List<DXManDataChannel> dataChannels = new ArrayList<>(); // Remove and only keep in the service template
@@ -31,6 +32,7 @@ public class DXManWfNode {
       
       if(subNodeMapper.getNode().getId().equalsIgnoreCase(childKey)) {
         subNodeMapper.setCustom(custom);
+        return;
       }
     }
   }
@@ -48,16 +50,16 @@ public class DXManWfNode {
       // The workflowId of the subNode is the workflowtree id set by the user      
       subNodeMapper.setNode(wt.getWt().get(subNodeMapper.getNode().getId()));
       subNodeMapper.getNode().setWorkflowId(wt.getId());
+      subNodeMapper.getNode().setWorkflowTimestamp(wt.getCreationTimestamp());
       
       // Deploy again if composite detected (i.e., if there are submappers)
-      if(!subNodeMapper.getNode().getSubnodeMappers().isEmpty()) {
-                
+      if(!subNodeMapper.getNode().getSubnodeMappers().isEmpty()) {                
         subNodeMapper.getNode().deploy(alg, wt);
       }
     }    
     
-    // The workflowId of this node is the workflowtree id set by the user
     workflowId = wt.getId(); 
+    workflowTimestamp = wt.getCreationTimestamp();
     
     dataChannels.forEach((dc) -> { alg.analyze(dc); });    
     
@@ -72,6 +74,11 @@ public class DXManWfNode {
   
   public String getWorkflowId() { return workflowId; }  
   public void setWorkflowId(String workflowId) { this.workflowId = workflowId; }
+  
+  public String getWorkflowTimestamp() { return workflowTimestamp; }
+  public void setWorkflowTimestamp(String workflowTimestamp) {
+    this.workflowTimestamp = workflowTimestamp;
+  }
   
   public List<DXManWfNodeMapper> getSubnodeMappers() { return subNodeMappers; }
   public void setSubnodeMappers(List<DXManWfNodeMapper> subNodeMappers) { 
