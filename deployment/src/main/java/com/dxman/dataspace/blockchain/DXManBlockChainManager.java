@@ -2,6 +2,7 @@ package com.dxman.dataspace.blockchain;
 
 import com.dxman.dataspace.base.DXManDataParameter;
 import com.dxman.dataspace.base.DXManDataSpace;
+import com.dxman.utils.DXManErrors;
 import static com.dxman.utils.DXManIDGenerator.generateParameterUUID;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -121,9 +122,9 @@ public class DXManBlockChainManager implements DXManDataSpace {
       JSONArray result = new JSONArray(get(url.toString()));
       return ((JSONObject)result.get(0)).getString("value");
         
-    } catch (JSONException ex) { System.err.println(ex.toString()); }
-
-    return "ERROR READING PARAMETER!";
+    } catch (JSONException ex) {       
+      return DXManErrors.PARAMETER_VALUE_NOT_FOUND.name();
+    }
   }
   
   @Override

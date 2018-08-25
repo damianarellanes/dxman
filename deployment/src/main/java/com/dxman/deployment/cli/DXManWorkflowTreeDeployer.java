@@ -56,17 +56,17 @@ public class DXManWorkflowTreeDeployer {
   public DXManWfResult executeWorkflow(DXManWorkflowTreeEditor wtEditor, 
     DXManWfNode node) {
         
-    String workflowId = wtEditor.getWorkflowTree().getId();
-    String workflowTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
+    String wfId = wtEditor.getWorkflowTree().getId();
+    String wfTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
     
     // Writes input parameters
     System.out.println("Updating inputs in the blockchain...");
     List<DXManDataParameter> dp = new ArrayList<>();
     
     wtEditor.getInputs().forEach((paramId, paramValue)->{
-      dp.add(new DXManDataParameter(paramId, workflowId, paramValue, new ArrayList<>()));
+      dp.add(new DXManDataParameter(paramId, wfId, paramValue, new ArrayList<>()));
     });
-    dataSpace.writeParameters(dp, workflowId);   
+    dataSpace.writeParameters(dp, wfId);   
     
     RuntimeTypeAdapterFactory<DXManWfNode> adapter1 = RuntimeTypeAdapterFactory
       .of(DXManWfNode.class)
@@ -90,8 +90,12 @@ public class DXManWorkflowTreeDeployer {
     
     // Reads output parameters
     DXManWfResult outputValues = new DXManWfResult();
-    for(String outputId: wtEditor.getOutputs()) {      
-      outputValues.put(outputId, dataSpace.readParameter(outputId, workflowId, workflowTimestamp));
+    for(String outputId: wtEditor.getOutputs()) {
+
+      // Only reads outputs that have been update during the workflow execution
+      String value = dataSpace.readParameter(outputId, wfId, wfTimestamp);
+      if(!value.equals(DXManErrors.PARAMETER_VALUE_NOT_FOUND.name()))
+        outputValues.put(outputId, value);
     }
     
     return outputValues;
@@ -100,6 +104,7 @@ public class DXManWorkflowTreeDeployer {
   public void deployWorkflow(DXManWorkflowTreeEditor wtEditor, 
     boolean deployDataChannels) {
     
+    wtEditor.getWorkflowTree().updateCreationTimestamp();
     DXManDataAlgorithm alg = new DXManDataAlgorithm();
  
     wtEditor.design();

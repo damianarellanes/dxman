@@ -7,26 +7,21 @@ import java.sql.Timestamp;
 /**
  * @author Damian Arellanes
  */
-public class DXManWorkflowTree {
+public final class DXManWorkflowTree {
     
   private String id;  
   private DXManMap<String, DXManWfNode> wt;
-  private final String creationTimestamp;
+  private String creationTimestamp;
   private DXManCompositeServiceTemplate compositeService;
   
   public DXManWorkflowTree() {
-  
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    this.creationTimestamp = timestamp.toInstant().toString();
+    updateCreationTimestamp();
   }
 
   public DXManWorkflowTree(DXManCompositeServiceTemplate compositeService) {
-    
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    
     this.id = DXManIDGenerator.generateWorkflowID();
     this.wt = new DXManMap();
-    this.creationTimestamp = timestamp.toInstant().toString();
+    updateCreationTimestamp();
     this.compositeService = compositeService;
   }
   
@@ -37,6 +32,10 @@ public class DXManWorkflowTree {
   public void setWt(DXManMap<String, DXManWfNode> wt) { this.wt = wt; }
   
   public String getCreationTimestamp() { return creationTimestamp; }
+  public void updateCreationTimestamp() {
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    this.creationTimestamp = timestamp.toInstant().toString();
+  }
   
   public DXManCompositeServiceTemplate getCompositeService() {
     return compositeService;

@@ -30,6 +30,7 @@ import com.dxman.execution.DXManWfSequencer;
 import com.dxman.execution.DXManWfSequencerCustom;
 import com.dxman.execution.selector.DXManWfSelector;
 import com.dxman.execution.selector.DXManWfSelectorCustom;
+import com.dxman.utils.DXManErrors;
 import com.dxman.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.GsonBuilder;
 import com.google.gson.*;
@@ -207,7 +208,7 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDeployer wfTreeManager = new DXManWorkflowTreeDeployer("http://localhost:3000");
-    String workflowTreeFile = "/tmp/wfTree4";
+    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf1";
     
     // GENERATE WORKFLOW FILES    
     //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
@@ -219,15 +220,15 @@ public class DesignerTest {
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
-    deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
     wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
     String topService = wfTree.getCompositeService().getId();
     //String topService = "eaf9c4c8-1e9f-458a-904c-c1c588036380";
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService));
-    wfResult.forEach((outputId, outputVal) -> {    
-      System.out.println(outputId + " --> " + outputVal);
+    wfResult.forEach((outputId, outputVal) -> {
+        System.out.println(outputId + " --> " + outputVal);
     });
     
     // TODO force to overwrite parameters in the blockchain, even if they already exist
