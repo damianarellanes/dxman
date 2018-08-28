@@ -224,7 +224,7 @@ public class DesignerTest {
     
     // DEPLOY WORKFLOW FROM FILE
     deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    wfTreeManager.deployWorkflow(wtEditor, true); // true when data channels are modified, false for using same data channels
+    wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
     //String topService = wfTree.getCompositeService().getId();

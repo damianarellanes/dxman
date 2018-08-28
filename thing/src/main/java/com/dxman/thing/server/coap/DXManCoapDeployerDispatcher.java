@@ -1,8 +1,6 @@
 package com.dxman.thing.server.coap;
 
-import com.dxman.deployment.common.DXManDeploymentRequest;
-import com.dxman.design.connectors.common.DXManConnectorType;
-import com.dxman.design.connectors.composition.*;
+import com.dxman.deployment.common.*;
 import com.dxman.design.services.common.DXManServiceType;
 import com.dxman.thing.deployment.common.DXManDeployer;
 import org.eclipse.californium.core.CoapResource;
@@ -10,7 +8,6 @@ import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import com.dxman.thing.server.base.DXManDeployerDispatcher;
 import com.dxman.utils.DXManErrors;
-import com.dxman.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.*;
 
 /**
@@ -29,16 +26,9 @@ public class DXManCoapDeployerDispatcher extends CoapResource
     super(deployerResourceName);
     this.deployer = deployer;
     
-    // TODO Put all adapters in a single class
-    RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter2 
-      = RuntimeTypeAdapterFactory   
-      .of(DXManCompositionConnectorTemplate.class, "classType")
-      .registerSubtype(DXManParallelTemplate.class, DXManConnectorType.PARALLEL.name())
-      .registerSubtype(DXManSequencerTemplate.class, DXManConnectorType.SEQUENCER.name())
-      .registerSubtype(DXManSelectorTemplate.class, DXManConnectorType.SELECTOR.name());
-    
     gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
-      .registerTypeAdapterFactory(adapter2)
+      .registerTypeAdapterFactory(
+        DXManDeploymentUtils.getCompositionConnectorAdapterDeserialization())
       .create();
   }
 

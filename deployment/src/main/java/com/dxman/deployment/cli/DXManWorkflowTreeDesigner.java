@@ -1,19 +1,13 @@
 package com.dxman.deployment.cli;
 
 import com.dxman.dataspace.base.*;
+import com.dxman.deployment.common.DXManDeploymentUtils;
 import com.dxman.deployment.data.DXManDataAlgorithm;
-import com.dxman.design.connectors.common.DXManConnectorType;
-import com.dxman.design.connectors.composition.DXManCompositionConnectorTemplate;
-import com.dxman.design.connectors.composition.DXManParallelTemplate;
-import com.dxman.design.connectors.composition.DXManSelectorTemplate;
-import com.dxman.design.connectors.composition.DXManSequencerTemplate;
 import com.dxman.design.data.*;
-import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.common.*;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.execution.*;
 import com.dxman.execution.selector.DXManWfSelector;
-import com.dxman.execution.selector.DXManWfSelectorCustom;
 import com.dxman.utils.*;
 import com.google.gson.*;
 import java.io.*;
@@ -36,26 +30,13 @@ public class DXManWorkflowTreeDesigner {
     
     dataSpace = DXManDataSpaceFactory.createBlockchainManager(dataSpaceLocation);
     
-    RuntimeTypeAdapterFactory<DXManServiceTemplate> adapter0 = RuntimeTypeAdapterFactory
-      .of(DXManServiceTemplate.class, "classTypeServ")
-      .registerSubtype(DXManCompositeServiceTemplate.class, DXManCompositeServiceTemplate.class.getName())
-      .registerSubtype(DXManAtomicServiceTemplate.class, DXManAtomicServiceTemplate.class.getName());
-    RuntimeTypeAdapterFactory<DXManWfNode> adapter1 = RuntimeTypeAdapterFactory
-      .of(DXManWfNode.class, "classTypeWfNode")
-      .registerSubtype(DXManWfParallel.class, DXManWfParallel.class.getName())
-      .registerSubtype(DXManWfSelector.class, DXManWfSelector.class.getName())
-      .registerSubtype(DXManWfSequencer.class, DXManWfSequencer.class.getName())
-      .registerSubtype(DXManWfInvocation.class, DXManWfInvocation.class.getName());
-    RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter2 = RuntimeTypeAdapterFactory
-      .of(DXManCompositionConnectorTemplate.class, "classType")
-      .registerSubtype(DXManParallelTemplate.class, DXManConnectorType.PARALLEL.name())
-      .registerSubtype(DXManSelectorTemplate.class, DXManConnectorType.SELECTOR.name())
-      .registerSubtype(DXManSequencerTemplate.class, DXManConnectorType.SEQUENCER.name());
-    
     GSON = new GsonBuilder().disableHtmlEscaping()
-      .registerTypeAdapterFactory(adapter0)
-      .registerTypeAdapterFactory(adapter1)
-      .registerTypeAdapterFactory(adapter2)
+      .registerTypeAdapterFactory(
+        DXManDeploymentUtils.getServiceAdapterDeserialization())
+      .registerTypeAdapterFactory(
+        DXManDeploymentUtils.getWfNodeAdapterDeserialization())
+      .registerTypeAdapterFactory(
+        DXManDeploymentUtils.getCompositionConnectorAdapterDeserialization())
       .create();
   }
   
@@ -70,24 +51,17 @@ public class DXManWorkflowTreeDesigner {
     List<DXManDataParameter> dp = new ArrayList<>();
     
     wtEditor.getInputs().forEach((paramId, paramValue)->{
-      dp.add(new DXManDataParameter(paramId, wfId, paramValue, new ArrayList<>()));
+      dp.add(new DXManDataParameter(paramId, wfId, paramValue, 
+        new ArrayList<>()));
     });
     dataSpace.writeParameters(dp, wfId);   
     
-    RuntimeTypeAdapterFactory<DXManWfNode> adapter1 = RuntimeTypeAdapterFactory
-      .of(DXManWfNode.class)
-      .registerSubtype(DXManWfParallel.class)
-      .registerSubtype(DXManWfSelector.class)
-      .registerSubtype(DXManWfSequencer.class)
-      .registerSubtype(DXManWfInvocation.class);
-    RuntimeTypeAdapterFactory<DXManWfNodeCustom> adapter2 = RuntimeTypeAdapterFactory
-      .of(DXManWfNodeCustom.class)
-      .registerSubtype(DXManWfParallelCustom.class)
-      .registerSubtype(DXManWfSelectorCustom.class)
-      .registerSubtype(DXManWfSequencerCustom.class);
     Gson gson = new GsonBuilder().disableHtmlEscaping()
-      .registerTypeAdapterFactory(adapter1)
-      .registerTypeAdapterFactory(adapter2)
+      .registerTypeAdapterFactory(
+        DXManDeploymentUtils.getWfNodeAdapterSerialization())
+      .registerTypeAdapterFactory(
+        DXManDeploymentUtils.getWfNodeCustomAdapterSerialization()
+      )
       .create();
     
     // Executes the workflow
