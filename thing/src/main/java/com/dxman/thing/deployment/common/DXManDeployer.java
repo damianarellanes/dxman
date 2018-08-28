@@ -17,25 +17,21 @@ public class DXManDeployer {
   
   private final DXManServer server;
   private final DXManDataSpace dataSpace;
-  private final String thingId;
   
-  public DXManDeployer(DXManServer server, DXManDataSpace dataSpace, 
-    String thingId) {
+  public DXManDeployer(DXManServer server, DXManDataSpace dataSpace) {
     
     this.server = server;
     this.dataSpace = dataSpace;
-    this.thingId = thingId;
   }
   
   public String deployAtomicService(DXManAtomicServiceTemplate managedService) {
     
     // TODO Create a unique solution to swicth between Coap, Rest, events, etc
-    Gson gson = createGson();
+    Gson gson = DXManDeploymentUtils.buildSerializationGson();
     DXManInvocationInstance ic = new DXManInvocationInstance(
       managedService, DXManConnectorRequesterFactory.createCoapRequester(gson), 
       gson, 
-      new DXManInvocationDataManager(dataSpace, managedService.getOperations()), 
-      thingId
+      new DXManInvocationDataManager(dataSpace, managedService.getOperations())
     );    
     
     server.deploy(ic);
@@ -45,7 +41,7 @@ public class DXManDeployer {
    
   public String deployCompositeService(DXManCompositeServiceTemplate managedService) {
     
-    Gson gson = createGson();    
+    Gson gson = DXManDeploymentUtils.buildSerializationGson();
     DXManConnectorRequester connectorRequester 
       = DXManConnectorRequesterFactory.createCoapRequester(gson);
     
@@ -73,17 +69,5 @@ public class DXManDeployer {
     server.deploy(connectorInstance);
     
     return connectorInstance.getId();
-  }
-  
-  private Gson createGson () {
-    
-    // TODO Create a unique solution to swicth between Coap, Rest, events, etc
-    
-    return new GsonBuilder().disableHtmlEscaping()
-      .registerTypeAdapterFactory(
-        DXManDeploymentUtils.getWfNodeAdapterSerialization())
-      .registerTypeAdapterFactory(
-        DXManDeploymentUtils.getWfNodeCustomAdapterSerialization())
-      .create();
   }
 }

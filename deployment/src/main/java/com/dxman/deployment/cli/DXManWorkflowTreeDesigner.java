@@ -20,7 +20,8 @@ import org.eclipse.californium.core.CoapClient;
 public class DXManWorkflowTreeDesigner {
   
   private final DXManDataSpace dataSpace;
-  private final Gson GSON;
+  private final Gson SERIALIZATION_GSON;
+  private final Gson DESERIALIZATION_GSON;
   
   private StringBuilder COMPOSITE_CONTENT;
   private final String COMPOSITE_EXTENSION = ".comp";
@@ -28,16 +29,9 @@ public class DXManWorkflowTreeDesigner {
   
   public DXManWorkflowTreeDesigner(String dataSpaceLocation) {    
     
-    dataSpace = DXManDataSpaceFactory.createBlockchainManager(dataSpaceLocation);
-    
-    GSON = new GsonBuilder().disableHtmlEscaping()
-      .registerTypeAdapterFactory(
-        DXManDeploymentUtils.getServiceAdapterDeserialization())
-      .registerTypeAdapterFactory(
-        DXManDeploymentUtils.getWfNodeAdapterDeserialization())
-      .registerTypeAdapterFactory(
-        DXManDeploymentUtils.getCompositionConnectorAdapterDeserialization())
-      .create();
+    dataSpace = DXManDataSpaceFactory.createBlockchainManager(dataSpaceLocation);    
+    SERIALIZATION_GSON = DXManDeploymentUtils.buildSerializationGson();
+    DESERIALIZATION_GSON = DXManDeploymentUtils.buildDeserializationGson();
   }
   
   public DXManWfResult executeWorkflow(DXManWorkflowTreeEditor wtEditor, 
@@ -54,21 +48,13 @@ public class DXManWorkflowTreeDesigner {
       dp.add(new DXManDataParameter(paramId, wfId, paramValue, 
         new ArrayList<>()));
     });
-    dataSpace.writeParameters(dp, wfId);   
-    
-    Gson gson = new GsonBuilder().disableHtmlEscaping()
-      .registerTypeAdapterFactory(
-        DXManDeploymentUtils.getWfNodeAdapterSerialization())
-      .registerTypeAdapterFactory(
-        DXManDeploymentUtils.getWfNodeCustomAdapterSerialization()
-      )
-      .create();
+    dataSpace.writeParameters(dp, wfId);
     
     // Executes the workflow
     System.out.println("Executing the workflow " 
       + wtEditor.getWorkflowTree().getId() +"...");
     CoapClient cp = new CoapClient(node.getUri());
-    cp.post(gson.toJson(node), 0);
+    cp.post(SERIALIZATION_GSON.toJson(node), 0);
     
     // Reads output parameters
     DXManWfResult outputValues = new DXManWfResult();
@@ -103,28 +89,20 @@ public class DXManWorkflowTreeDesigner {
     
     System.out.println("Deploying data channels for workflow " + wfId + "...");
     
-    /*alg.getReaders().forEach((rId, writers) ->{
-      System.out.println("Deploying: " + rId + "--->" + writers);      
-    });*/
     // TODO Optimize this (perhaps sending the whole readers to every WfNode of the WfTree)
     // So every WfNode can access the data pipes from there
     DXManMap<String, String> alreadyDeployed = new DXManMap<>();
     List<DXManDataParameter> parametersToDeploy = new ArrayList<>();
     alg.getWriters().forEach((writerId, readers) ->{
-      
-      //System.out.println("Deploying: " + writerId + "--->" + readers);      
-      //System.out.println("Deploying: " + writerId);
-      
+            
       List<String> setReaders = new ArrayList<>();
       for(String reader: readers) {
       
-        //System.out.println("Deploying: " + reader); 
         if(alreadyDeployed.get(reader) == null) {
       
           parametersToDeploy.add(new DXManDataParameter(
             reader, wfId, "null", new ArrayList<>())
           );
-          //dataSpace.registerParameter(reader, wfId, "null", new ArrayList<>());
           alreadyDeployed.put(reader, reader);
         }          
         setReaders.add(reader);        
@@ -133,7 +111,6 @@ public class DXManWorkflowTreeDesigner {
       parametersToDeploy.add(new DXManDataParameter(
         writerId, wfId, "null", setReaders)
       );
-      //dataSpace.registerParameter(writerId, wfId, "null", setReaders);
       alreadyDeployed.put(writerId, writerId);      
     });
     
@@ -142,7 +119,7 @@ public class DXManWorkflowTreeDesigner {
   
   public DXManWorkflowTree readWorkflowTreeDescription(String fileName) {
     
-    return GSON.fromJson(
+    return DESERIALIZATION_GSON.fromJson(
       readFile(fileName + WT_EXTENSION), 
       DXManWorkflowTree.class
     );

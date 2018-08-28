@@ -22,7 +22,7 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
   // TODO remove thingAlias from constructor arguments
   public DXManInvocationInstance(DXManAtomicServiceTemplate managedService, 
     DXManConnectorRequester requester, Gson gson, 
-    DXManInvocationDataManager invocationDataManager, String thingAlias) {
+    DXManInvocationDataManager invocationDataManager) {
 
     super(managedService, managedService.getInvocationConnector().getName(),
       requester, gson);

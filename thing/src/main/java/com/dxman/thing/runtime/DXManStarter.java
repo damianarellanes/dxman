@@ -30,7 +30,7 @@ public class DXManStarter {
     DXManThing thing = setThingUp(config, server, dataSpace);
     
     // Initializes the deployer (running at e.g., deployer-6be66ab6-3c23-49d2-b088-6a51bcee913d)
-    DXManDeployer deployer = new DXManDeployer(server, dataSpace, thing.getId());
+    DXManDeployer deployer = new DXManDeployer(server, dataSpace);
     server.initDeployerDispatcher(
       DXManConfiguration.DEPLOYER_RESOURCE /*+ "-" + thing.getId()*/, deployer
     );

@@ -18,18 +18,14 @@ public class DXManCoapDeployerDispatcher extends CoapResource
   
   private final DXManDeployer deployer;
   
-  private final Gson gson;
+  private final Gson DESERIALIZATION_GSON;
 
   public DXManCoapDeployerDispatcher(String deployerResourceName, 
     DXManDeployer deployer) {
     
     super(deployerResourceName);
-    this.deployer = deployer;
-    
-    gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
-      .registerTypeAdapterFactory(
-        DXManDeploymentUtils.getCompositionConnectorAdapterDeserialization())
-      .create();
+    this.deployer = deployer;    
+    DESERIALIZATION_GSON = DXManDeploymentUtils.buildDeserializationGson();
   }
 
   @Override
@@ -47,7 +43,7 @@ public class DXManCoapDeployerDispatcher extends CoapResource
   private String deployService(String jsonService) {
     
     DXManDeploymentRequest deploymentRequest = 
-      gson.fromJson(jsonService, DXManDeploymentRequest.class);
+      DESERIALIZATION_GSON.fromJson(jsonService, DXManDeploymentRequest.class);
     
     String connectorId = DXManErrors.DEPLOYMENT_ERROR.toString();
     if(deploymentRequest.getServiceType().equals(DXManServiceType.ATOMIC)) {
