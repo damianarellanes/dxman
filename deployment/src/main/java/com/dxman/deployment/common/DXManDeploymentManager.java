@@ -1,5 +1,6 @@
 package com.dxman.deployment.common;
 
+import com.dxman.design.connectors.composition.DXManCompositionConnectorTemplate;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.common.*;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
@@ -49,6 +50,8 @@ public class DXManDeploymentManager {
         DXManServiceType.ATOMIC, (DXManAtomicServiceTemplate) template
       );
     } else {
+      ((DXManCompositeServiceTemplate) template).getCompositionConnector()
+        .setClassType();
       
       deploymentRequest = new DXManDeploymentRequest(
         DXManServiceType.COMPOSITE, (DXManCompositeServiceTemplate) template

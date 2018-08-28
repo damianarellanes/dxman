@@ -214,7 +214,7 @@ public class DesignerTest {
     String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf2";
     
     // GENERATE WORKFLOW FILES    
-    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    

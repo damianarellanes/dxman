@@ -8,8 +8,7 @@ import java.util.*;
  * @author Damian Arellanes
  */
 public class DXManCompositionConnectorTemplate extends DXManConnectorTemplate {
-    
-  protected String classType = getClass().getName();   
+       
   private List<DXManServiceTemplate> subServices;
   
   public DXManCompositionConnectorTemplate(String name, DXManConnectorType type) {

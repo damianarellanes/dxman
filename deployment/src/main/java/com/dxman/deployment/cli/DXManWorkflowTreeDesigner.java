@@ -2,6 +2,10 @@ package com.dxman.deployment.cli;
 
 import com.dxman.dataspace.base.*;
 import com.dxman.deployment.data.DXManDataAlgorithm;
+import com.dxman.design.connectors.composition.DXManCompositionConnectorTemplate;
+import com.dxman.design.connectors.composition.DXManParallelTemplate;
+import com.dxman.design.connectors.composition.DXManSelectorTemplate;
+import com.dxman.design.connectors.composition.DXManSequencerTemplate;
 import com.dxman.design.data.*;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.common.*;
@@ -41,15 +45,16 @@ public class DXManWorkflowTreeDesigner {
       .registerSubtype(DXManWfSelector.class, DXManWfSelector.class.getName())
       .registerSubtype(DXManWfSequencer.class, DXManWfSequencer.class.getName())
       .registerSubtype(DXManWfInvocation.class, DXManWfInvocation.class.getName());
-    RuntimeTypeAdapterFactory<DXManWfNodeCustom> adapter2 = RuntimeTypeAdapterFactory
-      .of(DXManWfNodeCustom.class, "classTypeWfNodeCustom")
-      .registerSubtype(DXManWfParallelCustom.class, DXManWfParallelCustom.class.getName())
-      .registerSubtype(DXManWfSelectorCustom.class, DXManWfSelectorCustom.class.getName())
-      .registerSubtype(DXManWfSequencerCustom.class, DXManWfSequencerCustom.class.getName());
+    RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter2 = RuntimeTypeAdapterFactory
+      .of(DXManCompositionConnectorTemplate.class, "classType")
+      .registerSubtype(DXManParallelTemplate.class, DXManParallelTemplate.class.getName())
+      .registerSubtype(DXManSelectorTemplate.class, DXManSelectorTemplate.class.getName())
+      .registerSubtype(DXManSequencerTemplate.class, DXManSequencerTemplate.class.getName());
     
     GSON = new GsonBuilder().disableHtmlEscaping()
       .registerTypeAdapterFactory(adapter0)
       .registerTypeAdapterFactory(adapter1)
+      .registerTypeAdapterFactory(adapter2)
       .create();
   }
   
@@ -79,9 +84,15 @@ public class DXManWorkflowTreeDesigner {
       .registerSubtype(DXManWfParallelCustom.class)
       .registerSubtype(DXManWfSelectorCustom.class)
       .registerSubtype(DXManWfSequencerCustom.class);
+    RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter3 = RuntimeTypeAdapterFactory
+      .of(DXManCompositionConnectorTemplate.class, "classType")
+      .registerSubtype(DXManParallelTemplate.class, DXManParallelTemplate.class.getName())
+      .registerSubtype(DXManSelectorTemplate.class, DXManSelectorTemplate.class.getName())
+      .registerSubtype(DXManSequencerTemplate.class, DXManSequencerTemplate.class.getName());
     Gson gson = new GsonBuilder().disableHtmlEscaping()
       .registerTypeAdapterFactory(adapter1)
       .registerTypeAdapterFactory(adapter2)
+      .registerTypeAdapterFactory(adapter3)
       .create();
     
     // Executes the workflow
