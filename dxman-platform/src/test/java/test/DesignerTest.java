@@ -214,25 +214,25 @@ public class DesignerTest {
     String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf2";
     
     // GENERATE WORKFLOW FILES    
-    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
-    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test");
+    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test-2");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
     deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    /*wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
+    wfTreeManager.deployWorkflow(wtEditor, true); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
-    String topService = wfTree.getCompositeService().getId();
-    //String topService = "eaf9c4c8-1e9f-458a-904c-c1c588036380";
+    //String topService = wfTree.getCompositeService().getId();
+    String topService = "79c18f61-0d1a-4377-a5b8-a2998d17a941";
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService));
     wfResult.forEach((outputId, outputVal) -> {
         System.out.println(outputId + " --> " + outputVal);
-    });*/
+    });
     
     // TODO force to overwrite parameters in the blockchain, even if they already exist
     

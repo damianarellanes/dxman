@@ -2,6 +2,7 @@ package com.dxman.deployment.cli;
 
 import com.dxman.dataspace.base.*;
 import com.dxman.deployment.data.DXManDataAlgorithm;
+import com.dxman.design.connectors.common.DXManConnectorType;
 import com.dxman.design.connectors.composition.DXManCompositionConnectorTemplate;
 import com.dxman.design.connectors.composition.DXManParallelTemplate;
 import com.dxman.design.connectors.composition.DXManSelectorTemplate;
@@ -47,9 +48,9 @@ public class DXManWorkflowTreeDesigner {
       .registerSubtype(DXManWfInvocation.class, DXManWfInvocation.class.getName());
     RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter2 = RuntimeTypeAdapterFactory
       .of(DXManCompositionConnectorTemplate.class, "classType")
-      .registerSubtype(DXManParallelTemplate.class, DXManParallelTemplate.class.getName())
-      .registerSubtype(DXManSelectorTemplate.class, DXManSelectorTemplate.class.getName())
-      .registerSubtype(DXManSequencerTemplate.class, DXManSequencerTemplate.class.getName());
+      .registerSubtype(DXManParallelTemplate.class, DXManConnectorType.PARALLEL.name())
+      .registerSubtype(DXManSelectorTemplate.class, DXManConnectorType.SELECTOR.name())
+      .registerSubtype(DXManSequencerTemplate.class, DXManConnectorType.SEQUENCER.name());
     
     GSON = new GsonBuilder().disableHtmlEscaping()
       .registerTypeAdapterFactory(adapter0)
@@ -84,18 +85,14 @@ public class DXManWorkflowTreeDesigner {
       .registerSubtype(DXManWfParallelCustom.class)
       .registerSubtype(DXManWfSelectorCustom.class)
       .registerSubtype(DXManWfSequencerCustom.class);
-    RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter3 = RuntimeTypeAdapterFactory
-      .of(DXManCompositionConnectorTemplate.class, "classType")
-      .registerSubtype(DXManParallelTemplate.class, DXManParallelTemplate.class.getName())
-      .registerSubtype(DXManSelectorTemplate.class, DXManSelectorTemplate.class.getName())
-      .registerSubtype(DXManSequencerTemplate.class, DXManSequencerTemplate.class.getName());
     Gson gson = new GsonBuilder().disableHtmlEscaping()
       .registerTypeAdapterFactory(adapter1)
       .registerTypeAdapterFactory(adapter2)
-      .registerTypeAdapterFactory(adapter3)
       .create();
     
     // Executes the workflow
+    System.out.println("Executing the workflow " 
+      + wtEditor.getWorkflowTree().getId() +"...");
     CoapClient cp = new CoapClient(node.getUri());
     cp.post(gson.toJson(node), 0);
     

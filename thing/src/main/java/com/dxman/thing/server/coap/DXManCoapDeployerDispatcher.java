@@ -1,6 +1,7 @@
 package com.dxman.thing.server.coap;
 
 import com.dxman.deployment.common.DXManDeploymentRequest;
+import com.dxman.design.connectors.common.DXManConnectorType;
 import com.dxman.design.connectors.composition.*;
 import com.dxman.design.services.common.DXManServiceType;
 import com.dxman.thing.deployment.common.DXManDeployer;
@@ -32,9 +33,9 @@ public class DXManCoapDeployerDispatcher extends CoapResource
     RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> adapter2 
       = RuntimeTypeAdapterFactory   
       .of(DXManCompositionConnectorTemplate.class, "classType")
-      .registerSubtype(DXManParallelTemplate.class, DXManParallelTemplate.class.getName())
-      .registerSubtype(DXManSequencerTemplate.class, DXManSequencerTemplate.class.getName())
-      .registerSubtype(DXManSelectorTemplate.class, DXManSelectorTemplate.class.getName());
+      .registerSubtype(DXManParallelTemplate.class, DXManConnectorType.PARALLEL.name())
+      .registerSubtype(DXManSequencerTemplate.class, DXManConnectorType.SEQUENCER.name())
+      .registerSubtype(DXManSelectorTemplate.class, DXManConnectorType.SELECTOR.name());
     
     gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping()
       .registerTypeAdapterFactory(adapter2)

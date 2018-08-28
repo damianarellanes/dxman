@@ -4,12 +4,9 @@ import com.dxman.dataspace.base.DXManDataSpace;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.execution.*;
-import com.dxman.execution.selector.DXManWfSelector;
-import com.dxman.execution.selector.DXManWfSelectorCustom;
-import com.dxman.thing.deployment.connectors.atomic.DXManInvocationDataManager;
-import com.dxman.thing.deployment.connectors.atomic.DXManInvocationInstance;
-import com.dxman.thing.deployment.connectors.common.DXManConnectorDataManager;
-import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
+import com.dxman.execution.selector.*;
+import com.dxman.thing.deployment.connectors.atomic.*;
+import com.dxman.thing.deployment.connectors.common.*;
 import com.dxman.thing.deployment.connectors.composite.*;
 import com.dxman.thing.server.base.*;
 import com.dxman.utils.RuntimeTypeAdapterFactory;
@@ -83,19 +80,6 @@ public class DXManDeployer {
   private Gson createGson () {
     
     // TODO Create a unique solution to swicth between Coap, Rest, events, etc
-    /*RuntimeTypeAdapterFactory<DXManServiceTemplate> adapter0 = RuntimeTypeAdapterFactory
-      .of(DXManServiceTemplate.class, "classTypeServ")
-      .registerSubtype(DXManCompositeServiceTemplate.class, DXManCompositeServiceTemplate.class.getName())
-      .registerSubtype(DXManAtomicServiceTemplate.class, DXManAtomicServiceTemplate.class.getName());
-    RuntimeTypeAdapterFactory<DXManWfNode> adapter1 = RuntimeTypeAdapterFactory
-      .of(DXManWfNode.class, "classTypeWfNode")
-      .registerSubtype(DXManWfParallel.class, DXManWfParallel.class.getName())
-      .registerSubtype(DXManWfSequencer.class, DXManWfSequencer.class.getName())
-      .registerSubtype(DXManWfInvocation.class, DXManWfInvocation.class.getName());
-    RuntimeTypeAdapterFactory<DXManWfNodeCustom> adapter2 = RuntimeTypeAdapterFactory
-      .of(DXManWfNodeCustom.class, "classTypeWfNodeCustom")
-      .registerSubtype(DXManWfParallelCustom.class, DXManWfParallelCustom.class.getName())
-      .registerSubtype(DXManWfSequencerCustom.class, DXManWfSequencerCustom.class.getName());*/
     
     RuntimeTypeAdapterFactory<DXManWfNode> adapter2 = RuntimeTypeAdapterFactory
       .of(DXManWfNode.class)
