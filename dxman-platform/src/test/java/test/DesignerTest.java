@@ -4,6 +4,8 @@ import com.dxman.deployment.cli.DXManWorkflowTreeDesigner;
 import com.dxman.deployment.cli.DXManWorkflowTreeEditor;
 import com.dxman.deployment.common.DXManDeploymentManager;
 import com.dxman.deployment.data.DXManDataAlgorithm;
+import com.dxman.design.connectors.composition.DXManParallelTemplate;
+import com.dxman.design.connectors.composition.DXManParallelType;
 import com.dxman.design.connectors.composition.DXManSelectorTemplate;
 import com.dxman.execution.DXManWorkflowTree;
 import com.dxman.design.connectors.composition.DXManSequencerTemplate;
@@ -123,17 +125,18 @@ public class DesignerTest {
   
   private static DXManCompositeServiceTemplate designPost() throws URISyntaxException {
     
-    DXManSelectorTemplate selector = new DXManSelectorTemplate("SEL1");
-    DXManParameter addr = new DXManParameter("addr", DXManParameterType.INPUT, "string"); selector.addInput(addr);
+    //DXManSelectorTemplate selector = new DXManSelectorTemplate("SEL1");
+    DXManParallelTemplate parallel = new DXManParallelTemplate("PAR1", DXManParallelType.SYNC);
+    DXManParameter addr = new DXManParameter("addr", DXManParameterType.INPUT, "string"); parallel.addInput(addr);
             
     DXManAtomicServiceTemplate courier1 = designCourier(1, "sendWelcStd");
     DXManAtomicServiceTemplate courier2 = designCourier(2, "sendWelcFast");
     
-    selector.composeServices(courier1, courier2);
+    parallel.composeServices(courier1, courier2);
     
     DXManServiceInfo templateInfo = new DXManServiceInfo("PostService", "Example", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
-    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, selector, deploymentInfo);
+    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, parallel, deploymentInfo);
     
     return composite;
   }
@@ -208,7 +211,7 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDesigner wfTreeManager = new DXManWorkflowTreeDesigner("http://localhost:3000");
-    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf1";
+    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf2";
     
     // GENERATE WORKFLOW FILES    
     //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
@@ -221,7 +224,7 @@ public class DesignerTest {
     
     // DEPLOY WORKFLOW FROM FILE
     deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
+    /*wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
     String topService = wfTree.getCompositeService().getId();
@@ -229,27 +232,10 @@ public class DesignerTest {
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService));
     wfResult.forEach((outputId, outputVal) -> {
         System.out.println(outputId + " --> " + outputVal);
-    });
+    });*/
     
     // TODO force to overwrite parameters in the blockchain, even if they already exist
     
     //simulate(wfTree.getWt().get(topService));
-    
-    /*System.out.println("-----INPUTS-------");
-    System.out.println(alg.getReaders().get("IC1.createRecord.name"));//SEQ3.createRecord.name
-    System.out.println(alg.getReaders().get("IC1.createRecord.addr"));//SEQ3.createRecord.addr
-    System.out.println(alg.getReaders().get("IC1.createRecord.email"));//SEQ3.createRecord.email
-    System.out.println(alg.getReaders().get("IC2.sendWelcStd.addr"));//SEQ3.sendWelcStd.addr
-    System.out.println(alg.getReaders().get("IC2.sendWelcStd.name"));//SEQ3.sendWelcStd.name
-    System.out.println(alg.getReaders().get("IC3.sendWelcFast.addr"));//SEQ3.sendWelcFast.addr
-    System.out.println(alg.getReaders().get("IC3.sendWelcFast.name"));//SEQ3.sendWelcFast.name
-    System.out.println(alg.getReaders().get("IC4.sendWelcEmail.email"));//SEQ3.sendWelcEmail.email
-    
-    System.out.println(alg.getReaders().get("SEQ1.addr"));//SEQ3.sendWelcStd.addr
-    System.out.println("-----OUTPUTS-------");
-    System.out.println(alg.getReaders().get("SEQ3.sendWelcStd.res"));//IC2.sendWelcStd.res
-    System.out.println(alg.getReaders().get("SEQ3.sendWelcFast.res"));//IC3.sendWelcFast.res
-    System.out.println(alg.getReaders().get("SEQ3.createRecord.id"));//IC1.createRecord.id
-    //System.out.println(alg.getReaders().get("SEQ3.sendWelcEmail.res"));//IC4.sendWelcEmail.email*/
   }
 }

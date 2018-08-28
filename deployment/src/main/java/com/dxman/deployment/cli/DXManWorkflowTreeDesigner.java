@@ -249,6 +249,8 @@ public class DXManWorkflowTreeDesigner {
         return new DXManWfSequencer(wfNodeId, uri);
       case SELECTOR:
         return new DXManWfSelector(wfNodeId, uri);
+      case PARALLEL:
+        return new DXManWfParallel(wfNodeId, uri);
     }
     }
     return null;    
