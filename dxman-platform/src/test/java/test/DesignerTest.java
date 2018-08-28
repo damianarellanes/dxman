@@ -1,6 +1,6 @@
 package test;
 
-import com.dxman.deployment.cli.DXManWorkflowTreeDeployer;
+import com.dxman.deployment.cli.DXManWorkflowTreeDesigner;
 import com.dxman.deployment.cli.DXManWorkflowTreeEditor;
 import com.dxman.deployment.common.DXManDeploymentManager;
 import com.dxman.deployment.data.DXManDataAlgorithm;
@@ -207,7 +207,7 @@ public class DesignerTest {
 //    System.out.println(response.text());    
             
         
-    DXManWorkflowTreeDeployer wfTreeManager = new DXManWorkflowTreeDeployer("http://localhost:3000");
+    DXManWorkflowTreeDesigner wfTreeManager = new DXManWorkflowTreeDesigner("http://localhost:3000");
     String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf1";
     
     // GENERATE WORKFLOW FILES    
@@ -215,12 +215,12 @@ public class DesignerTest {
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
-    WfTreeTest wtEditor = new WfTreeTest(wfTree, "e00614ec-bc02-4d27-a130-7d275450c29a");
+    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
-    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    deploymentManager.deployCompositeService(wfTree.getCompositeService());
     wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE

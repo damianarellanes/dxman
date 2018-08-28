@@ -10,32 +10,32 @@ import com.dxman.execution.selector.DXManWfConditionOperator;
  */
 public class WfTreeTest extends DXManWorkflowTreeEditor {
   
-  private final String CUSTOMER = "f2acaa7f-ca5e-41a7-ae9c-06e113ae5f6e";
-  private final String CUSTOMER_CREATE_NAME = "87aeacb4-7c34-4eb3-a9e5-8e7559f51514";
-  private final String CUSTOMER_CREATE_ADDR = "9f09a40b-5aad-4a71-a3d9-e8caa36ba058";
-  private final String CUSTOMER_CREATE_EMAIL = "998c5f9f-8508-49e8-8319-1f8ba78b165a";
-  private final String CUSTOMER_CREATE_ID = "c0577610-3ca1-406d-a74f-e7567e39e5c7";
-  private final String CUSTOMER_WELCEMAIL_EMAIL = "61b120f7-31d2-458a-ae3b-ef2999407247";
-  private final String CUSTOMER_STD_NAME = "b427ca90-c708-4444-bc4e-7f6a99d8395c";
-  private final String CUSTOMER_STD_ADDR = "1bb4b783-d1c8-44e3-8873-447d0ea5de93";
-  private final String CUSTOMER_STD_RES = "63171f82-e07f-4d3f-b987-8f49157aa3af";
-  private final String CUSTOMER_FAST_NAME = "8e79add5-6617-4359-81cf-28bad12beaa0";
-  private final String CUSTOMER_FAST_ADDR = "044fc578-0eb9-4630-a88d-d379594ed539";
-  private final String CUSTOMER_FAST_RES = "20ea62bd-e4a4-445b-959a-4a9037b300d8";
+  private final String CUSTOMER = "21b63524-ffd0-438f-adc5-6d0fb428e058";
+  private final String CUSTOMER_CREATE_NAME = "7ff109d4-fa4f-4ee7-9b3e-98f224a84acd";
+  private final String CUSTOMER_CREATE_ADDR = "5d8d4f90-d440-4d9d-b675-4e31a9ec655b";
+  private final String CUSTOMER_CREATE_EMAIL = "63e50512-863a-477f-849a-529d4fbb95e3";
+  private final String CUSTOMER_CREATE_ID = "e09d33d9-db0e-4ed0-92d6-a0b6f098aec3";
+  private final String CUSTOMER_WELCEMAIL_EMAIL = "b2e3b70b-81c6-42e8-a78c-4f80e7418400";
+  private final String CUSTOMER_STD_NAME = "ce78d9d1-c562-46b7-ac48-52fd4463e0ac";
+  private final String CUSTOMER_STD_ADDR = "eedfd83e-8f10-46f9-801d-637eb448f5be";
+  private final String CUSTOMER_STD_RES = "3fa38e08-c5bf-468f-8a3c-6aca67d7505f";
+  private final String CUSTOMER_FAST_NAME = "21405c20-a35e-4465-b305-c85768fcbd5e";
+  private final String CUSTOMER_FAST_ADDR = "99097db2-212f-407f-a6b2-d8a505d7dd12";
+  private final String CUSTOMER_FAST_RES = "d2a46cb8-5582-4df1-b3ac-451230d08ae6";
   
-  private final String LBP_CREATE = "331d155a-9604-4ed2-90e2-9876ad8ef9aa";
+  private final String LBP_CREATE = "083eb853-b3d8-4fc9-969c-913168922b47";
   
-  private final String SENDER = "e5232b39-832c-407f-82b8-ff3774c4024c";
+  private final String SENDER = "105c788e-9fd6-4bf7-9116-9ab29fac3e2a";
   
-  private final String EMAIL_WELCEMAIL = "6dd2f38f-4b34-4a53-992e-c94ae718007e";
+  private final String EMAIL_WELCEMAIL = "2a05a277-5288-4159-8ff9-5f6057ee4563";
   
-  private final String POST = "6319f8be-ed78-457f-9edb-2e0c3633c547";
-  private final String SEL1_ADDR = "15926c1d-1c58-4edb-aacc-4c0161586c7a";
-  private final String POST_STD_ADDR = "a0565144-02fc-420a-bb06-48757fe0eb35";
-  private final String POST_FAST_ADDR = "cf1a1019-974d-4fb9-9cec-f910146157d1";  
+  private final String POST = "06f73a6a-5b59-414a-9f28-a3c6e85cb17c";
+  private final String SEL1_ADDR = "106bd436-291b-4e13-8444-6b55c6d86590";
+  private final String POST_STD_ADDR = "0de712a5-c7a2-4bc3-bdf4-080175e24fae";
+  private final String POST_FAST_ADDR = "3ec2f520-5b1c-401f-a9f7-44dc0eded070";  
   
-  private final String COURIER1_STD = "c140ad9c-3f9a-473f-8a75-9ac879ce18c7";
-  private final String COURIER2_FAST = "4076f4f3-635b-4965-90ed-1fda0520a214"; 
+  private final String COURIER1_STD = "a86b0706-d316-490c-a85b-9bca9002b4af";
+  private final String COURIER2_FAST = "8cf50870-2cf1-40d3-a36d-9b474bbf9e39"; 
   
 
   public WfTreeTest(DXManWorkflowTree workflowTree, String wfId) {
@@ -59,10 +59,10 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
     
     // PostService, Courier1.sendWelcStd, SEL1.addr
     customiseSelector(POST, COURIER1_STD, 
-      SEL1_ADDR, DXManWfConditionOperator.NOT_EQUAL, "Oxford St");
+      SEL1_ADDR, DXManWfConditionOperator.EQUAL, "Oxford St");
     // PostService, Courier2.sendWelcFast, SEL1.addr
     customiseSelector(POST, COURIER2_FAST, SEL1_ADDR, 
-      DXManWfConditionOperator.NOT_EQUAL, "Oxford St");
+      DXManWfConditionOperator.EQUAL, "Oxford St");
   }
   
   @Override

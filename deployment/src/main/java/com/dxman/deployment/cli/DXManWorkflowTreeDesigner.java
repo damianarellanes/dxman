@@ -18,7 +18,7 @@ import org.eclipse.californium.core.CoapClient;
 /**
  * @author Damian Arellanes
  */
-public class DXManWorkflowTreeDeployer {
+public class DXManWorkflowTreeDesigner {
   
   private final DXManDataSpace dataSpace;
   private final Gson GSON;
@@ -27,7 +27,7 @@ public class DXManWorkflowTreeDeployer {
   private final String COMPOSITE_EXTENSION = ".comp";
   private final String WT_EXTENSION = ".wt";
   
-  public DXManWorkflowTreeDeployer(String dataSpaceLocation) {    
+  public DXManWorkflowTreeDesigner(String dataSpaceLocation) {    
     
     dataSpace = DXManDataSpaceFactory.createBlockchainManager(dataSpaceLocation);
     
@@ -119,9 +119,9 @@ public class DXManWorkflowTreeDeployer {
   
   private void deployWorkflowDataChannels(DXManDataAlgorithm alg, String wfId) {
     
-    /*System.out.println("Deploying data channels for workflow " + wfId + "...");
+    System.out.println("Deploying data channels for workflow " + wfId + "...");
     
-    alg.getReaders().forEach((rId, writers) ->{
+    /*alg.getReaders().forEach((rId, writers) ->{
       System.out.println("Deploying: " + rId + "--->" + writers);      
     });*/
     // TODO Optimize this (perhaps sending the whole readers to every WfNode of the WfTree)
