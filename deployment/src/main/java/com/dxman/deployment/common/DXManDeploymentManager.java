@@ -1,6 +1,5 @@
 package com.dxman.deployment.common;
 
-import com.dxman.design.connectors.composition.DXManCompositionConnectorTemplate;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.common.*;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
@@ -36,11 +35,12 @@ public class DXManDeploymentManager {
     
     System.out.println("Deploying --> " + template.getInfo().getName());
     
-    // TODO change from deployer to deployer-UUID (/serviceName-serviceId)
     String thingTargetUri = DXManIDGenerator.getCoapUri(
       template.getDeploymentInfo().getThingIp(), 
       template.getDeploymentInfo().getThingPort(), 
-      "deployer"
+      DXManIDGenerator.getDeployerUUID(
+        template.getDeploymentInfo().getThingAlias()
+      )
     ); 
     
     DXManDeploymentRequest deploymentRequest;

@@ -1,15 +1,10 @@
 package com.dxman.thing.runtime;
 
-import com.dxman.dataspace.base.DXManDataSpace;
-import com.dxman.dataspace.base.DXManDataSpaceFactory;
+import com.dxman.dataspace.base.*;
 import com.dxman.thing.deployment.common.DXManDeployer;
-import com.dxman.thing.server.base.DXManServer;
-import com.dxman.thing.server.base.DXManServerFactory;
-import com.dxman.utils.DXManConfiguration;
-import com.dxman.utils.DXManErrors;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import com.dxman.thing.server.base.*;
+import com.dxman.utils.*;
+import java.io.*;
 import java.util.Properties;
 
 /**
@@ -29,10 +24,10 @@ public class DXManStarter {
     DXManServer server = DXManServerFactory.createCoap();    
     DXManThing thing = setThingUp(config, server, dataSpace);
     
-    // Initializes the deployer (running at e.g., deployer-6be66ab6-3c23-49d2-b088-6a51bcee913d)
+    // Initializes the deployer (running at e.g., deployer-thingAlias)
     DXManDeployer deployer = new DXManDeployer(server, dataSpace);
     server.initDeployerDispatcher(
-      DXManConfiguration.DEPLOYER_RESOURCE /*+ "-" + thing.getId()*/, deployer
+      DXManIDGenerator.getDeployerUUID(thing.getAlias()), deployer
     );
     
     System.out.println(thing.getAlias() + " listening at " 

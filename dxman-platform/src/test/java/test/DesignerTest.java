@@ -67,7 +67,7 @@ public class DesignerTest {
     
     DXManComputationUnit cu = new DXManComputationUnit();
     DXManServiceInfo templateInfo = new DXManServiceInfo("LoyaltyPointsBank", "MusicCorp", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManAtomicServiceTemplate loyaltyPointsBank = new DXManAtomicServiceTemplate(templateInfo, "IC1", cu, deploymentInfo);
     loyaltyPointsBank.addOperation(createRecord);
     
@@ -92,7 +92,7 @@ public class DesignerTest {
     
     DXManComputationUnit cu = new DXManComputationUnit();
     DXManServiceInfo templateInfo = new DXManServiceInfo("Courier"+num, "MusicCorp", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManAtomicServiceTemplate courier = new DXManAtomicServiceTemplate(templateInfo, "IC"+(num+1), cu, deploymentInfo);
     courier.addOperation(sendWelc);
     
@@ -116,7 +116,7 @@ public class DesignerTest {
     
     DXManComputationUnit cu = new DXManComputationUnit();
     DXManServiceInfo templateInfo = new DXManServiceInfo("Email Service", "MusicCorp", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManAtomicServiceTemplate emailService = new DXManAtomicServiceTemplate(templateInfo, "IC4", cu, deploymentInfo);
     emailService.addOperation(sendWelcEmail);
     
@@ -135,7 +135,7 @@ public class DesignerTest {
     parallel.composeServices(courier1, courier2);
     
     DXManServiceInfo templateInfo = new DXManServiceInfo("PostService", "Example", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, parallel, deploymentInfo);
     
     return composite;
@@ -150,7 +150,7 @@ public class DesignerTest {
     sequencer.composeServices(post, email);
     
     DXManServiceInfo templateInfo = new DXManServiceInfo("SenderService", "Example", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
     
     return composite;
@@ -165,7 +165,7 @@ public class DesignerTest {
     sequencer.composeServices(sender, lpb);
     
     DXManServiceInfo templateInfo = new DXManServiceInfo("CustomerService", "Example", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("192.168.0.5", 5683);
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
     
     return composite;
@@ -211,24 +211,24 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDesigner wfTreeManager = new DXManWorkflowTreeDesigner("http://localhost:3000");
-    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf2";
+    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf3";
     
     // GENERATE WORKFLOW FILES    
     //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
-    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test-2");
+    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test-5");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
     deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
+    wfTreeManager.deployWorkflow(wtEditor, true); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
     //String topService = wfTree.getCompositeService().getId();
-    String topService = "79c18f61-0d1a-4377-a5b8-a2998d17a941";
+    String topService = "fbb58913-7c18-4cd0-a1d7-eb38ec6bd10e";
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService));
     wfResult.forEach((outputId, outputVal) -> {
         System.out.println(outputId + " --> " + outputVal);

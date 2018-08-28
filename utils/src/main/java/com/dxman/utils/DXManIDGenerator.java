@@ -43,6 +43,10 @@ public class DXManIDGenerator {
     ).toString();
   }
   
+  public static String getDeployerUUID(String thingAlias) {
+    return DXManConfiguration.DEPLOYER_RESOURCE + "-" + thingAlias;
+  }
+  
   public static String getCoapUri(String ip, int port, String resource) {    
     return "coap://" +  ip + ":" +  port + "/" + resource;
   }
