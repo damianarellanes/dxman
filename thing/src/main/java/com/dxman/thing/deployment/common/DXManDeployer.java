@@ -46,7 +46,7 @@ public class DXManDeployer {
       = DXManConnectorRequesterFactory.createCoapRequester(gson);
     
     DXManConnectorInstance connectorInstance = null;    
-    switch(managedService.getCompositionConnector().getType()) {
+    switch(managedService.getConnector().getType()) {
       
       case SEQUENCER:
         connectorInstance = new DXManSequencerInstance(

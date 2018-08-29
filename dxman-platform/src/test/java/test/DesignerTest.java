@@ -130,13 +130,13 @@ public class DesignerTest {
     DXManParameter addr = new DXManParameter("addr", DXManParameterType.INPUT, "string"); parallel.addInput(addr);
             
     DXManAtomicServiceTemplate courier1 = designCourier(1, "sendWelcStd");
-    DXManAtomicServiceTemplate courier2 = designCourier(2, "sendWelcFast");
-    
-    parallel.composeServices(courier1, courier2);
+    DXManAtomicServiceTemplate courier2 = designCourier(2, "sendWelcFast");    
     
     DXManServiceInfo templateInfo = new DXManServiceInfo("PostService", "Example", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, parallel, deploymentInfo);
+    
+    composite.composeServices(courier1, courier2);
     
     return composite;
   }
@@ -147,11 +147,11 @@ public class DesignerTest {
     DXManCompositeServiceTemplate post = designPost();
     DXManAtomicServiceTemplate email = designEmail();
     
-    sequencer.composeServices(post, email);
-    
     DXManServiceInfo templateInfo = new DXManServiceInfo("SenderService", "Example", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
+    
+    composite.composeServices(post, email);
     
     return composite;
   }
@@ -162,11 +162,11 @@ public class DesignerTest {
     DXManCompositeServiceTemplate sender = designSender();
     DXManAtomicServiceTemplate lpb = designLoyaltyPointsBank();
     
-    sequencer.composeServices(sender, lpb);
-    
     DXManServiceInfo templateInfo = new DXManServiceInfo("CustomerService", "Example", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
+    
+    composite.composeServices(sender, lpb);
     
     return composite;
   }
@@ -211,10 +211,10 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDesigner wfTreeManager = new DXManWorkflowTreeDesigner("http://localhost:3000");
-    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf3";
+    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf4";
     
     // GENERATE WORKFLOW FILES    
-    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
@@ -224,15 +224,15 @@ public class DesignerTest {
     
     // DEPLOY WORKFLOW FROM FILE
     deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    wfTreeManager.deployWorkflow(wtEditor, true); // true when data channels are modified, false for using same data channels
+    //wfTreeManager.deployWorkflow(wtEditor, true); // true when data channels are modified, false for using same data channels
     
-    // EXECUTES WORKFLOW FROM FILE
+    /*// EXECUTES WORKFLOW FROM FILE
     //String topService = wfTree.getCompositeService().getId();
     String topService = "fbb58913-7c18-4cd0-a1d7-eb38ec6bd10e";
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService));
     wfResult.forEach((outputId, outputVal) -> {
         System.out.println(outputId + " --> " + outputVal);
-    });
+    });*/
     
     // TODO force to overwrite parameters in the blockchain, even if they already exist
     

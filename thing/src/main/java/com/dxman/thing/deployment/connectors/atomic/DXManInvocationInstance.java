@@ -24,7 +24,7 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     DXManConnectorRequester requester, Gson gson, 
     DXManInvocationDataManager invocationDataManager) {
 
-    super(managedService, managedService.getInvocationConnector().getName(),
+    super(managedService, managedService.getConnector().getName(),
       requester, gson);
 
     invocationHandlers = new DXManMap<>();

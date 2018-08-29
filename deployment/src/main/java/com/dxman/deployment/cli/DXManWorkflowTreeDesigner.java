@@ -157,7 +157,7 @@ public class DXManWorkflowTreeDesigner {
     );
     
     for(DXManServiceTemplate subService: 
-      composite.getCompositionConnector().getSubServices()) {
+      composite.getSubServices()) {
       
       // Sets the id for the subservice which is used as the resource for the server
       subService.setId(DXManIDGenerator.generateServiceID());
@@ -203,7 +203,7 @@ public class DXManWorkflowTreeDesigner {
       return new DXManWfInvocation(wfNodeId, uri, operationName);
     } else {
       
-      switch(((DXManCompositeServiceTemplate) service).getCompositionConnector().getType()) {
+      switch(service.getConnector().getType()) {
       case SEQUENCER:
         return new DXManWfSequencer(wfNodeId, uri);
       case SELECTOR:

@@ -9,29 +9,15 @@ import com.dxman.design.services.common.*;
  */
 public class DXManAtomicServiceTemplate extends DXManServiceTemplate {
     
-  private DXManInvocationTemplate invocationConnector;
   private DXManComputationUnit computationUnit;
-
-  public DXManAtomicServiceTemplate() {
-    
-    super(new DXManServiceInfo(), DXManServiceType.ATOMIC, 
-      new DXManDeploymentInfo());
-  }
 
   public DXManAtomicServiceTemplate(DXManServiceInfo info, String connectorName,
     DXManComputationUnit computationUnit, DXManDeploymentInfo deploymentInfo) {
     
-    super(info, DXManServiceType.ATOMIC, deploymentInfo);
-    this.invocationConnector = new DXManInvocationTemplate(connectorName);
+    super(info, DXManServiceType.ATOMIC, 
+      new DXManInvocationTemplate(connectorName), deploymentInfo);
     this.computationUnit = computationUnit;
   };
-  
-  public DXManInvocationTemplate getInvocationConnector() {
-    return invocationConnector;
-  }
-  public void setInvocationConnector(DXManInvocationTemplate invocationConnector) {
-    this.invocationConnector = invocationConnector;
-  }
 
   public DXManComputationUnit getComputationUnit() { return computationUnit; }
   public void setComputationUnit(DXManComputationUnit computationUnit) {

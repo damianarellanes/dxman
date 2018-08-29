@@ -15,7 +15,7 @@ public class DXManSequencerInstance extends DXManConnectorInstance {
   public DXManSequencerInstance(DXManCompositeServiceTemplate managedService, 
     DXManConnectorRequester requester, Gson gson) {
     
-    super(managedService, managedService.getCompositionConnector().getName(),
+    super(managedService, managedService.getConnector().getName(),
       requester, gson);
   }
 

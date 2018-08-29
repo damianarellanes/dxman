@@ -5,7 +5,7 @@ import com.dxman.design.connectors.common.*;
 /**
  * @author Damian Arellanes
  */
-public class DXManParallelTemplate extends DXManCompositionConnectorTemplate {
+public class DXManParallelTemplate extends DXManConnectorTemplate {
   
   private DXManParallelType parallelType;
     

@@ -1,38 +1,32 @@
 package com.dxman.design.services.composite;
 
-import com.dxman.design.connectors.common.DXManConnectorType;
-import com.dxman.design.services.common.DXManServiceTemplate;
-import com.dxman.design.connectors.composition.DXManCompositionConnectorTemplate;
+import com.dxman.design.connectors.common.*;
 import com.dxman.design.distribution.DXManDeploymentInfo;
 import com.dxman.design.services.common.*;
+import java.util.*;
 
 /**
  * @author Damian Arellanes
  */
 public class DXManCompositeServiceTemplate extends DXManServiceTemplate {
   
-  private DXManCompositionConnectorTemplate compositionConnector;
-  
-  public DXManCompositeServiceTemplate() {
-    
-    super(new DXManServiceInfo(), DXManServiceType.COMPOSITE, 
-      new DXManDeploymentInfo());
-  }
+  private List<DXManServiceTemplate> subServices;
 
   public DXManCompositeServiceTemplate(DXManServiceInfo info, 
-    DXManCompositionConnectorTemplate compositionConnector, 
+    DXManConnectorTemplate compositionConnector, // TODO this should an abstract class to allow only composition connectors
     DXManDeploymentInfo deploymentInfo) {
     
-    super(info, DXManServiceType.COMPOSITE, deploymentInfo);
-    this.compositionConnector = compositionConnector;
+    super(info, DXManServiceType.COMPOSITE, compositionConnector, deploymentInfo);
+    subServices = new ArrayList<>();
   };
-
-  public DXManCompositionConnectorTemplate getCompositionConnector() {
-    return compositionConnector;
+  
+  public void composeServices(DXManServiceTemplate... services) {
+    subServices.addAll(Arrays.asList(services));
   }
-  public void setCompositionConnector(DXManCompositionConnectorTemplate 
-    compositionConnector) {
-    this.compositionConnector = compositionConnector;
+  
+  public List<DXManServiceTemplate> getSubServices() { return subServices; }
+  public void setSubServices(List<DXManServiceTemplate> subServices) {
+    this.subServices = subServices;
   }
   
   @Override
@@ -44,8 +38,8 @@ public class DXManCompositeServiceTemplate extends DXManServiceTemplate {
     sb.append("Service TEMPLATE: ").append(getInfo().getName())
       .append(" (COMPOSITE)-->").append(getId()).append("\n");
     sb.append("***************************************************\n");    
-    if(compositionConnector.getType().equals(DXManConnectorType.SELECTOR)) {
-      sb.append(compositionConnector).append("\n");
+    if(getConnector().getType().equals(DXManConnectorType.SELECTOR)) {
+      sb.append(getConnector()).append("\n");
       sb.append("***************************************************\n");       
     }
     sb.append("\n").append(getOperations().values());

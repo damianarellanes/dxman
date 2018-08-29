@@ -1,6 +1,7 @@
 package com.dxman.deployment.common;
 
-import com.dxman.design.connectors.common.DXManConnectorType;
+import com.dxman.design.connectors.atomic.DXManInvocationTemplate;
+import com.dxman.design.connectors.common.*;
 import com.dxman.design.connectors.composition.*;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.common.DXManServiceTemplate;
@@ -81,16 +82,18 @@ public class DXManDeploymentUtils {
     .registerSubtype(DXManWfSequencerCustom.class);
   }
       
-  private static RuntimeTypeAdapterFactory<DXManCompositionConnectorTemplate> 
+  private static RuntimeTypeAdapterFactory<DXManConnectorTemplate> 
     getCompositionConnectorAdapterDeserialization() {
 
     return RuntimeTypeAdapterFactory
-    .of(DXManCompositionConnectorTemplate.class, "classType")
+    .of(DXManConnectorTemplate.class, "classType")
     .registerSubtype(DXManParallelTemplate.class, 
       DXManConnectorType.PARALLEL.name())
     .registerSubtype(DXManSelectorTemplate.class, 
-        DXManConnectorType.SELECTOR.name())
+      DXManConnectorType.SELECTOR.name())
     .registerSubtype(DXManSequencerTemplate.class, 
-        DXManConnectorType.SEQUENCER.name());
+      DXManConnectorType.SEQUENCER.name())
+    .registerSubtype(DXManInvocationTemplate.class, 
+      DXManConnectorType.INVOCATION.name());
   }
 }

@@ -22,7 +22,7 @@ public class DXManSelectorInstance extends DXManConnectorInstance {
     DXManConnectorDataManager connectorDataManager, 
     DXManConnectorRequester requester, Gson gson) {
     
-    super(managedService, managedService.getCompositionConnector().getName(), 
+    super(managedService, managedService.getConnector().getName(), 
       requester, gson);
     
     this.connectorDataManager = connectorDataManager;

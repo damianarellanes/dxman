@@ -20,7 +20,7 @@ public class DXManDeploymentManager {
   
   public void deployCompositeService(DXManCompositeServiceTemplate composite) {
         
-    composite.getCompositionConnector().getSubServices().forEach((subService) -> {
+    composite.getSubServices().forEach((subService) -> {
       
       if(subService.getType().equals(DXManServiceType.COMPOSITE)) {
         deployCompositeService((DXManCompositeServiceTemplate) subService);
@@ -34,6 +34,9 @@ public class DXManDeploymentManager {
   public void deployServiceTemplate(DXManServiceTemplate template) {
     
     System.out.println("Deploying --> " + template.getInfo().getName());
+        
+    template.setClassTypeServ(); // For deserializing service template
+    template.getConnector().setClassType(); // For deserializing connector template
     
     String thingTargetUri = DXManIDGenerator.getCoapUri(
       template.getDeploymentInfo().getThingIp(), 
@@ -50,8 +53,6 @@ public class DXManDeploymentManager {
         DXManServiceType.ATOMIC, (DXManAtomicServiceTemplate) template
       );
     } else {
-      ((DXManCompositeServiceTemplate) template).getCompositionConnector()
-        .setClassType();
       
       deploymentRequest = new DXManDeploymentRequest(
         DXManServiceType.COMPOSITE, (DXManCompositeServiceTemplate) template
