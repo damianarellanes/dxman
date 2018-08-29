@@ -2,7 +2,6 @@ package com.dxman.design.services.common;
 
 import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.data.DXManOperation;
-import com.dxman.design.distribution.DXManDeploymentInfo;
 import com.dxman.utils.DXManMap;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -22,20 +21,16 @@ public class DXManServiceTemplate {
   private DXManMap<String, DXManOperation> operations;  
   private DXManConnectorTemplate connector;
   //private List<AdapterTemplate> adapters; // 0*
-  
-  private DXManDeploymentInfo deploymentInfo;
 
   public DXManServiceTemplate() {}
 
   public DXManServiceTemplate(DXManServiceInfo info, DXManServiceType type, 
-    DXManConnectorTemplate connector, DXManDeploymentInfo deploymentInfo) {
+    DXManConnectorTemplate connector) {
     
     this.info = info;
     this.type = type;
     operations = new DXManMap<>();
     this.connector = connector;
-    
-    this.deploymentInfo = deploymentInfo;
   };
 
   public void addOperation(DXManOperation operation) {
@@ -64,11 +59,6 @@ public class DXManServiceTemplate {
   public DXManConnectorTemplate getConnector() { return connector; }
   public void setConnector(DXManConnectorTemplate connector) {
     this.connector = connector;
-  }
-  
-  public DXManDeploymentInfo getDeploymentInfo() { return deploymentInfo; }
-  public void setDeploymentInfo(DXManDeploymentInfo deploymentInfo) {
-    this.deploymentInfo = deploymentInfo;
   }
 
   @Override

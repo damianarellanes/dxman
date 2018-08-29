@@ -195,9 +195,9 @@ public class DXManWorkflowTreeDesigner {
     String wfNodeId, String operationName) {
     
     String uri = DXManIDGenerator.getCoapUri(
-      service.getDeploymentInfo().getThingIp(), 
-      service.getDeploymentInfo().getThingPort(), 
-      service.getId()); // TODO The uri should be to the operation not the service
+      service.getConnector().getDeploymentInfo().getThingIp(), 
+      service.getConnector().getDeploymentInfo().getThingPort(), 
+      service.getConnector().getId()); // TODO The uri should be to the operation not the service/connector
     
     if(service.getType().equals(DXManServiceType.ATOMIC)) {
       return new DXManWfInvocation(wfNodeId, uri, operationName);

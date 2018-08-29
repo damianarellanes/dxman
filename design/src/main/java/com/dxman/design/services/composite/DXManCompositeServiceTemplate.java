@@ -1,7 +1,6 @@
 package com.dxman.design.services.composite;
 
 import com.dxman.design.connectors.common.*;
-import com.dxman.design.distribution.DXManDeploymentInfo;
 import com.dxman.design.services.common.*;
 import java.util.*;
 
@@ -13,10 +12,9 @@ public class DXManCompositeServiceTemplate extends DXManServiceTemplate {
   private List<DXManServiceTemplate> subServices;
 
   public DXManCompositeServiceTemplate(DXManServiceInfo info, 
-    DXManConnectorTemplate compositionConnector, // TODO this should an abstract class to allow only composition connectors
-    DXManDeploymentInfo deploymentInfo) {
+    DXManConnectorTemplate compositionConnector) { // TODO this should an abstract class to allow only composition connectors
     
-    super(info, DXManServiceType.COMPOSITE, compositionConnector, deploymentInfo);
+    super(info, DXManServiceType.COMPOSITE, compositionConnector);
     subServices = new ArrayList<>();
   };
   

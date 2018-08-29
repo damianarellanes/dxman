@@ -2,14 +2,15 @@ package com.dxman.design.connectors.composition;
 
 import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.connectors.common.DXManConnectorType;
+import com.dxman.design.distribution.DXManDeploymentInfo;
 
 /**
  * @author Damian Arellanes
  */
 public class DXManSelectorTemplate extends DXManConnectorTemplate {
     
-  public DXManSelectorTemplate(String name) {
-    super(name, DXManConnectorType.SELECTOR);
+  public DXManSelectorTemplate(String name, DXManDeploymentInfo deploymentInfo) {
+    super(name, DXManConnectorType.SELECTOR, deploymentInfo);
   }
 
   @Override

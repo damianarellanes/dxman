@@ -39,10 +39,10 @@ public class DXManDeploymentManager {
     template.getConnector().setClassType(); // For deserializing connector template
     
     String thingTargetUri = DXManIDGenerator.getCoapUri(
-      template.getDeploymentInfo().getThingIp(), 
-      template.getDeploymentInfo().getThingPort(), 
+      template.getConnector().getDeploymentInfo().getThingIp(), 
+      template.getConnector().getDeploymentInfo().getThingPort(), 
       DXManIDGenerator.getDeployerUUID(
-        template.getDeploymentInfo().getThingAlias()
+        template.getConnector().getDeploymentInfo().getThingAlias()
       )
     ); 
     

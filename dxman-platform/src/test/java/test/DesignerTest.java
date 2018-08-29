@@ -121,16 +121,17 @@ public class DesignerTest {
   
   private static DXManCompositeServiceTemplate designPost() throws URISyntaxException {
     
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
+    
     //DXManSelectorTemplate selector = new DXManSelectorTemplate("SEL1");
-    DXManParallelTemplate parallel = new DXManParallelTemplate("PAR1", DXManParallelType.SYNC);
+    DXManParallelTemplate parallel = new DXManParallelTemplate("PAR1", DXManParallelType.SYNC, deploymentInfo);
     DXManParameter addr = new DXManParameter("addr", DXManParameterType.INPUT, "string"); parallel.addInput(addr);
             
     DXManAtomicServiceTemplate courier1 = designCourier(1, "sendWelcStd");
     DXManAtomicServiceTemplate courier2 = designCourier(2, "sendWelcFast");    
     
-    DXManServiceInfo templateInfo = new DXManServiceInfo("PostService", "Example", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
-    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, parallel, deploymentInfo);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("PostService", "Example", 0);    
+    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, parallel);
     
     composite.composeServices(courier1, courier2);
     
@@ -139,13 +140,14 @@ public class DesignerTest {
   
   private static DXManCompositeServiceTemplate designSender() throws URISyntaxException {
     
-    DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ2");
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
+    
+    DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ2", deploymentInfo);
     DXManCompositeServiceTemplate post = designPost();
     DXManAtomicServiceTemplate email = designEmail();
     
-    DXManServiceInfo templateInfo = new DXManServiceInfo("SenderService", "Example", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
-    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("SenderService", "Example", 0);    
+    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer);
     
     composite.composeServices(post, email);
     
@@ -154,13 +156,14 @@ public class DesignerTest {
   
   private static DXManCompositeServiceTemplate designCustomer() throws URISyntaxException {
     
-    DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ3");
+    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
+    
+    DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ3", deploymentInfo);
     DXManCompositeServiceTemplate sender = designSender();
     DXManAtomicServiceTemplate lpb = designLoyaltyPointsBank();
     
-    DXManServiceInfo templateInfo = new DXManServiceInfo("CustomerService", "Example", 0);
-    DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
-    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer, deploymentInfo);
+    DXManServiceInfo templateInfo = new DXManServiceInfo("CustomerService", "Example", 0);    
+    DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer);
     
     composite.composeServices(sender, lpb);
     

@@ -13,7 +13,7 @@ public class DXManAtomicServiceTemplate extends DXManServiceTemplate {
     DXManDeploymentInfo deploymentInfo) {
     
     super(info, DXManServiceType.ATOMIC, 
-      new DXManInvocationTemplate(connectorName), deploymentInfo);
+      new DXManInvocationTemplate(connectorName, deploymentInfo));
   };
   
   @Override
