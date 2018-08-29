@@ -1,18 +1,18 @@
 package com.dxman.deployment.cli;
 
-import com.dxman.execution.wttree.DXManWorkflowTree;
-import com.dxman.execution.wttree.DXManWfResult;
+import com.dxman.execution.wttree.*;
 import com.dxman.execution.sequencer.DXManWfSequencer;
 import com.dxman.execution.parallel.DXManWfParallel;
 import com.dxman.execution.invocation.DXManWfInvocation;
-import com.dxman.execution.common.DXManWfNodeCustom;
-import com.dxman.execution.common.DXManWfNode;
+import com.dxman.execution.common.*;
 import com.dxman.dataspace.base.*;
 import com.dxman.deployment.common.DXManDeploymentUtils;
 import com.dxman.deployment.data.DXManDataAlgorithm;
+import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.data.*;
 import com.dxman.design.services.common.*;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
+import com.dxman.execution.guard.DXManWfGuard;
 import com.dxman.execution.selector.DXManWfSelector;
 import com.dxman.utils.*;
 import com.google.gson.*;
@@ -93,7 +93,7 @@ public class DXManWorkflowTreeDesigner {
   
   private void deployWorkflowDataChannels(DXManDataAlgorithm alg, String wfId) {
     
-    System.out.println("Deploying data channels for workflow " + wfId + "...");
+    System.out.println("Deploying data channels for " + wfId + "...");
     
     // TODO Optimize this (perhaps sending the whole readers to every WfNode of the WfTree)
     // So every WfNode can access the data pipes from there
@@ -162,6 +162,12 @@ public class DXManWorkflowTreeDesigner {
       composite, composite.getId(), ""
     );
     
+    // Analyses adapters connected to the connector of the composite service
+    DXManWfNode topNode = parentWfNode;
+    if(!composite.getAdapters().isEmpty()) {
+      topNode = analyzeLinks(composite, null, parentWfNode, wt);
+    }
+    
     for(DXManServiceTemplate subService: 
       composite.getSubServices()) {
       
@@ -172,8 +178,8 @@ public class DXManWorkflowTreeDesigner {
       subService.getOperations().forEach((opId, op)->{
         
         DXManWfNode opNode = createWfNodeInstance(subService, opId, opId);
-        parentWfNode.addSubWfNode(opNode, new DXManWfNodeCustom() {});
         
+        analyzeLinks(subService, parentWfNode, opNode, wt);
         updateWorkflowTree(wt, opNode);
       });
       
@@ -182,7 +188,8 @@ public class DXManWorkflowTreeDesigner {
         DXManWfNode subWfNode = generateWorkflowTree(
           (DXManCompositeServiceTemplate) subService, wt
         );
-        parentWfNode.addSubWfNode(subWfNode, new DXManWfNodeCustom() {});
+      
+        connectWfNodes(parentWfNode, subWfNode);
       } else {
         COMPOSITE_CONTENT.append(subService);
       }
@@ -190,11 +197,67 @@ public class DXManWorkflowTreeDesigner {
       generateAlgebraicDataChannels(composite, subService, parentWfNode);
     }
     
-    updateWorkflowTree(wt, parentWfNode);
+    updateWorkflowTree(wt, topNode);
     
     COMPOSITE_CONTENT.append(composite);
     
-    return parentWfNode;
+    return topNode;
+  }
+  
+  private DXManWfNode analyzeLinks(DXManServiceTemplate serviceTemplate, 
+    DXManWfNode parent, DXManWfNode child, DXManWorkflowTree wt) {
+    
+    if(serviceTemplate.getAdapters().isEmpty()) {
+      connectWfNodes(parent, child);
+      return null;
+    }
+    
+    DXManWfNode topAdapter = createWfAdapterInstance(
+      serviceTemplate.getAdapters().get(serviceTemplate.getAdapters().size()-1));
+    DXManWfNode bottomAdapter = topAdapter;
+        
+    if(parent != null) {
+      connectWfNodes(parent, topAdapter);
+    }
+    
+    for(int i = serviceTemplate.getAdapters().size()-2; i >= 0; i--) {
+      
+      DXManWfNode childAdapter = createWfAdapterInstance(
+        serviceTemplate.getAdapters().get(i));            
+      
+      connectWfNodes(bottomAdapter, childAdapter);
+      
+      updateWorkflowTree(wt, bottomAdapter); 
+      
+      bottomAdapter = childAdapter;
+    }
+    
+    connectWfNodes(bottomAdapter, child);
+    
+    updateWorkflowTree(wt, bottomAdapter);
+    updateWorkflowTree(wt, topAdapter);
+    
+    return topAdapter;
+  }
+  
+  private void connectWfNodes(DXManWfNode parent, DXManWfNode child) {
+    
+    //System.out.println("Connecting: " + parent.getId() + "--->" + child.getId());
+    parent.addSubWfNode(child, new DXManWfNodeCustom());    
+  }
+  
+  private DXManWfNode createWfAdapterInstance(DXManConnectorTemplate connector) {
+    
+    String uri = DXManIDGenerator.getCoapUri(
+      connector.getDeploymentInfo().getThingIp(), 
+      connector.getDeploymentInfo().getThingPort(), 
+      connector.getId()); // TODO The uri should be to the operation not the service/connector
+    
+    switch(connector.getType()) {
+      case GUARD:
+        return new DXManWfGuard(connector.getId(), uri);
+    }
+    return null;
   }
   
   private DXManWfNode createWfNodeInstance(DXManServiceTemplate service, 
@@ -210,13 +273,13 @@ public class DXManWorkflowTreeDesigner {
     } else {
       
       switch(service.getConnector().getType()) {
-      case SEQUENCER:
-        return new DXManWfSequencer(wfNodeId, uri);
-      case SELECTOR:
-        return new DXManWfSelector(wfNodeId, uri);
-      case PARALLEL:
-        return new DXManWfParallel(wfNodeId, uri);
-    }
+        case SEQUENCER:
+          return new DXManWfSequencer(wfNodeId, uri);
+        case SELECTOR:
+          return new DXManWfSelector(wfNodeId, uri);
+        case PARALLEL:
+          return new DXManWfParallel(wfNodeId, uri);
+      }
     }
     return null;    
   }

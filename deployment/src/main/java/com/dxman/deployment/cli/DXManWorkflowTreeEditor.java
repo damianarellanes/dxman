@@ -1,14 +1,11 @@
 package com.dxman.deployment.cli;
 
-import com.dxman.execution.wttree.DXManWfInputs;
-import com.dxman.execution.wttree.DXManWfOutputs;
-import com.dxman.execution.wttree.DXManWorkflowTree;
-import com.dxman.execution.sequencer.DXManWfSequencerCustom;
-import com.dxman.execution.sequencer.DXManWfSequencer;
+import com.dxman.execution.wttree.*;
+import com.dxman.execution.sequencer.*;
 import com.dxman.execution.parallel.DXManWfParallelCustom;
 import com.dxman.design.data.*;
-import com.dxman.execution.common.DXManWfCondition;
-import com.dxman.execution.common.DXManWfConditionOperator;
+import com.dxman.execution.common.*;
+import com.dxman.execution.guard.DXManWfGuardCustom;
 import com.dxman.execution.selector.DXManWfSelectorCustom;
 
 /**
@@ -46,6 +43,17 @@ public abstract class DXManWorkflowTreeEditor {
     workflowTree.getWt().get(parentKey).customise(
       childKey, 
       new DXManWfSelectorCustom(
+        new DXManWfCondition(parameterName, operator, value)
+      )
+    );
+  }
+  
+  public void customiseGuard(String parentKey, String childKey, 
+    String parameterName, DXManWfConditionOperator operator, String value) {
+    
+    workflowTree.getWt().get(parentKey).customise(
+      childKey, 
+      new DXManWfGuardCustom(
         new DXManWfCondition(parameterName, operator, value)
       )
     );

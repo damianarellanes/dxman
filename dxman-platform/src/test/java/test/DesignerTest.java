@@ -129,6 +129,7 @@ public class DesignerTest {
     DXManParameter addr = new DXManParameter("addr", DXManParameterType.INPUT, "string"); parallel.addInput(addr);
             
     DXManGuardTemplate guard = new DXManGuardTemplate("GUARD1", deploymentInfo);
+    DXManParameter input = new DXManParameter("input", DXManParameterType.INPUT, "string"); guard.addInput(input);
     DXManAtomicServiceTemplate courier1 = designCourier(1, "sendWelcStd");
     courier1.getAdapters().add(guard);
             
@@ -146,6 +147,10 @@ public class DesignerTest {
     
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     
+    DXManGuardTemplate guard1 = new DXManGuardTemplate("GUARD1-sender", deploymentInfo);
+    DXManGuardTemplate guard2 = new DXManGuardTemplate("GUARD2-sender", deploymentInfo);
+    DXManGuardTemplate guard3 = new DXManGuardTemplate("GUARD3-sender", deploymentInfo);
+    
     DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ2", deploymentInfo);
     DXManCompositeServiceTemplate post = designPost();
     DXManAtomicServiceTemplate email = designEmail();
@@ -153,6 +158,7 @@ public class DesignerTest {
     DXManServiceInfo templateInfo = new DXManServiceInfo("SenderService", "Example", 0);    
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer);
     
+    //composite.getAdapters().add(guard1);composite.getAdapters().add(guard2);composite.getAdapters().add(guard3);
     composite.composeServices(post, email);
     
     return composite;
@@ -162,6 +168,10 @@ public class DesignerTest {
     
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
     
+    DXManGuardTemplate guard1 = new DXManGuardTemplate("GUARD1-customer", deploymentInfo);
+    DXManGuardTemplate guard2 = new DXManGuardTemplate("GUARD2-customer", deploymentInfo);
+    DXManGuardTemplate guard3 = new DXManGuardTemplate("GUARD3-customer", deploymentInfo);
+    
     DXManSequencerTemplate sequencer = new DXManSequencerTemplate("SEQ3", deploymentInfo);
     DXManCompositeServiceTemplate sender = designSender();
     DXManAtomicServiceTemplate lpb = designLoyaltyPointsBank();
@@ -169,6 +179,7 @@ public class DesignerTest {
     DXManServiceInfo templateInfo = new DXManServiceInfo("CustomerService", "Example", 0);    
     DXManCompositeServiceTemplate composite = new DXManCompositeServiceTemplate(templateInfo, sequencer);
     
+    //composite.getAdapters().add(guard1);composite.getAdapters().add(guard2);composite.getAdapters().add(guard3);
     composite.composeServices(sender, lpb);
     
     return composite;
@@ -194,8 +205,6 @@ public class DesignerTest {
         System.out.println(((DXManWfSelectorCustom)subNode.getCustom()).getCondition());
       }
     }
-    
-    
   }
   
   public static void main(String[] args) throws URISyntaxException {
@@ -217,25 +226,27 @@ public class DesignerTest {
     String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf1";
     
     // GENERATE WORKFLOW FILES    
-    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
-    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test-0");
+    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test-100");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
-    deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    /*wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
+    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
+    
+    //wfTree.print(wfTree.getCompositeService().getId());
     
     // EXECUTES WORKFLOW FROM FILE
     String topService = wfTree.getCompositeService().getId();
-    //String topService = "2055cafa-77a4-47af-b784-ffc61802ea38";
+    //String topService = "55af8856-12b3-4ef8-b160-9b75c14ddfff";
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService));
     wfResult.forEach((outputId, outputVal) -> {
         System.out.println(outputId + " --> " + outputVal);
-    });*/
+    });
     
     // TODO force to overwrite parameters in the blockchain, even if they already exist
     

@@ -14,6 +14,6 @@ public class DXManGuardTemplate extends DXManConnectorTemplate {
 
   @Override
   public String toString() {
-    return "Guard " + getName() +" inputs: " + getInputs().values() ;
+    return "Guard (" + getId() + ") " + getName() +" inputs: " + getInputs().values() ;
   }
 }
