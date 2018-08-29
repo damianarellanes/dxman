@@ -27,6 +27,7 @@ public class DXManServiceTemplate {
   public DXManServiceTemplate(DXManServiceInfo info, DXManServiceType type, 
     DXManConnectorTemplate connector) {
     
+    this.id = connector.getId();
     this.info = info;
     this.type = type;
     operations = new DXManMap<>();
@@ -43,7 +44,10 @@ public class DXManServiceTemplate {
   }
 
   public String getId() { return id; }
-  public void setId(String id) { this.id = id; }
+  public void setId() {     
+    this.connector.setId(); 
+    this. id = this.connector.getId(); 
+  }
 
   public DXManServiceInfo getInfo() { return info; }
   public void setInfo(DXManServiceInfo info) { this.info = info; }

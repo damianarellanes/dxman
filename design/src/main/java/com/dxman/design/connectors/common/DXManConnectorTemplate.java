@@ -11,7 +11,7 @@ public class DXManConnectorTemplate {
   
   private DXManConnectorType classType; // For deserializing using Gson
   
-  private final String id;
+  private String id;
   private final String name;
   private final DXManConnectorType type;
   private final DXManMap<String, DXManParameter> inputs;
@@ -37,6 +37,7 @@ public class DXManConnectorTemplate {
   public void setClassType() { this.classType = type; }
     
   public String getId() { return id; }
+  public void setId() { this.id = DXManIDGenerator.generateConnectorID(); }
   public String getName() { return name; }
   public DXManConnectorType getType() { return type; }
   public DXManMap<String, DXManParameter> getInputs() { return inputs; }  

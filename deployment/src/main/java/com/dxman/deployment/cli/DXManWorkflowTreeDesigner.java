@@ -150,7 +150,7 @@ public class DXManWorkflowTreeDesigner {
     DXManCompositeServiceTemplate composite, DXManWorkflowTree wt) {
     
     // Sets the id for the current service which is used as the resource for the server
-    composite.setId(DXManIDGenerator.generateServiceID());
+    composite.setId();
     
     DXManWfNode parentWfNode = createWfNodeInstance(
       composite, composite.getId(), ""
@@ -160,7 +160,7 @@ public class DXManWorkflowTreeDesigner {
       composite.getSubServices()) {
       
       // Sets the id for the subservice which is used as the resource for the server
-      subService.setId(DXManIDGenerator.generateServiceID());
+      subService.setId();
       
       // Adds the operations to the workflow tree      
       subService.getOperations().forEach((opId, op)->{
