@@ -8,21 +8,13 @@ import com.dxman.design.services.common.*;
  * @author darellanes
  */
 public class DXManAtomicServiceTemplate extends DXManServiceTemplate {
-    
-  private DXManComputationUnit computationUnit;
 
   public DXManAtomicServiceTemplate(DXManServiceInfo info, String connectorName,
-    DXManComputationUnit computationUnit, DXManDeploymentInfo deploymentInfo) {
+    DXManDeploymentInfo deploymentInfo) {
     
     super(info, DXManServiceType.ATOMIC, 
       new DXManInvocationTemplate(connectorName), deploymentInfo);
-    this.computationUnit = computationUnit;
   };
-
-  public DXManComputationUnit getComputationUnit() { return computationUnit; }
-  public void setComputationUnit(DXManComputationUnit computationUnit) {
-    this.computationUnit = computationUnit;
-  }
   
   @Override
   public String toString() {

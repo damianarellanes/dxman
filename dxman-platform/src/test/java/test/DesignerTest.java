@@ -17,7 +17,6 @@ import com.dxman.design.distribution.DXManBindingInfo;
 import com.dxman.design.distribution.DXManDeploymentInfo;
 import com.dxman.design.distribution.DXManEndpointType;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
-import com.dxman.design.services.atomic.DXManComputationUnit;
 import com.dxman.design.services.common.DXManServiceInfo;
 import com.dxman.design.services.common.DXManServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
@@ -65,10 +64,9 @@ public class DesignerTest {
     DXManParameter email = new DXManParameter("email", DXManParameterType.INPUT, "string"); createRecord.addParameter(email);
     DXManParameter id = new DXManParameter("id", DXManParameterType.OUTPUT, "string"); createRecord.addParameter(id);    
     
-    DXManComputationUnit cu = new DXManComputationUnit();
     DXManServiceInfo templateInfo = new DXManServiceInfo("LoyaltyPointsBank", "MusicCorp", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
-    DXManAtomicServiceTemplate loyaltyPointsBank = new DXManAtomicServiceTemplate(templateInfo, "IC1", cu, deploymentInfo);
+    DXManAtomicServiceTemplate loyaltyPointsBank = new DXManAtomicServiceTemplate(templateInfo, "IC1", deploymentInfo);
     loyaltyPointsBank.addOperation(createRecord);
     
     return loyaltyPointsBank;
@@ -90,10 +88,9 @@ public class DesignerTest {
     DXManParameter name = new DXManParameter("name", DXManParameterType.INPUT, "string"); sendWelc.addParameter(name);
     DXManParameter res = new DXManParameter("res", DXManParameterType.OUTPUT, "string"); sendWelc.addParameter(res);
     
-    DXManComputationUnit cu = new DXManComputationUnit();
     DXManServiceInfo templateInfo = new DXManServiceInfo("Courier"+num, "MusicCorp", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
-    DXManAtomicServiceTemplate courier = new DXManAtomicServiceTemplate(templateInfo, "IC"+(num+1), cu, deploymentInfo);
+    DXManAtomicServiceTemplate courier = new DXManAtomicServiceTemplate(templateInfo, "IC"+(num+1), deploymentInfo);
     courier.addOperation(sendWelc);
     
     return courier;
@@ -114,10 +111,9 @@ public class DesignerTest {
     DXManParameter email = new DXManParameter("email", DXManParameterType.INPUT, "string"); sendWelcEmail.addParameter(email);
     //DXManParameter res = new DXManParameter("res", DXManParameterType.OUTPUT, "string"); sendWelcEmail.addParameter(res);
     
-    DXManComputationUnit cu = new DXManComputationUnit();
     DXManServiceInfo templateInfo = new DXManServiceInfo("Email Service", "MusicCorp", 0);
     DXManDeploymentInfo deploymentInfo = new DXManDeploymentInfo("Alienware", "192.168.0.5", 5683);
-    DXManAtomicServiceTemplate emailService = new DXManAtomicServiceTemplate(templateInfo, "IC4", cu, deploymentInfo);
+    DXManAtomicServiceTemplate emailService = new DXManAtomicServiceTemplate(templateInfo, "IC4", deploymentInfo);
     emailService.addOperation(sendWelcEmail);
     
     return emailService;
