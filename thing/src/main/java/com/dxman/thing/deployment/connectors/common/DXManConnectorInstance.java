@@ -1,10 +1,9 @@
 package com.dxman.thing.deployment.connectors.common;
 
 
+import com.dxman.execution.common.DXManWfNode;
 import com.dxman.design.services.common.DXManServiceTemplate;
-import com.dxman.execution.*;
 import com.dxman.thing.server.base.DXManConnectorRequester;
-import com.dxman.utils.*;
 import com.google.gson.*;
 
 /**
@@ -25,6 +24,16 @@ public abstract class DXManConnectorInstance {
     this.id = managedService.getId();
     this.name = name;
     this.managedService = managedService;
+    this.requester = requester;
+    this.gson = gson;
+  }
+  
+  public DXManConnectorInstance(String id, String name, 
+    DXManConnectorRequester requester, Gson gson) {
+
+    this.id = id;
+    this.name = name;
+    this.managedService = null;
     this.requester = requester;
     this.gson = gson;
   }

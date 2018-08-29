@@ -4,10 +4,11 @@ import com.dxman.deployment.cli.DXManWorkflowTreeDesigner;
 import com.dxman.deployment.cli.DXManWorkflowTreeEditor;
 import com.dxman.deployment.common.DXManDeploymentManager;
 import com.dxman.deployment.data.DXManDataAlgorithm;
+import com.dxman.design.connectors.adapters.DXManGuardTemplate;
 import com.dxman.design.connectors.composition.DXManParallelTemplate;
 import com.dxman.design.connectors.composition.DXManParallelType;
 import com.dxman.design.connectors.composition.DXManSelectorTemplate;
-import com.dxman.execution.DXManWorkflowTree;
+import com.dxman.execution.wttree.DXManWorkflowTree;
 import com.dxman.design.connectors.composition.DXManSequencerTemplate;
 import com.dxman.design.data.DXManOperation;
 import com.dxman.design.data.DXManParameter;
@@ -20,15 +21,15 @@ import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.common.DXManServiceInfo;
 import com.dxman.design.services.common.DXManServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
-import com.dxman.execution.DXManWfInvocation;
-import com.dxman.execution.DXManWfNode;
-import com.dxman.execution.DXManWfNodeCustom;
-import com.dxman.execution.DXManWfNodeMapper;
-import com.dxman.execution.DXManWfParallel;
-import com.dxman.execution.DXManWfParallelCustom;
-import com.dxman.execution.DXManWfResult;
-import com.dxman.execution.DXManWfSequencer;
-import com.dxman.execution.DXManWfSequencerCustom;
+import com.dxman.execution.invocation.DXManWfInvocation;
+import com.dxman.execution.common.DXManWfNode;
+import com.dxman.execution.common.DXManWfNodeCustom;
+import com.dxman.execution.common.DXManWfNodeMapper;
+import com.dxman.execution.parallel.DXManWfParallel;
+import com.dxman.execution.parallel.DXManWfParallelCustom;
+import com.dxman.execution.wttree.DXManWfResult;
+import com.dxman.execution.sequencer.DXManWfSequencer;
+import com.dxman.execution.sequencer.DXManWfSequencerCustom;
 import com.dxman.execution.selector.DXManWfSelector;
 import com.dxman.execution.selector.DXManWfSelectorCustom;
 import com.dxman.utils.DXManErrors;
@@ -127,7 +128,10 @@ public class DesignerTest {
     DXManParallelTemplate parallel = new DXManParallelTemplate("PAR1", DXManParallelType.SYNC, deploymentInfo);
     DXManParameter addr = new DXManParameter("addr", DXManParameterType.INPUT, "string"); parallel.addInput(addr);
             
+    DXManGuardTemplate guard = new DXManGuardTemplate("GUARD1", deploymentInfo);
     DXManAtomicServiceTemplate courier1 = designCourier(1, "sendWelcStd");
+    courier1.getAdapters().add(guard);
+            
     DXManAtomicServiceTemplate courier2 = designCourier(2, "sendWelcFast");    
     
     DXManServiceInfo templateInfo = new DXManServiceInfo("PostService", "Example", 0);    
@@ -210,20 +214,20 @@ public class DesignerTest {
             
         
     DXManWorkflowTreeDesigner wfTreeManager = new DXManWorkflowTreeDesigner("http://localhost:3000");
-    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf4";
+    String workflowTreeFile = "/home/darellanes/DX-MAN-Platform/examples/music-corp/wf1";
     
     // GENERATE WORKFLOW FILES    
-    //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
+    wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
     // READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
-    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test-4");
+    WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test-0");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "INEXISTENT");
     
     // DEPLOY WORKFLOW FROM FILE
-    //deploymentManager.deployCompositeService(wfTree.getCompositeService());
-    wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
+    deploymentManager.deployCompositeService(wfTree.getCompositeService());
+    /*wfTreeManager.deployWorkflow(wtEditor, false); // true when data channels are modified, false for using same data channels
     
     // EXECUTES WORKFLOW FROM FILE
     String topService = wfTree.getCompositeService().getId();
@@ -231,7 +235,7 @@ public class DesignerTest {
     DXManWfResult wfResult = wfTreeManager.executeWorkflow(wtEditor, wfTree.getWt().get(topService));
     wfResult.forEach((outputId, outputVal) -> {
         System.out.println(outputId + " --> " + outputVal);
-    });
+    });*/
     
     // TODO force to overwrite parameters in the blockchain, even if they already exist
     

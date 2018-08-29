@@ -1,5 +1,6 @@
 package com.dxman.deployment.common;
 
+import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.common.*;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
@@ -34,6 +35,8 @@ public class DXManDeploymentManager {
   public void deployServiceTemplate(DXManServiceTemplate template) {
     
     System.out.println("Deploying --> " + template.getInfo().getName());
+    
+    deployAdapters(template);
         
     template.setClassTypeServ(); // For deserializing service template
     template.getConnector().setClassType(); // For deserializing connector template
@@ -64,5 +67,32 @@ public class DXManDeploymentManager {
       .getResponseText();
     
     System.out.println("Connector deployed: " + connectorId);
+  }
+  
+  private void deployAdapters(DXManServiceTemplate service) {
+    
+    for(DXManConnectorTemplate adapter: service.getAdapters()) {
+      
+      adapter.setClassType();
+      System.out.println(adapter.getClassType());
+      
+      String thingTargetUri = DXManIDGenerator.getCoapUri(
+        adapter.getDeploymentInfo().getThingIp(), 
+        adapter.getDeploymentInfo().getThingPort(), 
+        DXManIDGenerator.getDeployerUUID(
+          adapter.getDeploymentInfo().getThingAlias()
+        )
+      );
+      
+      DXManDeploymentRequest deploymentRequest = new DXManDeploymentRequest(
+        adapter
+      );
+      
+      String connectorId = new CoapClient(thingTargetUri)
+      .post(GSON.toJson(deploymentRequest), 0)
+      .getResponseText();
+    
+      System.out.println("Adapter deployed: " + connectorId);
+    }
   }
 }

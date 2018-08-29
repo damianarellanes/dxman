@@ -1,9 +1,14 @@
 package com.dxman.deployment.cli;
 
+import com.dxman.execution.wttree.DXManWfInputs;
+import com.dxman.execution.wttree.DXManWfOutputs;
+import com.dxman.execution.wttree.DXManWorkflowTree;
+import com.dxman.execution.sequencer.DXManWfSequencerCustom;
+import com.dxman.execution.sequencer.DXManWfSequencer;
+import com.dxman.execution.parallel.DXManWfParallelCustom;
 import com.dxman.design.data.*;
-import com.dxman.execution.*;
-import com.dxman.execution.selector.DXManWfCondition;
-import com.dxman.execution.selector.DXManWfConditionOperator;
+import com.dxman.execution.common.DXManWfCondition;
+import com.dxman.execution.common.DXManWfConditionOperator;
 import com.dxman.execution.selector.DXManWfSelectorCustom;
 
 /**

@@ -3,6 +3,7 @@ package com.dxman.design.services.common;
 import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.data.DXManOperation;
 import com.dxman.utils.DXManMap;
+import java.util.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -20,7 +21,7 @@ public class DXManServiceTemplate {
   private DXManServiceType type;
   private DXManMap<String, DXManOperation> operations;  
   private DXManConnectorTemplate connector;
-  //private List<AdapterTemplate> adapters; // 0*
+  private List<DXManConnectorTemplate> adapters; // TODO this should be an abstract class for only adapters
 
   public DXManServiceTemplate() {}
 
@@ -32,6 +33,7 @@ public class DXManServiceTemplate {
     this.type = type;
     operations = new DXManMap<>();
     this.connector = connector;
+    this.adapters = new ArrayList<>();
   };
 
   public void addOperation(DXManOperation operation) {
@@ -63,6 +65,11 @@ public class DXManServiceTemplate {
   public DXManConnectorTemplate getConnector() { return connector; }
   public void setConnector(DXManConnectorTemplate connector) {
     this.connector = connector;
+  }
+  
+  public List<DXManConnectorTemplate> getAdapters() { return adapters; }
+  public void setAdapters(List<DXManConnectorTemplate> adapters) {
+    this.adapters = adapters;
   }
 
   @Override

@@ -1,12 +1,21 @@
 package com.dxman.deployment.common;
 
+import com.dxman.design.connectors.adapters.DXManGuardTemplate;
+import com.dxman.execution.sequencer.DXManWfSequencerCustom;
+import com.dxman.execution.sequencer.DXManWfSequencer;
+import com.dxman.execution.parallel.DXManWfParallelCustom;
+import com.dxman.execution.parallel.DXManWfParallel;
+import com.dxman.execution.invocation.DXManWfInvocation;
+import com.dxman.execution.common.DXManWfNodeCustom;
+import com.dxman.execution.common.DXManWfNode;
 import com.dxman.design.connectors.atomic.DXManInvocationTemplate;
 import com.dxman.design.connectors.common.*;
 import com.dxman.design.connectors.composition.*;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.common.DXManServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
-import com.dxman.execution.*;
+import com.dxman.execution.guard.DXManWfGuard;
+import com.dxman.execution.guard.DXManWfGuardCustom;
 import com.dxman.execution.selector.*;
 import com.dxman.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.*;
@@ -58,7 +67,8 @@ public class DXManDeploymentUtils {
     .registerSubtype(DXManWfParallel.class, DXManWfParallel.class.getName())
     .registerSubtype(DXManWfSelector.class, DXManWfSelector.class.getName())
     .registerSubtype(DXManWfSequencer.class, DXManWfSequencer.class.getName())
-    .registerSubtype(DXManWfInvocation.class, DXManWfInvocation.class.getName());
+    .registerSubtype(DXManWfInvocation.class, DXManWfInvocation.class.getName())
+    .registerSubtype(DXManWfGuard.class, DXManWfGuard.class.getName());
   }
       
   private static RuntimeTypeAdapterFactory<DXManWfNode> 
@@ -69,7 +79,8 @@ public class DXManDeploymentUtils {
     .registerSubtype(DXManWfParallel.class)
     .registerSubtype(DXManWfSelector.class)
     .registerSubtype(DXManWfSequencer.class)
-    .registerSubtype(DXManWfInvocation.class);
+    .registerSubtype(DXManWfInvocation.class)
+    .registerSubtype(DXManWfGuard.class);
   }
       
   private static RuntimeTypeAdapterFactory<DXManWfNodeCustom>
@@ -79,7 +90,8 @@ public class DXManDeploymentUtils {
     .of(DXManWfNodeCustom.class)
     .registerSubtype(DXManWfParallelCustom.class)
     .registerSubtype(DXManWfSelectorCustom.class)
-    .registerSubtype(DXManWfSequencerCustom.class);
+    .registerSubtype(DXManWfSequencerCustom.class)
+    .registerSubtype(DXManWfGuardCustom.class);
   }
       
   private static RuntimeTypeAdapterFactory<DXManConnectorTemplate> 
@@ -94,6 +106,8 @@ public class DXManDeploymentUtils {
     .registerSubtype(DXManSequencerTemplate.class, 
       DXManConnectorType.SEQUENCER.name())
     .registerSubtype(DXManInvocationTemplate.class, 
-      DXManConnectorType.INVOCATION.name());
+      DXManConnectorType.INVOCATION.name())
+    .registerSubtype(DXManGuardTemplate.class, 
+      DXManConnectorType.GUARD.name());
   }
 }

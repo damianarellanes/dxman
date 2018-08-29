@@ -1,8 +1,8 @@
 package esp8266;
 
-import com.dxman.execution.DXManWfInvocation;
-import com.dxman.execution.DXManWfNode;
-import com.dxman.execution.DXManWfSpec;
+import com.dxman.execution.invocation.DXManWfInvocation;
+import com.dxman.execution.common.DXManWfNode;
+import com.dxman.execution.common.DXManWfSpec;
 import com.dxman.utils.RuntimeTypeAdapterFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

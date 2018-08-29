@@ -1,10 +1,10 @@
 package esp8266multilevel;
 
-import com.dxman.execution.DXManWfInvocation;
+import com.dxman.execution.invocation.DXManWfInvocation;
 import com.dxman.execution.DXManWorkflowTreeNode;
 import com.dxman.execution.DXManWorkflowTreeSeq;
-import com.dxman.execution.DXManWfInputs;
-import com.dxman.execution.DXManWfOutputs;
+import com.dxman.execution.wttree.DXManWfInputs;
+import com.dxman.execution.wttree.DXManWfOutputs;
 import com.dxman.execution.DXManWorkflowTreeInv;
 
 /**

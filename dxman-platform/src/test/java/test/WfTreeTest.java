@@ -1,9 +1,11 @@
 package test;
 
+import com.dxman.execution.wttree.DXManWfOutputs;
+import com.dxman.execution.wttree.DXManWorkflowTree;
+import com.dxman.execution.wttree.DXManWfInputs;
 import com.dxman.deployment.cli.DXManWorkflowTreeEditor;
 import com.dxman.design.data.DXManDataChannelPoint;
-import com.dxman.execution.*;
-import com.dxman.execution.selector.DXManWfConditionOperator;
+import com.dxman.execution.common.DXManWfConditionOperator;
 
 /**
  * @author Damian Arellanes

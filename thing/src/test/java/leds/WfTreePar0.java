@@ -1,6 +1,7 @@
 package leds;
 
-import com.dxman.execution.*;
+import com.dxman.execution.wttree.DXManWfOutputs;
+import com.dxman.execution.wttree.DXManWfInputs;
 import static leds.Config.*;
 
 /**

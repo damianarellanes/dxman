@@ -2,8 +2,10 @@ package com.dxman.thing.deployment.common;
 
 import com.dxman.dataspace.base.DXManDataSpace;
 import com.dxman.deployment.common.DXManDeploymentUtils;
+import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
+import com.dxman.thing.deployment.connectors.adapters.DXManGuardInstance;
 import com.dxman.thing.deployment.connectors.atomic.*;
 import com.dxman.thing.deployment.connectors.common.*;
 import com.dxman.thing.deployment.connectors.composite.*;
@@ -64,6 +66,27 @@ public class DXManDeployer {
           managedService, connectorRequester, gson
         );
         break;  
+    }
+    
+    server.deploy(connectorInstance);
+    
+    return connectorInstance.getId();
+  }
+  
+  public String deployAdapter(DXManConnectorTemplate adapter) {
+    
+    Gson gson = DXManDeploymentUtils.buildSerializationGson();
+    DXManConnectorRequester connectorRequester 
+      = DXManConnectorRequesterFactory.createCoapRequester(gson);
+    
+    DXManConnectorInstance connectorInstance = null;    
+    switch(adapter.getType()) {
+      
+      case GUARD:
+        connectorInstance = new DXManGuardInstance(
+          adapter.getId(), adapter.getName(), 
+          new DXManConnectorDataManager(dataSpace), connectorRequester, gson);
+        break;
     }
     
     server.deploy(connectorInstance);

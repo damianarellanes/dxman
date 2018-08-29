@@ -1,5 +1,6 @@
-package com.dxman.execution;
+package com.dxman.execution.wttree;
 
+import com.dxman.execution.common.DXManWfNode;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.utils.*;
 import java.sql.Timestamp;

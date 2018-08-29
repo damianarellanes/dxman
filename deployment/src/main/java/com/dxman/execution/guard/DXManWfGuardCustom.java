@@ -1,4 +1,4 @@
-package com.dxman.execution.selector;
+package com.dxman.execution.guard;
 
 import com.dxman.execution.common.DXManWfCondition;
 import com.dxman.execution.common.DXManWfNodeCustom;
@@ -6,13 +6,13 @@ import com.dxman.execution.common.DXManWfNodeCustom;
 /**
  * @author Damian Arellanes
  */
-public class DXManWfSelectorCustom extends DXManWfNodeCustom {   
+public class DXManWfGuardCustom extends DXManWfNodeCustom {   
   
   private DXManWfCondition condition;
   
-  public DXManWfSelectorCustom() {}
+  public DXManWfGuardCustom() {}
 
-  public DXManWfSelectorCustom(DXManWfCondition condition) {
+  public DXManWfGuardCustom(DXManWfCondition condition) {
     this.condition = condition;
   }
 

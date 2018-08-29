@@ -1,17 +1,18 @@
-package com.dxman.execution.selector;
+package com.dxman.execution.guard;
 
 import com.dxman.execution.common.DXManWfSpec;
 import com.dxman.execution.common.DXManWfNodeMapper;
 import com.dxman.execution.common.DXManWfNode;
+import com.dxman.execution.selector.*;
 
 /**
  * @author Damian Arellanes
  */
-public class DXManWfSelector extends DXManWfNode {
+public class DXManWfGuard extends DXManWfNode {
     
-  public DXManWfSelector() {}
+  public DXManWfGuard() {}
 
-  public DXManWfSelector(String id, String uri) {
+  public DXManWfGuard(String id, String uri) {
     super(id, uri);
   }
   
@@ -23,8 +24,8 @@ public class DXManWfSelector extends DXManWfNode {
       if(subNodeMapper.getNode() == null || !subNodeMapper.getNode().isValid()
         || subNodeMapper.getCustom() == null 
         || !subNodeMapper.getCustom().getClass().equals(DXManWfSelectorCustom.class)
-        || ((DXManWfSelectorCustom)subNodeMapper.getCustom()).getCondition() == null
-        || ((DXManWfSelectorCustom)subNodeMapper.getCustom()).getCondition().getOperator() == null
+        || ((DXManWfGuardCustom)subNodeMapper.getCustom()).getCondition() == null
+        || ((DXManWfGuardCustom)subNodeMapper.getCustom()).getCondition().getOperator() == null
       ) return false;
     }
     

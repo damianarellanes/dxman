@@ -40,6 +40,10 @@ public class DXManCompositeServiceTemplate extends DXManServiceTemplate {
       sb.append(getConnector()).append("\n");
       sb.append("***************************************************\n");       
     }
+    for(DXManConnectorTemplate adapter: getAdapters()) {
+      sb.append(adapter).append("\n");
+      sb.append("***************************************************\n");       
+    }
     sb.append("\n").append(getOperations().values());
     sb.append("***************************************************\n");
     sb.append("***************************************************\n\n\n");

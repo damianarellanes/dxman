@@ -1,7 +1,7 @@
 package com.dxman.thing.deployment.connectors.common;
 
 import com.dxman.dataspace.base.DXManDataSpace;
-import com.dxman.execution.selector.DXManWfCondition;
+import com.dxman.execution.common.DXManWfCondition;
 
 /**
  * @author Damian Arellanes

@@ -1,6 +1,6 @@
 package com.dxman.thing.server.base;
 
-import com.dxman.execution.DXManWfNode;
+import com.dxman.execution.common.DXManWfNode;
 
 /**
  * @author Damian Arellanes

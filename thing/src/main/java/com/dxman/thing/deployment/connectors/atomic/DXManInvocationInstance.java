@@ -5,7 +5,7 @@ import com.dxman.design.data.DXManOperation;
 import com.dxman.design.distribution.*;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
-import com.dxman.execution.DXManWfInvocation;
+import com.dxman.execution.invocation.DXManWfInvocation;
 import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.dxman.utils.DXManMap;
 import com.google.gson.Gson;

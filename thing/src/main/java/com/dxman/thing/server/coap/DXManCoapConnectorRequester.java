@@ -1,6 +1,6 @@
 package com.dxman.thing.server.coap;
 
-import com.dxman.execution.DXManWfNode;
+import com.dxman.execution.common.DXManWfNode;
 import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.google.gson.Gson;
 import org.eclipse.californium.core.*;

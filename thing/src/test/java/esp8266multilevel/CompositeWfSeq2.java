@@ -1,6 +1,7 @@
 package esp8266multilevel;
 
-import com.dxman.execution.*;
+import com.dxman.execution.wttree.DXManWfOutputs;
+import com.dxman.execution.wttree.DXManWfInputs;
 import java.util.*;
 import org.json.JSONException;
 

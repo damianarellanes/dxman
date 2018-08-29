@@ -1,8 +1,10 @@
-package com.dxman.thing.deployment.connectors.composite;
+package com.dxman.thing.deployment.connectors.adapters;
 
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.execution.common.DXManWfNodeMapper;
 import com.dxman.execution.common.DXManWfCondition;
+import com.dxman.execution.guard.DXManWfGuard;
+import com.dxman.execution.guard.DXManWfGuardCustom;
 import com.dxman.execution.selector.DXManWfSelector;
 import com.dxman.execution.selector.DXManWfSelectorCustom;
 import com.dxman.thing.deployment.connectors.common.DXManConnectorDataManager;
@@ -14,16 +16,15 @@ import java.util.Date;
 /**
  * @author Damian Arellanes
  */
-public class DXManSelectorInstance extends DXManConnectorInstance {
+public class DXManGuardInstance extends DXManConnectorInstance {
   
   private final DXManConnectorDataManager connectorDataManager;
 
-  public DXManSelectorInstance(DXManCompositeServiceTemplate managedService, 
+  public DXManGuardInstance(String connectorId, String connectorName, 
     DXManConnectorDataManager connectorDataManager, 
     DXManConnectorRequester requester, Gson gson) {
     
-    super(managedService, managedService.getConnector().getName(), 
-      requester, gson);
+    super(connectorId, connectorName, requester, gson);
     
     this.connectorDataManager = connectorDataManager;
   }
@@ -31,23 +32,21 @@ public class DXManSelectorInstance extends DXManConnectorInstance {
   @Override
   public void activate(String workflowJSON) {
     
-    System.err.println(this.getManagedService().getInfo().getName() 
-      + " (Selector Connector) activated [" + new Date() + "]");
+    System.err.println(getName()
+      + " (Guard Connector) activated [" + new Date() + "]");
     
-    DXManWfSelector flow = gson.fromJson(workflowJSON, DXManWfSelector.class);
+    DXManWfGuard flow = gson.fromJson(workflowJSON, DXManWfGuard.class);
     
-    for(DXManWfNodeMapper subNodeMapper: flow.getSubnodeMappers()) {
-      
-      DXManWfCondition condition = ((DXManWfSelectorCustom)subNodeMapper
+    DXManWfNodeMapper subNodeMapper = flow.getSubnodeMappers().get(0);
+    DXManWfCondition condition = ((DXManWfGuardCustom)subNodeMapper
         .getCustom()).getCondition();
-      
-      if(connectorDataManager.matches(flow.getWorkflowId(), 
-        flow.getWorkflowTimestamp(), condition)) {
-        
-        transferControl(
-          subNodeMapper.getNode(), subNodeMapper.getNode().getUri()
-        );
-      }
+    
+    if(connectorDataManager.matches(flow.getWorkflowId(), 
+      flow.getWorkflowTimestamp(), condition)) {
+
+      transferControl(
+        subNodeMapper.getNode(), subNodeMapper.getNode().getUri()
+      );
     }
   }
     

@@ -1,4 +1,7 @@
-package com.dxman.execution;
+package com.dxman.execution.invocation;
+
+import com.dxman.execution.common.DXManWfSpec;
+import com.dxman.execution.common.DXManWfNode;
 
 /**
  * @author Damian Arellanes

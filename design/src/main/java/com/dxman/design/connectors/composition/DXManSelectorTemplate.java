@@ -1,7 +1,6 @@
 package com.dxman.design.connectors.composition;
 
-import com.dxman.design.connectors.common.DXManConnectorTemplate;
-import com.dxman.design.connectors.common.DXManConnectorType;
+import com.dxman.design.connectors.common.*;
 import com.dxman.design.distribution.DXManDeploymentInfo;
 
 /**

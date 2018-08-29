@@ -1,4 +1,6 @@
-package com.dxman.execution;
+package com.dxman.execution.sequencer;
+
+import com.dxman.execution.common.DXManWfNodeCustom;
 
 /**
  * @author Damian Arellanes
