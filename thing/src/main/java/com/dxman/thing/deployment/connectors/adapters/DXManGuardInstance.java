@@ -23,7 +23,9 @@ public class DXManGuardInstance extends DXManConnectorInstance {
 
     public void sync() {
       ExecutorService executor = executeParallelChilds();
-      joinParallelChilds(executor);
+      
+      if(executor != null)
+        joinParallelChilds(executor);
     }
 
     public void async() {
@@ -52,18 +54,21 @@ public class DXManGuardInstance extends DXManConnectorInstance {
         }
       }
       
-      // Pool size = sum of tasks in the subnodes of the workflow tree
-      ExecutorService executor = Executors.newFixedThreadPool(tasks.size());
-      
-      // Invokes all tasks in parallel
-      try {
-        executor.invokeAll(tasks);
-      } catch (InterruptedException ex) {
-        System.err.println(ex);
+      ExecutorService executor = null;
+      if(tasks.size() > 0) {
+        // Pool size = sum of tasks in the subnodes of the workflow tree
+        executor = Executors.newFixedThreadPool(tasks.size());
+
+        // Invokes all tasks in parallel
+        try {
+          executor.invokeAll(tasks);
+        } catch (InterruptedException ex) {
+          System.err.println(ex);
+        }
+        
+        // Terminates threads for the tasks
+        executor.shutdown();        
       }
-      
-      // Terminates threads for the tasks
-      executor.shutdown();
       
       return executor;
     }
