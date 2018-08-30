@@ -174,15 +174,6 @@ public class DXManWorkflowTreeDesigner {
       // Sets the id for the subservice which is used as the resource for the server
       subService.setId();
       
-      // Adds the operations to the workflow tree      
-      subService.getOperations().forEach((opId, op)->{
-        
-        DXManWfNode opNode = createWfNodeInstance(subService, opId, opId);
-        
-        analyzeLinks(subService, parentWfNode, opNode, wt);
-        updateWorkflowTree(wt, opNode);
-      });
-      
       if(subService.getType().equals(DXManServiceType.COMPOSITE)) {
         
         DXManWfNode subWfNode = generateWorkflowTree(
@@ -191,6 +182,25 @@ public class DXManWorkflowTreeDesigner {
       
         connectWfNodes(parentWfNode, subWfNode);
       } else {
+                
+        if(subService.getAdapters().isEmpty()) {
+          
+          subService.getOperations().forEach((opId, op)->{        
+            DXManWfNode opNode = createWfNodeInstance(subService, opId, opId);        
+            analyzeLinks(subService, parentWfNode, opNode, wt);
+            updateWorkflowTree(wt, opNode);
+          });
+        } else {
+        
+          DXManWfNode bottomAdapter = analyzeLinks(subService, parentWfNode, null, wt);
+          subService.getOperations().forEach((opId, op)->{        
+            DXManWfNode opNode = createWfNodeInstance(subService, opId, opId);
+            connectWfNodes(bottomAdapter, opNode);
+            updateWorkflowTree(wt, opNode);
+            updateWorkflowTree(wt, bottomAdapter);
+          });
+        }
+        
         COMPOSITE_CONTENT.append(subService);
       }
       
@@ -232,12 +242,17 @@ public class DXManWorkflowTreeDesigner {
       bottomAdapter = childAdapter;
     }
     
-    connectWfNodes(bottomAdapter, child);
-    
-    updateWorkflowTree(wt, bottomAdapter);
+    if(child != null) {
+      connectWfNodes(bottomAdapter, child);
+      updateWorkflowTree(wt, bottomAdapter);
+    } 
+             
     updateWorkflowTree(wt, topAdapter);
     
-    return topAdapter;
+    if(child != null)    
+      return topAdapter;
+    else
+      return bottomAdapter;
   }
   
   private void connectWfNodes(DXManWfNode parent, DXManWfNode child) {

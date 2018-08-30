@@ -46,6 +46,8 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     DXManOperation operationToInvoke = getManagedService().getOperations()
       .get(operationName);
 
+    System.out.println("Executing operation: " + operationName);
+    
     // Gets the operation from the managed service
     DXManBindingInfo bindingInfo = operationToInvoke.getBindingInfo();
 

@@ -34,6 +34,13 @@ public class DXManWfGuard extends DXManWfNode {
   
   @Override
   public DXManWfSpec build() {
+    
+    for(DXManWfNodeMapper subNodeMapper: getSubnodeMappers()) {
+      
+      if(subNodeMapper.getCustom() == null) 
+        getSubnodeMappers().remove(subNodeMapper);
+    }
+    
     return new DXManWfSpec(getId()+"-wf-spec", this);
   }
 }
