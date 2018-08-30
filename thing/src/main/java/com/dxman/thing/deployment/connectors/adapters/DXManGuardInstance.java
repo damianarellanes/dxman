@@ -1,14 +1,8 @@
 package com.dxman.thing.deployment.connectors.adapters;
 
-import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
-import com.dxman.execution.common.DXManWfNodeMapper;
-import com.dxman.execution.common.DXManWfCondition;
-import com.dxman.execution.guard.DXManWfGuard;
-import com.dxman.execution.guard.DXManWfGuardCustom;
-import com.dxman.execution.selector.DXManWfSelector;
-import com.dxman.execution.selector.DXManWfSelectorCustom;
-import com.dxman.thing.deployment.connectors.common.DXManConnectorDataManager;
-import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
+import com.dxman.execution.common.*;
+import com.dxman.execution.guard.*;
+import com.dxman.thing.deployment.connectors.common.*;
 import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.google.gson.Gson;
 import java.util.Date;

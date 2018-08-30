@@ -38,23 +38,23 @@ public abstract class DXManWorkflowTreeEditor {
   }
   
   public void customiseSelector(String parentKey, String childKey, 
-    String parameterName, DXManWfConditionOperator operator, String value) {
+    String parameterId, DXManWfConditionOperator operator, String value) {
     
     workflowTree.getWt().get(parentKey).customise(
       childKey, 
       new DXManWfSelectorCustom(
-        new DXManWfCondition(parameterName, operator, value)
+        new DXManWfCondition(parameterId, operator, value)
       )
     );
   }
   
   public void customiseGuard(String parentKey, String childKey, 
-    String parameterName, DXManWfConditionOperator operator, String value) {
+    String parameterId, DXManWfConditionOperator operator, String value) {
     
     workflowTree.getWt().get(parentKey).customise(
       childKey, 
       new DXManWfGuardCustom(
-        new DXManWfCondition(parameterName, operator, value)
+        new DXManWfCondition(parameterId, operator, value)
       )
     );
   }
