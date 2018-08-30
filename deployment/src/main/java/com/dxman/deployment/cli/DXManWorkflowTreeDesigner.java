@@ -20,6 +20,7 @@ import com.google.gson.*;
 import java.io.*;
 import java.util.*;
 import org.eclipse.californium.core.CoapClient;
+import org.springframework.core.task.AsyncTaskExecutor;
 
 /**
  * @author Damian Arellanes
@@ -61,6 +62,11 @@ public class DXManWorkflowTreeDesigner {
     System.out.println("Executing the workflow " 
       + wtEditor.getWorkflowTree().getId() +"...");
     CoapClient cp = new CoapClient(node.getUri());
+    
+    // TODO the timeout should be infinite
+    // Sets a large timeout for the execution
+    cp.setTimeout(AsyncTaskExecutor.TIMEOUT_INDEFINITE);
+    
     cp.post(SERIALIZATION_GSON.toJson(node), 0);
     
     // Reads output parameters
