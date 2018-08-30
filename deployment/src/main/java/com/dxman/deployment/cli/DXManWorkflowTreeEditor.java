@@ -6,6 +6,8 @@ import com.dxman.execution.parallel.DXManWfParallelCustom;
 import com.dxman.design.data.*;
 import com.dxman.execution.common.*;
 import com.dxman.execution.guard.DXManWfGuardCustom;
+import com.dxman.execution.looper.DXManWfLooperCustomDyn;
+import com.dxman.execution.looper.DXManWfLooperCustomStatic;
 import com.dxman.execution.selector.DXManWfSelectorCustom;
 
 /**
@@ -56,6 +58,24 @@ public abstract class DXManWorkflowTreeEditor {
       new DXManWfGuardCustom(
         new DXManWfCondition(parameterId, operator, value)
       )
+    );
+  }
+  
+  public void customiseLooperDyn(String parentKey, String childKey, 
+    String parameterId, DXManWfConditionOperator operator, String value) {
+    
+    workflowTree.getWt().get(parentKey).customise(
+      childKey, 
+      new DXManWfLooperCustomDyn(
+        new DXManWfCondition(parameterId, operator, value)
+      )
+    );
+  }
+  public void customiseLooperStatic(String parentKey, String childKey, 
+    int iterations) {
+    
+    workflowTree.getWt().get(parentKey).customise(
+      childKey, new DXManWfLooperCustomStatic(iterations)
     );
   }
   

@@ -13,6 +13,7 @@ import com.dxman.design.data.*;
 import com.dxman.design.services.common.*;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.execution.guard.DXManWfGuard;
+import com.dxman.execution.looper.DXManWfLooper;
 import com.dxman.execution.selector.DXManWfSelector;
 import com.dxman.utils.*;
 import com.google.gson.*;
@@ -271,6 +272,8 @@ public class DXManWorkflowTreeDesigner {
     switch(connector.getType()) {
       case GUARD:
         return new DXManWfGuard(connector.getId(), uri);
+      case LOOPER:
+        return new DXManWfLooper(connector.getId(), uri);
     }
     return null;
   }

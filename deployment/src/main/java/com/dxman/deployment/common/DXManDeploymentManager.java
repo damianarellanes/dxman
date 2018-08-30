@@ -74,7 +74,6 @@ public class DXManDeploymentManager {
     for(DXManConnectorTemplate adapter: service.getAdapters()) {
       
       adapter.setClassType();
-      System.out.println(adapter.getClassType());
       
       String thingTargetUri = DXManIDGenerator.getCoapUri(
         adapter.getDeploymentInfo().getThingIp(), 

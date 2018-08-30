@@ -6,6 +6,7 @@ import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.thing.deployment.connectors.adapters.DXManGuardInstance;
+import com.dxman.thing.deployment.connectors.adapters.DXManLooperInstance;
 import com.dxman.thing.deployment.connectors.atomic.*;
 import com.dxman.thing.deployment.connectors.common.*;
 import com.dxman.thing.deployment.connectors.composite.*;
@@ -84,6 +85,11 @@ public class DXManDeployer {
       
       case GUARD:
         connectorInstance = new DXManGuardInstance(
+          adapter.getId(), adapter.getName(), 
+          new DXManConnectorDataManager(dataSpace), connectorRequester, gson);
+        break;
+      case LOOPER:
+        connectorInstance = new DXManLooperInstance(
           adapter.getId(), adapter.getName(), 
           new DXManConnectorDataManager(dataSpace), connectorRequester, gson);
         break;
