@@ -243,7 +243,7 @@ public class DXManWorkflowTreeDesigner {
   private void connectWfNodes(DXManWfNode parent, DXManWfNode child) {
     
     //System.out.println("Connecting: " + parent.getId() + "--->" + child.getId());
-    parent.addSubWfNode(child, new DXManWfNodeCustom());    
+    parent.addSubWfNode(child, null);    
   }
   
   private DXManWfNode createWfAdapterInstance(DXManConnectorTemplate connector) {
