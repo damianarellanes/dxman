@@ -82,7 +82,7 @@ public abstract class DXManWorkflowTreeEditor {
   public void addDataChannel(String parentKey, DXManDataChannelPoint origin, 
     DXManDataChannelPoint destination) {
     
-    workflowTree.getWt().get(parentKey).getDataChannels().add(
+    workflowTree.getDataChannels().get(parentKey).add(
       new DXManDataChannel(origin, destination)
     );
   }

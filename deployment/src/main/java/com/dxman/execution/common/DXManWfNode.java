@@ -2,7 +2,6 @@ package com.dxman.execution.common;
 
 import com.dxman.execution.wttree.DXManWorkflowTree;
 import com.dxman.deployment.data.DXManDataAlgorithm;
-import com.dxman.design.data.DXManDataChannel;
 import java.util.*;
 
 /**
@@ -17,8 +16,6 @@ public class DXManWfNode {
   private String workflowId;
   private String workflowTimestamp;
   private List<DXManWfNodeMapper> subNodeMappers = new ArrayList<>();
-  
-  private List<DXManDataChannel> dataChannels = new ArrayList<>(); // TODO Remove and only keep in the workflow tree
 
   public DXManWfNode() {}
 
@@ -62,7 +59,8 @@ public class DXManWfNode {
     workflowId = wt.getId(); 
     workflowTimestamp = wt.getCreationTimestamp();
     
-    dataChannels.forEach((dc) -> { alg.analyze(dc); });    
+    if(wt.getDataChannels().get(id) != null)    
+      wt.getDataChannels().get(id).forEach((dc) -> { alg.analyze(dc); });    
     
     build();
   }
@@ -84,11 +82,6 @@ public class DXManWfNode {
   public List<DXManWfNodeMapper> getSubnodeMappers() { return subNodeMappers; }
   public void setSubnodeMappers(List<DXManWfNodeMapper> subNodeMappers) { 
     this.subNodeMappers = subNodeMappers; 
-  }
-  
-  public List<DXManDataChannel> getDataChannels() { return dataChannels; }
-  public void setDataChannels(List<DXManDataChannel> dataChannels) {
-    this.dataChannels = dataChannels;
   }
     
   public boolean isValid(){ return true; };

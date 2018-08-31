@@ -212,7 +212,7 @@ public class DXManWorkflowTreeDesigner {
         COMPOSITE_CONTENT.append(subService);
       }
       
-      generateAlgebraicDataChannels(composite, subService, parentWfNode);
+      generateAlgebraicDataChannels(composite, subService, parentWfNode, wt);
     }
     
     updateWorkflowTree(wt, topNode);
@@ -315,8 +315,11 @@ public class DXManWorkflowTreeDesigner {
   
   private void generateAlgebraicDataChannels(
     DXManCompositeServiceTemplate composite, DXManServiceTemplate subService,
-    DXManWfNode wfNode
+    DXManWfNode wfNode, DXManWorkflowTree wt
   ) {
+    
+    if(wt.getDataChannels().get(wfNode.getId()) == null)
+      wt.getDataChannels().put(wfNode.getId(), new ArrayList<>());
     
     // Adds all the operations of subservices to composite service
     subService.getOperations().forEach((opId, op)->{
@@ -343,7 +346,7 @@ public class DXManWorkflowTreeDesigner {
         }
 
         DXManDataChannel dc = new DXManDataChannel(origin, destination);
-        wfNode.getDataChannels().add(dc);
+        wt.getDataChannels().get(wfNode.getId()).add(dc);
       });
     });
   }
