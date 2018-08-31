@@ -2,6 +2,7 @@ package com.dxman.execution.parallel;
 
 import com.dxman.execution.common.DXManWfSpec;
 import com.dxman.execution.common.*;
+import java.util.*;
 
 /**
  * @author Damian Arellanes
@@ -31,6 +32,15 @@ public class DXManWfParallel extends DXManWfNode {
   
   @Override
   public DXManWfSpec build() {
+    
+    List<DXManWfNodeMapper> tmp = new ArrayList<>();
+    for(DXManWfNodeMapper subNodeMapper: getSubnodeMappers()) {
+      
+      if(subNodeMapper.getCustom() != null) 
+        tmp.add(subNodeMapper);
+    }
+    setSubnodeMappers(tmp);
+    
     return new DXManWfSpec(getId()+"-wf-spec", this);
   }
 }
