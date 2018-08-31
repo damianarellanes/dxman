@@ -2,6 +2,8 @@ package com.dxman.thing.deployment.connectors.atomic;
 
 import com.dxman.design.distribution.*;
 import com.google.common.net.UrlEscapers;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.javalite.http.*;
 
 /**
@@ -23,7 +25,7 @@ public class RestInvocator implements InvocationHandler {
         }
         
         uri = UrlEscapers.urlFragmentEscaper().escape(uri);
-        result = doGet(uri, bindingInfo.getAcceptType());
+        result = doGet(uri, bindingInfo);
         break;            
       case HTTP_POST:
         
@@ -35,42 +37,51 @@ public class RestInvocator implements InvocationHandler {
         }
         
         uri = UrlEscapers.urlFragmentEscaper().escape(uri);
-        result = doPost(uri, content, bindingInfo.getContentType());
+        result = doPost(uri, content, bindingInfo);
         break;
     }    
     return result;
   }
 
-  private String doGet(String uri, DXManBindingContent responseType) {
+  private String doGet(String uri, DXManBindingInfo bindingInfo) {
 
-    Get response = Http.get(uri);
-    
-    switch(responseType) {
-      case APPLICATION_JSON:
-        response.header("Accept", "application/json");
-        break;
-      case APPLICATION_XML:
-        response.header("Accept", "application/xml");
-        break;
-    }
-
+    Get response = Http.get(uri);    
+    customiseRequest(response, bindingInfo);
     return response.text();
   }
 
   private String doPost(String uri, String content, 
-    DXManBindingContent contentType) {
+    DXManBindingInfo bindingInfo) {
 
-    Post response = Http.post(uri, content);
+    Post response = Http.post(uri, content);    
+    customiseRequest(response, bindingInfo);
+    return response.text();
+  }
+  
+  private void customiseRequest(Request request, DXManBindingInfo bindingInfo) {
     
-    switch(contentType) {
+    switch(bindingInfo.getContentType()) {
+      case PLAIN:
+        request.header("Content-Type", "text/plain");
+        break;
       case APPLICATION_JSON:
-        response.header("Content-Type", "application/json");
+        request.header("Content-Type", "application/json");
         break;
       case APPLICATION_XML:
-        response.header("Content-Type", "application/xml");
+        request.header("Content-Type", "application/xml");
         break;
     }
-
-    return response.text();
+    
+    switch(bindingInfo.getAcceptType()) {
+      case PLAIN:
+        request.header("Accept", "text/plain");
+        break;
+      case APPLICATION_JSON:
+        request.header("Accept", "application/json");
+        break;
+      case APPLICATION_XML:
+        request.header("Accept", "application/xml");
+        break;
+    }
   }
 }

@@ -46,7 +46,6 @@ public class DXManWorkflowTreeDesigner {
     DXManWfNode node) {
         
     String wfId = wtEditor.getWorkflowTree().getId();
-    String wfTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
     
     // Writes input parameters
     System.out.println("Updating inputs in the blockchain...");
@@ -60,7 +59,8 @@ public class DXManWorkflowTreeDesigner {
     
     // Executes the workflow
     System.out.println("Executing the workflow " 
-      + wtEditor.getWorkflowTree().getId() +"...");
+      + wtEditor.getWorkflowTree().getId() +"...");    
+    String wfTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
     CoapClient cp = new CoapClient(node.getUri());
     
     // TODO the timeout should be infinite

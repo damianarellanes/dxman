@@ -7,6 +7,7 @@ import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.utils.DXManIDGenerator;
 import com.google.gson.*;
 import org.eclipse.californium.core.CoapClient;
+import org.springframework.core.task.AsyncTaskExecutor;
 
 /**
  * @author Damian Arellanes
@@ -62,9 +63,7 @@ public class DXManDeploymentManager {
       );
     }
     
-    String connectorId = new CoapClient(thingTargetUri)
-      .post(GSON.toJson(deploymentRequest), 0)
-      .getResponseText();
+    String connectorId = sendRequest(thingTargetUri, deploymentRequest);
     
     System.out.println("Connector deployed: " + connectorId);
   }
@@ -87,11 +86,21 @@ public class DXManDeploymentManager {
         adapter
       );
       
-      String connectorId = new CoapClient(thingTargetUri)
-      .post(GSON.toJson(deploymentRequest), 0)
-      .getResponseText();
+      String connectorId = sendRequest(thingTargetUri, deploymentRequest);
     
       System.out.println("Adapter deployed: " + connectorId);
     }
+  }
+  
+  private String sendRequest(String uri, DXManDeploymentRequest deploymentRequest) {
+    
+    CoapClient cp = new CoapClient(uri);    
+    // TODO the timeout should be infinite
+    // Sets a large timeout for the execution
+    cp.setTimeout(AsyncTaskExecutor.TIMEOUT_INDEFINITE);
+    
+    String connectorId = cp.post(GSON.toJson(deploymentRequest), 0).getResponseText();
+    
+    return connectorId;
   }
 }
