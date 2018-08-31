@@ -57,9 +57,10 @@ public class DXManWorkflowTreeDesigner {
     });
     dataSpace.writeParameters(dp, wfId);
     
-    // Executes the workflow
+    // Updates the workflow timestamp and executes it
     System.out.println("Executing the workflow " 
       + wtEditor.getWorkflowTree().getId() +"...");    
+    wtEditor.getWorkflowTree().updateCreationTimestamp();
     String wfTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
     CoapClient cp = new CoapClient(node.getUri());
     
