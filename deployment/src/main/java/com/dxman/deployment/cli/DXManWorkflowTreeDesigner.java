@@ -216,6 +216,7 @@ public class DXManWorkflowTreeDesigner {
     }
     
     updateWorkflowTree(wt, topNode);
+    updateWorkflowTree(wt, parentWfNode);
     
     COMPOSITE_CONTENT.append(composite);
     
