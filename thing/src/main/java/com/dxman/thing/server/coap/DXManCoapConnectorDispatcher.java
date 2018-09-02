@@ -1,15 +1,15 @@
 package com.dxman.thing.server.coap;
 
 import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
-import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.coap.CoAP;
 import org.eclipse.californium.core.server.resources.CoapExchange;
 import com.dxman.thing.server.base.DXManConnectorDispatcher;
+import org.eclipse.californium.core.server.resources.ConcurrentCoapResource;
 
 /**
  * @author Damian Arellanes
  */
-public class DXManCoapConnectorDispatcher extends CoapResource 
+public class DXManCoapConnectorDispatcher extends ConcurrentCoapResource 
   implements DXManConnectorDispatcher {
     
   private final DXManConnectorInstance connectorInstance;
@@ -17,7 +17,7 @@ public class DXManCoapConnectorDispatcher extends CoapResource
   public DXManCoapConnectorDispatcher(DXManConnectorInstance connectorInstance, 
     String connectorResourceName) {
     
-    super(connectorResourceName);
+    super(connectorResourceName, 1); // One thread for dipatching requests concurrently
     this.connectorInstance = connectorInstance;
   }
 
