@@ -20,6 +20,8 @@ public class DXManCoapConnectorRequester implements DXManConnectorRequester {
   @Override
   public void transferControl(DXManWfNode subworkflow, String uri) {
     
+    System.out.println("Passing control to: " + uri);
+    
     CoapClient client = new CoapClient(uri);
     // TODO the timeout should be infinite
     // Sets a large timeout for the execution

@@ -15,11 +15,15 @@ public class DXManServerFactory {
     try {
       
       int port = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
+      NetworkConfig config = NetworkConfig.createStandardWithoutFile();
+      config.set(NetworkConfig.Keys.MAX_RESOURCE_BODY_SIZE, 2000000);
+      
       DXManCoapSingleton.createInstance(port);
 
       DXManCoapSingleton.get().start();
     } catch(Exception e) {
       System.out.println("The server is already running");
+      System.exit(0);
     }
                   
     return new DXManCoapServer();

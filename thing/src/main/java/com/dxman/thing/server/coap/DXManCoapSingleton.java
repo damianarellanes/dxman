@@ -18,7 +18,7 @@ public class DXManCoapSingleton extends CoapServer {
   private final int port;
 
   private DXManCoapSingleton(int port) throws SocketException {
-
+    
     this.port = port;
 
     // add endpoints on all IP addresses
