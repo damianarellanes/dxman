@@ -18,6 +18,7 @@ import com.dxman.execution.selector.DXManWfSelector;
 import com.dxman.utils.*;
 import com.google.gson.*;
 import java.io.*;
+import java.sql.Timestamp;
 import java.util.*;
 import org.eclipse.californium.core.CoapClient;
 import org.springframework.core.task.AsyncTaskExecutor;
@@ -45,7 +46,12 @@ public class DXManWorkflowTreeDesigner {
   public DXManWfResult executeWorkflow(DXManWorkflowTreeEditor wtEditor, 
     DXManWfNode node) {
         
-    String wfId = wtEditor.getWorkflowTree().getId();
+    // Gets the workflow id and updates the workflow timestamp
+    String wfId = wtEditor.getWorkflowTree().getId();    
+    wtEditor.getWorkflowTree().updateCreationTimestamp();
+    String wfTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
+    
+    try { Thread.sleep(400); } catch (InterruptedException ex) {} // TODO remove // This is to ensure clock sync
     
     // Writes input parameters
     System.out.println("Updating inputs in the blockchain...");
@@ -57,11 +63,9 @@ public class DXManWorkflowTreeDesigner {
     });
     dataSpace.writeParameters(dp, wfId);
     
-    // Updates the workflow timestamp and executes it
+    // Executes the workflow
     System.out.println("Executing the workflow " 
-      + wtEditor.getWorkflowTree().getId() +"...");    
-    wtEditor.getWorkflowTree().updateCreationTimestamp();
-    String wfTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
+      + wtEditor.getWorkflowTree().getId() +"...");            
     CoapClient cp = new CoapClient(node.getUri());
     
     // TODO the timeout should be infinite
@@ -379,5 +383,11 @@ public class DXManWorkflowTreeDesigner {
 
       writer.close();
     } catch (IOException ex) { System.out.println(ex.toString()); }
+  }
+  
+  public static void main(String[] args) {
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    String instant = timestamp.toInstant().toString();
+    System.out.println(instant);
   }
 }

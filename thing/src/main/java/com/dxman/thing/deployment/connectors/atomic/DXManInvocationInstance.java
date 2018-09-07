@@ -1,6 +1,5 @@
 package com.dxman.thing.deployment.connectors.atomic;
 
-import com.dxman.dataspace.base.DXManDataSpace;
 import com.dxman.design.data.DXManOperation;
 import com.dxman.design.distribution.*;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;

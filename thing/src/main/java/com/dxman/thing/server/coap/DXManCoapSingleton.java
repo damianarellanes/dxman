@@ -60,6 +60,7 @@ public class DXManCoapSingleton extends CoapServer {
         if (addr instanceof Inet4Address || addr.isLoopbackAddress()) {
           InetSocketAddress bindToAddress = new InetSocketAddress(addr, port);
           addEndpoint(new CoapEndpoint(bindToAddress));
+          System.out.println("Endpoint: " + addr + "-->" + port);
         }
       }
   }

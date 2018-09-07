@@ -70,7 +70,7 @@ public class DXManInvocationDataManager {
         );
       }
     } else {
-      System.out.println("The JSON response does not match the template!");
+      //System.out.println("The JSON response does not match the template!");
     }
   }
 }
