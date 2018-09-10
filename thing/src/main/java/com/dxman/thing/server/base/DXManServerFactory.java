@@ -9,12 +9,11 @@ import org.eclipse.californium.core.network.config.NetworkConfig;
  */
 public class DXManServerFactory {
     
-  public static DXManServer createCoap() {
+  public static DXManServer createCoap(int port) {
 
     // Only starts the Coap server once
     try {
       
-      int port = NetworkConfig.getStandard().getInt(NetworkConfig.Keys.COAP_PORT);
       NetworkConfig config = NetworkConfig.createStandardWithoutFile();
       config.set(NetworkConfig.Keys.MAX_RESOURCE_BODY_SIZE, 2000000);
       

@@ -26,26 +26,29 @@ public class Config {
   public static class ConnectorConfig {
   
     private final String resource;
-    private final String targetThing;
+    private final String thingIP;
+    private final String thingPort;
     private final String uri;    
     private final String implEndpoint;
     
-    public ConnectorConfig(String resource, String targetThing) {
+    public ConnectorConfig(String resource, String thingIP, String thingPort) {
       this.resource = resource;
-      this.targetThing = targetThing;
-      this.uri = "coap://" + targetThing + ":5683/" + resource;
+      this.thingIP = thingIP;
+      this.thingPort = thingPort;
+      this.uri = "coap://" + thingIP + ":" + thingPort + "/" + resource;
       this.implEndpoint = "";
     }
     
-    public ConnectorConfig(String resource, String targetThing, String implEndpoint) {
+    public ConnectorConfig(String resource, String thingIP, String thingPort, String implEndpoint) {
       this.resource = resource;
-      this.targetThing = targetThing;
-      this.uri = "coap://" + targetThing + ":5683/" + resource;
+      this.thingIP = thingIP;
+      this.thingPort = thingPort;
+      this.uri = "coap://" + thingIP + ":" + thingPort + "/" + resource;
       this.implEndpoint = implEndpoint;
     }
 
     public String getResource() { return resource; }
-    public String getTargetThing() { return targetThing; }
+    public String getTargetThing() { return thingIP; }
     public String getUri() { return uri; }
     public String getImplEndpoint() { return implEndpoint; }
   }

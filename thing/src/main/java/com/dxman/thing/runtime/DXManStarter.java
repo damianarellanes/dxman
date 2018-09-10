@@ -21,7 +21,9 @@ public class DXManStarter {
     DXManDataSpace dataSpace = setDataSpaceUp(config);
     
     // Sets the server up
-    DXManServer server = DXManServerFactory.createCoap();    
+    DXManServer server = DXManServerFactory.createCoap(
+      Integer.valueOf(config.getProperty(DXManConfiguration.THING_PORT_TAG))
+    );
     DXManThing thing = setThingUp(config, server, dataSpace);
     
     // Initializes the deployer (running at e.g., deployer-thingAlias)
