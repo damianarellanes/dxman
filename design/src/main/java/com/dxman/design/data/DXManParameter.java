@@ -8,6 +8,7 @@ import com.dxman.utils.DXManIDGenerator;
 public class DXManParameter implements Cloneable {
         
   private String id;
+  private DXManDataEntityType dataEntityType;
   private String name;
   private DXManParameterType parameterType;
   private String valueType;
@@ -17,6 +18,7 @@ public class DXManParameter implements Cloneable {
   public DXManParameter(String name, DXManParameterType parameterType, 
     String valueType) {        
 
+    this.dataEntityType = DXManDataEntityType.PARAMETER;
     this.id = DXManIDGenerator.generateParameterID();
     this.name = name;
     this.parameterType = parameterType;
@@ -25,6 +27,11 @@ public class DXManParameter implements Cloneable {
   
   public String getId() { return id; }
   public void setId(String id) { this.id = id; }
+  
+  public DXManDataEntityType getDataEntityType() { return dataEntityType; }  
+  public void setDataEntityType(DXManDataEntityType dataEntityType) {
+    this.dataEntityType = dataEntityType;
+  }
 
   public String getName() { return name; }
   public void setName(String name) { this.name = name; }

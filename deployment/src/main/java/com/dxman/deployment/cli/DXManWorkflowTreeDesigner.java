@@ -1,5 +1,6 @@
 package com.dxman.deployment.cli;
 
+//import com.dxman.dataspace.blockchain.DXManDataEntity;
 import com.dxman.execution.wttree.*;
 import com.dxman.execution.sequencer.DXManWfSequencer;
 import com.dxman.execution.parallel.DXManWfParallel;
@@ -55,13 +56,17 @@ public class DXManWorkflowTreeDesigner {
     
     // Writes input parameters
     System.out.println("Updating inputs in the blockchain...");
-    List<DXManDataParameter> dp = new ArrayList<>();
+    List<DXManDataEntity> wfInputs = new ArrayList<>();
     
     wtEditor.getInputs().forEach((paramId, paramValue)->{
-      dp.add(new DXManDataParameter(paramId, wfId, paramValue, 
-        new ArrayList<>()));
+      
+      wfInputs.add(
+        dataSpace.getDataEntityFactory().createDataParameter(
+          paramId, wfId, paramValue
+        )
+      );
     });
-    dataSpace.writeParameters(dp, wfId);
+    dataSpace.writeDataEntities(wfInputs);
     
     // Executes the workflow
     System.out.println("Executing the workflow " 
@@ -109,30 +114,44 @@ public class DXManWorkflowTreeDesigner {
     
     // TODO Optimize this (perhaps sending the whole readers to every WfNode of the WfTree)
     // So every WfNode can access the data pipes from there
-    DXManMap<String, String> alreadyDeployed = new DXManMap<>();
-    List<DXManDataParameter> parametersToDeploy = new ArrayList<>();
+    DXManMap<String, DXManDataEntity> alreadyDeployed = new DXManMap<>();        
+    List<DXManDataEntity> entitiesToDeploy = new ArrayList<>();
+    
     alg.getWriters().forEach((writerId, readers) ->{
-            
-      List<String> setReaders = new ArrayList<>();
+      
+      DXManDataEntity writerEntity = createDataEntity(alg, writerId, wfId);
+      
       for(String reader: readers) {
       
-        if(alreadyDeployed.get(reader) == null) {
-      
-          parametersToDeploy.add(new DXManDataParameter(
-            reader, wfId, "null", new ArrayList<>())
-          );
-          alreadyDeployed.put(reader, reader);
-        }          
-        setReaders.add(reader);        
+        DXManDataEntity readerEntity = alreadyDeployed.get(reader);
+        
+        if(readerEntity == null) {
+                          
+          readerEntity = createDataEntity(alg, reader, wfId);
+          entitiesToDeploy.add(readerEntity);
+          alreadyDeployed.put(reader, readerEntity);
+        }
+        
+        writerEntity.addReader(readerEntity);
       }
       
-      parametersToDeploy.add(new DXManDataParameter(
-        writerId, wfId, "null", setReaders)
-      );
-      alreadyDeployed.put(writerId, writerId);      
+      entitiesToDeploy.add(writerEntity);
+      alreadyDeployed.put(writerId, writerEntity);      
     });
     
-    dataSpace.registerParameters(parametersToDeploy, wfId);
+    dataSpace.createDataEntities(entitiesToDeploy, wfId);
+  }
+  
+  public DXManDataEntity createDataEntity(DXManDataAlgorithm alg, 
+    String paramId, String wfId) {
+    
+    DXManDataEntity dataEntity = null;
+    if(alg.getTypes().get(paramId).equals(DXManDataEntityType.PARAMETER)) {
+      dataEntity = dataSpace.getDataEntityFactory()
+        .createDataParameter(paramId, wfId, "null");
+    }
+    
+    return dataEntity;
   }
   
   public DXManWorkflowTree readWorkflowTreeDescription(String fileName) {
@@ -180,8 +199,7 @@ public class DXManWorkflowTreeDesigner {
       topNode = analyzeLinks(composite, null, parentWfNode, wt);
     }
     
-    for(DXManServiceTemplate subService: 
-      composite.getSubServices()) {
+    for(DXManServiceTemplate subService: composite.getSubServices()) {
       
       // Sets the id for the subservice which is used as the resource for the server
       subService.setId();
@@ -327,33 +345,35 @@ public class DXManWorkflowTreeDesigner {
       wt.getDataChannels().put(wfNode.getId(), new ArrayList<>());
     
     // Adds all the operations of subservices to composite service
-    subService.getOperations().forEach((opId, op)->{
-
+    for(DXManOperation op: subService.getOperations().values()) {
+      
       DXManOperation compositeOp = op.clone();
       composite.addOperation(compositeOp);
-
+      
       op.getParameters().forEach((parName, par)->{
                 
         DXManDataChannelPoint origin;
         DXManDataChannelPoint destination;
         if(par.getParameterType().equals(DXManParameterType.INPUT)) {
-
+          
           origin = new DXManDataChannelPoint(
-            compositeOp.getInputs().get(parName).getId()
+            compositeOp.getInputs().get(parName).getId(), 
+            compositeOp.getInputs().get(parName).getDataEntityType()
           );            
-          destination = new DXManDataChannelPoint(par.getId());
+          destination = new DXManDataChannelPoint(par.getId(), par.getDataEntityType());
         } else {
 
-          origin = new DXManDataChannelPoint(par.getId());
+          origin = new DXManDataChannelPoint(par.getId(), par.getDataEntityType());
           destination = new DXManDataChannelPoint(
-            compositeOp.getOutputs().get(parName).getId()
+            compositeOp.getOutputs().get(parName).getId(),
+            compositeOp.getOutputs().get(parName).getDataEntityType()
           );
         }
 
         DXManDataChannel dc = new DXManDataChannel(origin, destination);
         wt.getDataChannels().get(wfNode.getId()).add(dc);
       });
-    });
+    }
   }
   
   private String readFile(String fileName) {

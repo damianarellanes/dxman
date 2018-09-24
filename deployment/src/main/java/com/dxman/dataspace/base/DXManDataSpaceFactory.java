@@ -1,6 +1,6 @@
 package com.dxman.dataspace.base;
 
-import com.dxman.dataspace.blockchain.DXManBlockChainManager;
+import com.dxman.dataspace.blockchain.BlockChainManager;
 
 /**
  * @author Damian Arellanes
@@ -8,6 +8,6 @@ import com.dxman.dataspace.blockchain.DXManBlockChainManager;
 public class DXManDataSpaceFactory {
     
   public static DXManDataSpace createBlockchainManager(String endpoint) {
-    return new DXManBlockChainManager(endpoint);
+    return new BlockChainManager(endpoint);
   }
 }

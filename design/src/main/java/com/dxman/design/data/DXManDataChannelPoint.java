@@ -5,16 +5,19 @@ package com.dxman.design.data;
  */
 public class DXManDataChannelPoint {
     
-  private final String parameterId;
+  private final String dataEntityId;
+  private final DXManDataEntityType dataEntityType;
 
-  public DXManDataChannelPoint(String parameterId) {    
-    this.parameterId = parameterId;
+  public DXManDataChannelPoint(String dataEntityId, DXManDataEntityType dataEntityType) {
+    this.dataEntityId = dataEntityId;
+    this.dataEntityType = dataEntityType;
   }
 
-  public String getParameterId() { return parameterId; }
+  public String getDataEntityId() { return dataEntityId; }
+  public DXManDataEntityType getDataEntityType() { return dataEntityType; }
 
   @Override
   public String toString() {
-    return parameterId;
+    return dataEntityId;
   }
 }

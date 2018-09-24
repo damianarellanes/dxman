@@ -1,9 +1,15 @@
 package com.dxman.thing.deployment.connectors.atomic;
 
+import com.dxman.dataspace.base.DXManDataEntity;
+import com.dxman.dataspace.base.DXManDataEntityFactory;
+import com.dxman.dataspace.base.DXManDataParameter;
 import com.dxman.design.data.DXManOperation;
 import com.dxman.design.data.DXManParameter;
 import com.dxman.utils.DXManConfiguration;
+import com.dxman.utils.DXManIDGenerator;
 import com.dxman.utils.DXManMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -11,29 +17,33 @@ import java.util.regex.Pattern;
  */
 public class DXManDataUtil {
   
-  public class Precompiled {
+  public class PrecompiledOperation {
     
     private final Pattern pattern;
     private final String[] outputIds;
 
-    public Precompiled(Pattern pattern, String[] outputIds) {
+    public PrecompiledOperation(Pattern pattern, String[] outputIds) {
       this.pattern = pattern;
       this.outputIds = outputIds;
     }
-
+    
     public Pattern getPattern() { return pattern; } 
     public String[] getOutputIds() { return outputIds; }
   }
   
-  private final DXManMap<String, Precompiled> operationPatterns;
+  private final DXManMap<String, PrecompiledOperation> precompiledOperations;
+  private final DXManDataEntityFactory dataEntityFactory;
 
-  public DXManDataUtil(DXManMap<String, DXManOperation> operations) {
-    this.operationPatterns = new DXManMap<>();
+  public DXManDataUtil(DXManMap<String, DXManOperation> operations, 
+    DXManDataEntityFactory dataEntityFactory) {
+    
+    this.precompiledOperations = new DXManMap<>();
+    this.dataEntityFactory = dataEntityFactory;    
     preCompilePatterns(operations);
   }
   
   private void preCompilePatterns(DXManMap<String, DXManOperation> operations) {
-        
+    
     operations.forEach((opKey,op)->{
       
       // Escape taken from https://stackoverflow.com/questions/14134558/
@@ -42,7 +52,8 @@ public class DXManDataUtil {
       String  basePattern = op.getBindingInfo().getResponseTemplate().replaceAll(
         "[\\<\\(\\[\\{\\\\\\^\\-\\=\\$\\!\\|\\]\\}\\)\\?\\*\\+\\.\\>]", "\\\\$0"
       );
-      
+            
+      // Precompiles outputs for the operation
       // TODO Parameters should be lists not maps
       int i = 0;
       String[] outputIds = new String[op.getOutputs().size()];      
@@ -55,13 +66,13 @@ public class DXManDataUtil {
         outputIds[i++] = output.getId();
       }
       
-      getOperationPatterns().put(opKey, new Precompiled(
+      precompiledOperations.put(opKey, new PrecompiledOperation(
         Pattern.compile(basePattern), outputIds)
       );
     });
   }
 
-  public DXManMap<String, Precompiled> getOperationPatterns() {
-    return operationPatterns;
+  public DXManMap<String, PrecompiledOperation> getPrecompiledOperations() {
+    return precompiledOperations;
   }
 }
