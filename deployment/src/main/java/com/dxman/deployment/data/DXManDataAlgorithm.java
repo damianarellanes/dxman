@@ -1,5 +1,6 @@
 package com.dxman.deployment.data;
 
+import com.dxman.dataspace.base.DXManDataProcessor;
 import com.dxman.design.data.*;
 import java.util.*;
 
@@ -9,18 +10,30 @@ import java.util.*;
 public class DXManDataAlgorithm {
   
   private final HashMap<String, DXManDataEntityType> types = new HashMap<>();
+  private final HashMap<String, DXManDataProcessorTemplate> processors = new HashMap<>();
   
   private final HashMap<String, HashSet<String>> readers = new HashMap<>();
   private final HashMap<String, HashSet<String>> writers = new HashMap<>();
     
   public void analyze(DXManDataChannel dc) {
     
-    getTypes().put(dc.getOrigin().getDataEntityId(), dc.getOrigin().getDataEntityType());
-    getTypes().put(dc.getDestination().getDataEntityId(), dc.getDestination().getDataEntityType());
+    types.putIfAbsent(dc.getOrigin().getDataEntityId(), dc.getOrigin().getDataEntityType());
+    types.putIfAbsent(dc.getDestination().getDataEntityId(), dc.getDestination().getDataEntityType());
+    
+    if(dc.getOrigin().isDataProcessor()) {      
+      processors.putIfAbsent(
+        dc.getOrigin().getDataEntityId(), dc.getOrigin().getDataProcessor()
+      );
+    }
+    if(dc.getDestination().isDataProcessor()) {
+      processors.putIfAbsent(
+        dc.getDestination().getDataEntityId(), dc.getDestination().getDataProcessor()
+      );
+    }
     
     // Analyze right (writer)
-    HashSet<String> right;
-    if(readers.containsKey(dc.getOrigin().getDataEntityId())) {
+    HashSet<String> right;    
+    if(!dc.getOrigin().isDataProcessor() && readers.containsKey(dc.getOrigin().getDataEntityId())) {
       right = readers.get(dc.getOrigin().getDataEntityId());
     } else {
       right = new HashSet<>();
@@ -29,7 +42,7 @@ public class DXManDataAlgorithm {
     
     // Analyze left (reader)
     HashSet<String> left;
-    if(writers.containsKey(dc.getDestination().getDataEntityId())) {
+    if(!dc.getDestination().isDataProcessor() && writers.containsKey(dc.getDestination().getDataEntityId())) {
       
       left = writers.get(dc.getDestination().getDataEntityId());
       for(String reader: left) {
@@ -56,8 +69,8 @@ public class DXManDataAlgorithm {
       ((HashSet)(map.get(key))).addAll(value);
     }
   }
-    
   
+  public HashMap<String, DXManDataProcessorTemplate> getProcessors() { return processors; }  
   public HashMap<String, DXManDataEntityType> getTypes() { return types; }
   public HashMap<String, HashSet<String>> getReaders() { return readers; }
   public HashMap<String, HashSet<String>> getWriters() { return writers; }

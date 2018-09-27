@@ -1,8 +1,8 @@
 package com.dxman.dataspace.blockchain;
 
 import com.dxman.dataspace.base.*;
+import com.dxman.design.data.DXManDataProcessorTemplate;
 import com.dxman.utils.*;
-import com.dxman.utils.DXManIDGenerator;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
@@ -26,8 +26,8 @@ public class BlockChainManager implements DXManDataSpace {
   private final String READ_PARAMS_CLASS = "com.dxman.blockchain.ReadParameters";
   
   private final BlockchainDataEntityFactory dataEntityFactory;
-  
-  public BlockChainManager(String blockChainEndpoint) {
+      
+  public BlockChainManager(String blockChainEndpoint) {    
     this.blockChainEndpoint = blockChainEndpoint;
     this.dataEntityFactory = new BlockchainDataEntityFactory();
   }
@@ -66,17 +66,17 @@ public class BlockChainManager implements DXManDataSpace {
   public void createDataEntities(List<DXManDataEntity> dataEntities, String workflowId) {
     
     /*Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    String instant = timestamp.toInstant().toString();*/
-    
+      String instant = timestamp.toInstant().toString();*/
+
     // Registers 20 parameters at a time to avoid any issue with the blockchain server
     int from = 0, to = 0;
     while(to < dataEntities.size()) {
-      
+
       from = to;
       to = from + 20;
 
       if(dataEntities.size() < to) to = dataEntities.size();
-  
+
       try {
 
         JSONObject transaction = new JSONObject();
@@ -87,20 +87,20 @@ public class BlockChainManager implements DXManDataSpace {
         }
 
         transaction.put("dataEntities", entitiesJSON);
-        
+
+        //System.out.println(transaction.toString());
+
         Post result = post(blockChainEndpoint + 
           "/api/" + CREATE_DATAENTS, transaction.toString());
 
-        if(result.responseCode() == 200) {
-          //System.out.println((to-from) + " parameters have been registered!");
-        }
+        System.out.println((to-from) + " data entities created: " + result.responseMessage());
 
       } catch (JSONException ex) { System.err.println(ex.toString()); }
     }
   }
   
   @Override
-  public JSONArray readParameters(JSONArray paramRefs, 
+  public synchronized JSONArray readParameters(JSONArray paramRefs, 
     String workflowTimestamp) {
     
     try {
@@ -124,7 +124,7 @@ public class BlockChainManager implements DXManDataSpace {
   }
   
   @Override
-  public String readParameter(String parameterId, String workflowId, 
+  public synchronized String readParameter(String parameterId, String workflowId, 
     String workflowTimestamp) {
     
     try {
@@ -150,7 +150,7 @@ public class BlockChainManager implements DXManDataSpace {
   }
   
   @Override
-  public void writeDataEntities(List<DXManDataEntity> dataEntities) {
+  public synchronized void writeDataEntities(List<DXManDataEntity> dataEntities) {
     
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
     String instant = timestamp.toInstant().toString();
@@ -183,20 +183,24 @@ public class BlockChainManager implements DXManDataSpace {
         }
 
         transaction.put("updates", updatesJSON);
-
+        
+        //System.out.println(transaction.toString());       
+        
         Post result = post(blockChainEndpoint + 
           "/api/" + UPDATE_DATAENTS, transaction.toString());
         
-        if(result.responseCode() == 200) {
+        result.responseMessage();
+        
+        /*if(result.responseCode() == 200) {
           System.out.println((to-from) + " data has been updated!");
-        }
+        }*/
 
       } catch (JSONException ex) { System.err.println(ex.toString()); }
     }
   }
   
   @Override
-  public void writeParameter(String parameterId, String workflowId, 
+  public synchronized void writeParameter(String parameterId, String workflowId, 
     String newValue) {
     
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -224,9 +228,84 @@ public class BlockChainManager implements DXManDataSpace {
         
     } catch (JSONException ex) { System.err.println(ex.toString()); }
   }
+    
+  @Override
+  public void createDataProcessor(DXManDataProcessorTemplate processor) {
+    
+    installChaincode(processor.getProcessorPath(), processor.getName(), "V1", 
+      processor.getProcessorLanguage().name());
+
+    instantiateChaincode(processor.getName(), "V1", 
+      processor.getProcessorLanguage().name(), new ArrayList<>());
+  }
   
-  private Post post(String url, String content) {
-    return Http.post(url, content)
+  private void installChaincode(String chaincodeFile, 
+    String chaincodeId, String chaincodeVersion, String chaincodeType) {
+    
+    Multipart mp = Http.multipart(BlockchainConfiguration.CHAINCODE_INSTALL_URI)
+      .basic(BlockchainConfiguration.FABRIC_USER, BlockchainConfiguration.FABRIC_PASSWORD)
+      .header("Accept", "application/json")
+      .header("Content-Type", "text/plain")
+      .file("files", chaincodeFile)
+      .field("chaincode_id", chaincodeId)
+      .field("chaincode_version", chaincodeVersion)
+      .field("chaincode_type", chaincodeType); 
+    
+    System.out.println("Chaincode installed: " + mp.responseMessage());
+  }
+  
+  private void instantiateChaincode(String chaincodeId, String chaincodeVersion, 
+    String chaincodeType, List<String> chaincodeArguments) {    
+    
+    String policy = "{" +
+"    \"identities\": [" +
+"      {" +
+"        \"role\": {" +
+"          \"name\": \"admin\"," +
+"          \"mspId\": \"org1\"" +
+"        }" +
+"      }," +
+"      {" +
+"        \"role\": {" +
+"          \"name\": \"admin\"," +
+"          \"mspId\": \"org2\"" +
+"        }" +
+"      }" +
+"    ]," +
+"    \"policy\": {" +
+"      \"1-of\": [" +
+"        {" +
+"          \"signed-by\": 0" +
+"        }," +
+"        {" +
+"          \"signed-by\": 1" +
+"        }" +
+"      ]" +
+"    }" +
+"  }";
+    
+    try {
+      
+      JSONObject content = new JSONObject();
+      content.put("chaincode_id", chaincodeId);
+      content.put("chaincode_version", chaincodeVersion);
+      content.put("chaincode_type", chaincodeType);
+      content.put("chaincode_arguments", chaincodeArguments);
+      content.put("endorsement_policy", new JSONObject(policy));
+      
+      //System.out.println(content.toString());
+      
+      Post response = Http.post(BlockchainConfiguration.CHAINCODE_INSTANTIATE_URI, content.toString().getBytes(), 60000, 60000)
+        .basic(BlockchainConfiguration.FABRIC_USER, BlockchainConfiguration.FABRIC_PASSWORD)
+        .header("Content-Type", "application/json");      
+      
+      System.out.println("Chaincode instantiated: " + response.responseMessage());
+      
+    } catch (Exception ex) { /*System.out.println(ex);*/ }    
+  }
+  
+  public static Post post(String url, String content) {
+    return Http.post(url, content.getBytes(), 60000, 60000)
       .header("Accept", "application/json")
       .header("Content-Type", "application/json");
   }
@@ -245,11 +324,11 @@ public class BlockChainManager implements DXManDataSpace {
     BlockChainManager blockchain = new BlockChainManager("http://148.100.5.104:3000");  
     DXManDataEntityFactory factory = blockchain.getDataEntityFactory();
     
-    DXManDataParameter name = factory.createDataParameter("646e2529-2113-4dca-9a3b-050c7827670a", "MyWf-MusicCorp-2", "null");
-    DXManDataParameter addr = factory.createDataParameter("6c33528e-f5d3-45f6-9843-dab467d7a839", "MyWf-MusicCorp-2", "null");
-    
-    System.out.println(name.getId());
-    System.out.println(addr.getId());
+//    DXManDataParameter name = factory.createDataParameter("646e2529-2113-4dca-9a3b-050c7827670a", "MyWf-MusicCorp-2", "null");
+//    DXManDataParameter addr = factory.createDataParameter("6c33528e-f5d3-45f6-9843-dab467d7a839", "MyWf-MusicCorp-2", "null");
+//    
+//    System.out.println(name.getId());
+//    System.out.println(addr.getId());
     
     
     
@@ -260,18 +339,16 @@ public class BlockChainManager implements DXManDataSpace {
     DXManDataParameter o2 = factory.createDataParameter("o2", "MyWfId", "null");
     DXManDataParameter o3 = factory.createDataParameter("o3", "MyWfId", "null");
     DXManDataParameter o4 = factory.createDataParameter("o4", "MyWfId", "null");    
-    //DXManDataMapper mapper1 = factory.createDataMapper("mapper1", "MyWfId", "null", "mapper");
-    //DXManDataReducer reducer1 = factory.createDataReducer("redcuer1", "MyWfId", "null", "reducer");
+    DXManDataMapper mapper1 = factory.createDataMapper("mapper1", "MyWfId", "null", "mapperx");
+    DXManDataReducer reducer1 = factory.createDataReducer("reducer1", "MyWfId", "null", "reducerx");
         
     // Data channels    
-    i1.addReader(i2); i1.addReader(o1);
-    o2.addReader(o3);
-    /*i1.addReader(mapper1);
+    i1.addReader(mapper1);
     i2.addReader(mapper1);    
-    mapper1.addReader(o1);mapper1.addReader(reducer1);mapper1.addWriter(i1);mapper1.addWriter(i2);    
-    reducer1.addReader(o2);reducer1.addWriter(mapper1);
+    mapper1.addReader(o3);mapper1.addReader(reducer1);mapper1.addWriter(i1);mapper1.addWriter(i2);    
+    reducer1.addReader(o4);reducer1.addWriter(mapper1);
     o1.addReader(o3);
-    o2.addReader(o4);*/
+    o2.addReader(o4);
 //    
 //    long start, end;
 //    
@@ -296,10 +373,10 @@ public class BlockChainManager implements DXManDataSpace {
     // Batch of entities
     List<DXManDataEntity> entities = new ArrayList<>();
     entities.add(i1); entities.add(i2); entities.add(o1); entities.add(o2); entities.add(o3);
-    entities.add(o4); //entities.add(mapper1); entities.add(reducer1);
+    entities.add(o4); entities.add(mapper1); entities.add(reducer1);
         
     // Call the blockchain transaction
-    //blockchain.createDataEntities(entities, "MyWfId");
+    blockchain.createDataEntities(entities, "MyWfId");
         
     //"2018-01-02T11:42Z";
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -310,11 +387,13 @@ public class BlockChainManager implements DXManDataSpace {
     //System.out.println(blockchain.readParameter("i1", "MyWfId", instant.toString()));
     
     List<DXManDataEntity> updates = new ArrayList<>();
-    DXManDataParameter i1_up = factory.createDataParameter("i1", "MyWfId", "Hello i1");
-    DXManDataParameter i2_up = factory.createDataParameter("o2", "MyWfId", "Yeah o2");
-    //DXManDataParameter i1_up = factory.createDataParameter("i1", "MyWfId", "IPX 1");
-    //DXManDataParameter i2_up = factory.createDataParameter("i2", "MyWfId", "IPY 2");    
-    updates.add(i1_up); updates.add(i2_up);
+    DXManDataParameter i1_up = factory.createDataParameter("i1", "MyWfId", "Hello i1");   
+    updates.add(i1_up); 
+    List<DXManDataEntity> updates2 = new ArrayList<>();
+    DXManDataParameter i2_up = factory.createDataParameter("i2", "MyWfId", "Hello i2");    
+    updates2.add(i2_up);
+    
+    
     blockchain.writeDataEntities(updates);
     
     /*System.out.println("i1-->" + blockchain.readParameter("i1", "MyWfId", instant.toString()));

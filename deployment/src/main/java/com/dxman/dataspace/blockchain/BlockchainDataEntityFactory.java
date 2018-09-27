@@ -8,7 +8,7 @@ import com.dxman.dataspace.base.*;
 public class BlockchainDataEntityFactory implements DXManDataEntityFactory {
 
   @Override
-  public DXManDataParameter createDataParameter(String parameterId, 
+  public synchronized DXManDataParameter createDataParameter(String parameterId, 
     String workflowId, String value) {
     
     return new BlockchainParameter(parameterId, workflowId, value);

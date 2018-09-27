@@ -15,7 +15,7 @@ public abstract class BlockchainDataEntity implements DXManDataEntity {
   private final String parameterId;
   private final String workflowId;
   private String value;
-  private final List<DXManDataEntity> readers;
+  private List<DXManDataEntity> readers;
 
   public BlockchainDataEntity(String type, String parameterId, String workflowId, 
     String value) {
@@ -46,7 +46,10 @@ public abstract class BlockchainDataEntity implements DXManDataEntity {
   @Override
   public String getValue() { return value; }
   @Override
-  public List<DXManDataEntity> getReaders() { return readers; }
+  public List<DXManDataEntity> getReaders() { return readers; }  
+  public void setReaders(List<DXManDataEntity> readers) {
+    this.readers = readers;
+  }
 
   @Override
   public String toString() {

@@ -2,8 +2,6 @@ package com.dxman.thing.deployment.connectors.atomic;
 
 import com.dxman.design.distribution.*;
 import com.google.common.net.UrlEscapers;
-import java.net.URI;
-import java.net.URISyntaxException;
 import org.javalite.http.*;
 
 /**

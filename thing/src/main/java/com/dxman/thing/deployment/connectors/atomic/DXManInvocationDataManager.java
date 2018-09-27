@@ -29,7 +29,7 @@ public class DXManInvocationDataManager {
     
   }
   
-  public String read(String workflowId, String workflowTimestamp, 
+  public synchronized String read(String workflowId, String workflowTimestamp, 
     DXManOperation operationToInvoke) {
     
     String request = operationToInvoke.getBindingInfo().getRequestTemplate();
@@ -65,8 +65,8 @@ public class DXManInvocationDataManager {
     return request;
   }
   
-  public void write(String workflowId, DXManOperation operationToInvoke, 
-    String response) {
+  public synchronized void write(String workflowId, DXManOperation operationToInvoke, 
+    String response) {    
     
     if(operationToInvoke.getBindingInfo().getAcceptType()
       .equals(DXManBindingContent.NO_CONTENT)) return;
@@ -85,9 +85,9 @@ public class DXManInvocationDataManager {
 
         for(int i = 1; i <= matcher.groupCount(); i++) {
 
-          System.out.println(
+          /*System.out.println(
             precompiledOp.getOutputIds()[i-1] + "-->" + matcher.group(i)
-          );
+          );*/
           updates.add(
             dataSpace.getDataEntityFactory().createDataParameter(
               precompiledOp.getOutputIds()[i-1], workflowId, matcher.group(i)

@@ -9,6 +9,8 @@ import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.dxman.utils.DXManMap;
 import com.google.gson.Gson;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Damian Arellanes
@@ -62,7 +64,14 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
       )
     ).invokeJSON(bindingInfo, request);
 
-    // Writes output parameters (if any)
+    // Writes output parameters (if any) in background to maximize performance
     invocationDataManager.write(flow.getWorkflowId(), operationToInvoke, result);
+    /*ExecutorService executor = Executors.newSingleThreadExecutor();
+    executor.execute(() -> {
+      System.out.println("START WRITING...................................");
+
+      System.out.println("DONE WRITING...................................");
+    });
+    executor.shutdown();*/
   }
 }

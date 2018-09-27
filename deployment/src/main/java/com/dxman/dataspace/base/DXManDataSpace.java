@@ -1,5 +1,6 @@
 package com.dxman.dataspace.base;
 
+import com.dxman.design.data.DXManDataProcessorTemplate;
 import java.util.List;
 import org.json.JSONArray;
 
@@ -12,6 +13,8 @@ public interface DXManDataSpace {
   
   public void createDataEntities(List<DXManDataEntity> dataEntities, 
     String workflowId);
+  
+  public void createDataProcessor(DXManDataProcessorTemplate processor);
   
   public JSONArray readParameters(JSONArray paramRefs, 
     String workflowTimestamp);

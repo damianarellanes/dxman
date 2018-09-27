@@ -13,8 +13,8 @@ public abstract class BlockchainDataProcessor extends BlockchainDataEntity
   implements DXManDataProcessor {
     
   private final List<String> inputs;
-  private final List<String> writerIds;
-  private final List<String> writerIdsTmp;
+  private List<String> writerIds;
+  private List<String> writerIdsTmp;
   private final String chaincodeId;
   
   public BlockchainDataProcessor(String type, String parameterId, String workflowId, 
@@ -31,6 +31,12 @@ public abstract class BlockchainDataProcessor extends BlockchainDataEntity
   public void addWriter(DXManDataEntity dataEntity) {
     writerIds.add(dataEntity.getId());
     writerIdsTmp.add(dataEntity.getId());
+  }
+  
+  @Override
+  public void addWriters(List<String> writerIds) {
+    this.writerIds = writerIds;
+    this.writerIdsTmp = writerIds;
   }
 
   public List<String> getInputs() { return inputs; }

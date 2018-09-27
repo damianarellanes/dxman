@@ -19,8 +19,10 @@ import com.dxman.execution.selector.DXManWfSelector;
 import com.dxman.utils.*;
 import com.google.gson.*;
 import java.io.*;
-import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.eclipse.californium.core.CoapClient;
 import org.springframework.core.task.AsyncTaskExecutor;
 
@@ -93,7 +95,7 @@ public class DXManWorkflowTreeDesigner {
   }
   
   public void deployWorkflow(DXManWorkflowTreeEditor wtEditor, 
-    boolean deployDataChannels) {
+    boolean deployData) {
     
     wtEditor.getWorkflowTree().updateCreationTimestamp();
     DXManDataAlgorithm alg = new DXManDataAlgorithm();
@@ -104,34 +106,86 @@ public class DXManWorkflowTreeDesigner {
       wtEditor.getWorkflowTree().getCompositeService().getId()
     ).deploy(alg, wtEditor.getWorkflowTree());
     
-    if(deployDataChannels)
-      deployWorkflowDataChannels(alg, wtEditor.getWorkflowTree().getId());
+    if(deployData) {
+      
+      ExecutorService executor = Executors.newFixedThreadPool(2);    
+      
+      executor.execute(() -> { // Thread for deploying data processors
+        deployWorkflowDataProcessors(wtEditor);
+      });
+      executor.execute(() -> { // Thread for deploying data channels
+        deployWorkflowDataChannels(alg, wtEditor.getWorkflowTree().getId());
+      });
+            
+      executor.shutdown();
+      try {
+        executor.awaitTermination(5, TimeUnit.MINUTES);
+      } catch (InterruptedException ex) { System.err.println(ex); }
+    }      
+  }
+  
+  private void deployWorkflowDataProcessors(DXManWorkflowTreeEditor wtEditor) {    
+    
+    System.out.println("Deploying data processors...");
+    
+    for(DXManDataProcessorTemplate dataProc: wtEditor.getWorkflowTree().getDataProcessors()) {            
+      dataSpace.createDataProcessor(dataProc);
+    }
   }
   
   private void deployWorkflowDataChannels(DXManDataAlgorithm alg, String wfId) {
     
-    System.out.println("Deploying data channels for " + wfId + "...");
+    System.out.println("Deploying data channels...");
     
-    // TODO Optimize this (perhaps sending the whole readers to every WfNode of the WfTree)
-    // So every WfNode can access the data pipes from there
     DXManMap<String, DXManDataEntity> alreadyDeployed = new DXManMap<>();        
     List<DXManDataEntity> entitiesToDeploy = new ArrayList<>();
     
     alg.getWriters().forEach((writerId, readers) ->{
       
-      DXManDataEntity writerEntity = createDataEntity(alg, writerId, wfId);
+      DXManDataEntity writerEntity = null;
+      switch (alg.getTypes().get(writerId)) {
+        
+        case PARAMETER:          
+          writerEntity = dataSpace.getDataEntityFactory()
+            .createDataParameter(writerId, wfId, "null");
+          break;
+          case REDUCER:          
+          writerEntity = dataSpace.getDataEntityFactory()
+            .createDataReducer(writerId, wfId, "null", alg.getProcessors().get(writerId).getName());
+          ((DXManDataReducer)writerEntity).addWriters(alg.getProcessors().get(writerId).getWriterIds());
+          break;
+        case MAPPER:          
+          writerEntity = dataSpace.getDataEntityFactory()
+            .createDataMapper(writerId, wfId, "null", alg.getProcessors().get(writerId).getName());
+          ((DXManDataMapper)writerEntity).addWriters(alg.getProcessors().get(writerId).getWriterIds());
+          break;
+      }
       
       for(String reader: readers) {
-      
+            
         DXManDataEntity readerEntity = alreadyDeployed.get(reader);
-        
+
         if(readerEntity == null) {
-                          
-          readerEntity = createDataEntity(alg, reader, wfId);
-          entitiesToDeploy.add(readerEntity);
-          alreadyDeployed.put(reader, readerEntity);
+          
+          switch (alg.getTypes().get(reader)) {
+
+            case PARAMETER:          
+              readerEntity = dataSpace.getDataEntityFactory()
+                .createDataParameter(reader, wfId, "null");
+              entitiesToDeploy.add(readerEntity);
+              alreadyDeployed.put(reader, readerEntity);
+              break;
+              case REDUCER:          
+              readerEntity = dataSpace.getDataEntityFactory()
+                .createDataReducer(reader, wfId, "null", alg.getProcessors().get(reader).getName());
+              break;
+            case MAPPER:          
+              readerEntity = dataSpace.getDataEntityFactory()
+                .createDataMapper(reader, wfId, "null", alg.getProcessors().get(reader).getName());
+              break;
+          }
         }
-        
+
         writerEntity.addReader(readerEntity);
       }
       
@@ -140,18 +194,6 @@ public class DXManWorkflowTreeDesigner {
     });
     
     dataSpace.createDataEntities(entitiesToDeploy, wfId);
-  }
-  
-  public DXManDataEntity createDataEntity(DXManDataAlgorithm alg, 
-    String paramId, String wfId) {
-    
-    DXManDataEntity dataEntity = null;
-    if(alg.getTypes().get(paramId).equals(DXManDataEntityType.PARAMETER)) {
-      dataEntity = dataSpace.getDataEntityFactory()
-        .createDataParameter(paramId, wfId, "null");
-    }
-    
-    return dataEntity;
   }
   
   public DXManWorkflowTree readWorkflowTreeDescription(String fileName) {
@@ -357,16 +399,14 @@ public class DXManWorkflowTreeDesigner {
         if(par.getParameterType().equals(DXManParameterType.INPUT)) {
           
           origin = new DXManDataChannelPoint(
-            compositeOp.getInputs().get(parName).getId(), 
-            compositeOp.getInputs().get(parName).getDataEntityType()
+            compositeOp.getInputs().get(parName).getId()
           );            
-          destination = new DXManDataChannelPoint(par.getId(), par.getDataEntityType());
+          destination = new DXManDataChannelPoint(par.getId());
         } else {
 
-          origin = new DXManDataChannelPoint(par.getId(), par.getDataEntityType());
+          origin = new DXManDataChannelPoint(par.getId());
           destination = new DXManDataChannelPoint(
-            compositeOp.getOutputs().get(parName).getId(),
-            compositeOp.getOutputs().get(parName).getDataEntityType()
+            compositeOp.getOutputs().get(parName).getId()
           );
         }
 
@@ -403,11 +443,5 @@ public class DXManWorkflowTreeDesigner {
 
       writer.close();
     } catch (IOException ex) { System.out.println(ex.toString()); }
-  }
-  
-  public static void main(String[] args) {
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    String instant = timestamp.toInstant().toString();
-    System.out.println(instant);
   }
 }

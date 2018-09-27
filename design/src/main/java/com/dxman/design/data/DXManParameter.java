@@ -5,37 +5,20 @@ import com.dxman.utils.DXManIDGenerator;
 /**
  * @author Damian Arellanes
  */
-public class DXManParameter implements Cloneable {
-        
-  private String id;
-  private DXManDataEntityType dataEntityType;
-  private String name;
+public class DXManParameter extends DXManDataEntityTemplate implements Cloneable {
+          
   private DXManParameterType parameterType;
   private String valueType;
 
   public DXManParameter() {}
 
   public DXManParameter(String name, DXManParameterType parameterType, 
-    String valueType) {        
-
-    this.dataEntityType = DXManDataEntityType.PARAMETER;
-    this.id = DXManIDGenerator.generateParameterID();
-    this.name = name;
+    String valueType) {
+    super(name, DXManDataEntityType.PARAMETER);
     this.parameterType = parameterType;
     this.valueType = valueType;
   }
   
-  public String getId() { return id; }
-  public void setId(String id) { this.id = id; }
-  
-  public DXManDataEntityType getDataEntityType() { return dataEntityType; }  
-  public void setDataEntityType(DXManDataEntityType dataEntityType) {
-    this.dataEntityType = dataEntityType;
-  }
-
-  public String getName() { return name; }
-  public void setName(String name) { this.name = name; }
-
   public DXManParameterType getParameterType() { return parameterType; }
   public void setParameterType(DXManParameterType parameterType) { 
     this.parameterType = parameterType; 
@@ -59,6 +42,7 @@ public class DXManParameter implements Cloneable {
   
   @Override
   public String toString() {                
-    return name + "|" + parameterType + "|" + valueType + "-->" + id;
+    return getName() + "|" + getParameterType() + "|" + getValueType() + "-->" 
+      + getId();
   }
 }
