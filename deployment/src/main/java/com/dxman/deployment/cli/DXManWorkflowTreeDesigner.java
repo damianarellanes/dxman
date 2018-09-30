@@ -1,6 +1,6 @@
 package com.dxman.deployment.cli;
 
-//import com.dxman.dataspace.blockchain.DXManDataEntity;
+//import com.dxman.dataspace.blockchain.DXManDataParameter;
 import com.dxman.execution.wttree.*;
 import com.dxman.execution.sequencer.DXManWfSequencer;
 import com.dxman.execution.parallel.DXManWfParallel;
@@ -20,9 +20,6 @@ import com.dxman.utils.*;
 import com.google.gson.*;
 import java.io.*;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import org.eclipse.californium.core.CoapClient;
 import org.springframework.core.task.AsyncTaskExecutor;
 
@@ -49,26 +46,17 @@ public class DXManWorkflowTreeDesigner {
   public DXManWfResult executeWorkflow(DXManWorkflowTreeEditor wtEditor, 
     DXManWfNode node) {
         
-    // Gets the workflow id and updates the workflow timestamp
-    String wfId = wtEditor.getWorkflowTree().getId();    
-    wtEditor.getWorkflowTree().updateCreationTimestamp();
-    String wfTimestamp = wtEditor.getWorkflowTree().getCreationTimestamp();
-    
-    try { Thread.sleep(400); } catch (InterruptedException ex) {} // TODO remove // This is to ensure clock sync
+    // Gets the workflow id
+    String wfId = wtEditor.getWorkflowTree().getId();
     
     // Writes input parameters
     System.out.println("Updating inputs in the blockchain...");
-    List<DXManDataEntity> wfInputs = new ArrayList<>();
+    List<DXManDataParameter> wfInputs = new ArrayList<>();
     
-    wtEditor.getInputs().forEach((paramId, paramValue)->{
-      
-      wfInputs.add(
-        dataSpace.getDataEntityFactory().createDataParameter(
-          paramId, wfId, paramValue
-        )
-      );
+    wtEditor.getInputs().forEach((paramId, paramValue)->{      
+      wfInputs.add(dataSpace.createDataParameter(paramId, wfId, paramValue));
     });
-    dataSpace.writeDataEntities(wfInputs);
+    dataSpace.writeParameters(wfInputs);
     
     // Executes the workflow
     System.out.println("Executing the workflow " 
@@ -82,11 +70,14 @@ public class DXManWorkflowTreeDesigner {
     cp.post(SERIALIZATION_GSON.toJson(node), 0);
     
     // Reads output parameters
+    System.out.println("Reading outputs...");
     DXManWfResult outputValues = new DXManWfResult();
     for(String outputId: wtEditor.getOutputs()) {
 
       // Only reads outputs that have been update during the workflow execution
-      String value = dataSpace.readParameter(outputId, wfId, wfTimestamp);
+      String value = dataSpace.readParameter(
+        outputId, wfId, wtEditor.getWorkflowTree().getCreationTimestamp()
+      );
       if(!value.equals(DXManErrors.PARAMETER_VALUE_NOT_FOUND.name()))
         outputValues.put(outputId, value);
     }
@@ -97,103 +88,51 @@ public class DXManWorkflowTreeDesigner {
   public void deployWorkflow(DXManWorkflowTreeEditor wtEditor, 
     boolean deployData) {
     
-    wtEditor.getWorkflowTree().updateCreationTimestamp();
     DXManDataAlgorithm alg = new DXManDataAlgorithm();
- 
+    
+    // Sets the workflow timestamp from the data space before deploying it
+    String wfTimestamp = dataSpace.getDataspaceTimestamp();
+    wtEditor.getWorkflowTree().setCreationTimestamp(wfTimestamp);
+     
     wtEditor.design();
     
     wtEditor.getWorkflowTree().getWt().get(
       wtEditor.getWorkflowTree().getCompositeService().getId()
     ).deploy(alg, wtEditor.getWorkflowTree());
     
-    if(deployData) {
-      
-      ExecutorService executor = Executors.newFixedThreadPool(2);    
-      
-      executor.execute(() -> { // Thread for deploying data processors
-        deployWorkflowDataProcessors(wtEditor);
-      });
-      executor.execute(() -> { // Thread for deploying data channels
-        deployWorkflowDataChannels(alg, wtEditor.getWorkflowTree().getId());
-      });
-            
-      executor.shutdown();
-      try {
-        executor.awaitTermination(5, TimeUnit.MINUTES);
-      } catch (InterruptedException ex) { System.err.println(ex); }
+    if(deployData) {      
+      deployWorkflowDataChannels(alg, wtEditor.getWorkflowTree().getId());      
     }      
-  }
-  
-  private void deployWorkflowDataProcessors(DXManWorkflowTreeEditor wtEditor) {    
-    
-    System.out.println("Deploying data processors...");
-    
-    for(DXManDataProcessorTemplate dataProc: wtEditor.getWorkflowTree().getDataProcessors()) {            
-      dataSpace.createDataProcessor(dataProc);
-    }
   }
   
   private void deployWorkflowDataChannels(DXManDataAlgorithm alg, String wfId) {
     
     System.out.println("Deploying data channels...");
     
-    DXManMap<String, DXManDataEntity> alreadyDeployed = new DXManMap<>();        
-    List<DXManDataEntity> entitiesToDeploy = new ArrayList<>();
+    DXManMap<String, DXManDataParameter> alreadyDeployed = new DXManMap<>();        
+    List<DXManDataParameter> parametersToDeploy = new ArrayList<>();
     
-    alg.getWriters().forEach((writerId, readers) ->{
+    alg.getReaders().forEach((readerId, writers) -> {
       
-      DXManDataEntity writerEntity = null;
-      switch (alg.getTypes().get(writerId)) {
-        
-        case PARAMETER:          
-          writerEntity = dataSpace.getDataEntityFactory()
-            .createDataParameter(writerId, wfId, "null");
-          break;
-          case REDUCER:          
-          writerEntity = dataSpace.getDataEntityFactory()
-            .createDataReducer(writerId, wfId, "null", alg.getProcessors().get(writerId).getName());
-          ((DXManDataReducer)writerEntity).addWriters(alg.getProcessors().get(writerId).getWriterIds());
-          break;
-        case MAPPER:          
-          writerEntity = dataSpace.getDataEntityFactory()
-            .createDataMapper(writerId, wfId, "null", alg.getProcessors().get(writerId).getName());
-          ((DXManDataMapper)writerEntity).addWriters(alg.getProcessors().get(writerId).getWriterIds());
-          break;
-      }
+      DXManDataParameter reader = dataSpace.createDataParameter(readerId, wfId, "null");
       
-      for(String reader: readers) {
+      for(String writerId: writers) {
             
-        DXManDataEntity readerEntity = alreadyDeployed.get(reader);
+        DXManDataParameter writer = alreadyDeployed.get(writerId);
 
-        if(readerEntity == null) {
-          
-          switch (alg.getTypes().get(reader)) {
-
-            case PARAMETER:          
-              readerEntity = dataSpace.getDataEntityFactory()
-                .createDataParameter(reader, wfId, "null");
-              entitiesToDeploy.add(readerEntity);
-              alreadyDeployed.put(reader, readerEntity);
-              break;
-              case REDUCER:          
-              readerEntity = dataSpace.getDataEntityFactory()
-                .createDataReducer(reader, wfId, "null", alg.getProcessors().get(reader).getName());
-              break;
-            case MAPPER:          
-              readerEntity = dataSpace.getDataEntityFactory()
-                .createDataMapper(reader, wfId, "null", alg.getProcessors().get(reader).getName());
-              break;
-          }
+        if(writer == null) {
+          writer = dataSpace.createDataParameter(writerId, wfId, "null");
+          parametersToDeploy.add(writer);
+          alreadyDeployed.put(writerId, writer);
         }
-
-        writerEntity.addReader(readerEntity);
+        reader.addWriter(writer);
       }
       
-      entitiesToDeploy.add(writerEntity);
-      alreadyDeployed.put(writerId, writerEntity);      
+      parametersToDeploy.add(reader);
+      alreadyDeployed.put(readerId, reader);
     });
     
-    dataSpace.createDataEntities(entitiesToDeploy, wfId);
+    dataSpace.createParameters(parametersToDeploy, wfId);
   }
   
   public DXManWorkflowTree readWorkflowTreeDescription(String fileName) {

@@ -4,9 +4,7 @@ import com.dxman.design.data.*;
 import com.dxman.execution.common.DXManWfNode;
 import com.dxman.design.services.composite.DXManCompositeServiceTemplate;
 import com.dxman.utils.*;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Damian Arellanes
@@ -22,7 +20,6 @@ public final class DXManWorkflowTree {
   
   public DXManWorkflowTree() {
     this.dataProcessors = new ArrayList();
-    updateCreationTimestamp();
   }
 
   public DXManWorkflowTree(DXManCompositeServiceTemplate compositeService) {
@@ -30,7 +27,6 @@ public final class DXManWorkflowTree {
     this.wt = new DXManMap();
     this.dataProcessors = new ArrayList();
     this.dataChannels = new DXManMap();
-    updateCreationTimestamp();
     this.compositeService = compositeService;
   }
   
@@ -52,9 +48,8 @@ public final class DXManWorkflowTree {
   }
   
   public String getCreationTimestamp() { return creationTimestamp; }
-  public void updateCreationTimestamp() {
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    this.creationTimestamp = timestamp.toInstant().toString();
+  public void setCreationTimestamp(String timestamp) {
+    this.creationTimestamp = timestamp;
   }
   
   public DXManCompositeServiceTemplate getCompositeService() {

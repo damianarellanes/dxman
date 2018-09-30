@@ -1,15 +1,9 @@
 package com.dxman.thing.deployment.connectors.atomic;
 
-import com.dxman.dataspace.base.DXManDataEntity;
-import com.dxman.dataspace.base.DXManDataEntityFactory;
-import com.dxman.dataspace.base.DXManDataParameter;
 import com.dxman.design.data.DXManOperation;
 import com.dxman.design.data.DXManParameter;
 import com.dxman.utils.DXManConfiguration;
-import com.dxman.utils.DXManIDGenerator;
 import com.dxman.utils.DXManMap;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -32,13 +26,10 @@ public class DXManDataUtil {
   }
   
   private final DXManMap<String, PrecompiledOperation> precompiledOperations;
-  private final DXManDataEntityFactory dataEntityFactory;
 
-  public DXManDataUtil(DXManMap<String, DXManOperation> operations, 
-    DXManDataEntityFactory dataEntityFactory) {
+  public DXManDataUtil(DXManMap<String, DXManOperation> operations) {
     
     this.precompiledOperations = new DXManMap<>();
-    this.dataEntityFactory = dataEntityFactory;    
     preCompilePatterns(operations);
   }
   

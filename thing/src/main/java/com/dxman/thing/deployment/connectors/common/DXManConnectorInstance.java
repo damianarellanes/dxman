@@ -5,6 +5,7 @@ import com.dxman.execution.common.DXManWfNode;
 import com.dxman.design.services.common.DXManServiceTemplate;
 import com.dxman.thing.server.base.DXManConnectorRequester;
 import com.google.gson.*;
+import java.util.Date;
 
 /**
  * @author Damian Arellanes
@@ -46,7 +47,13 @@ public abstract class DXManConnectorInstance {
   }
 
   private void before() {
-      // Leave trace
+     
+    if(managedService != null) {
+      System.out.println(managedService.getInfo().getName() 
+        + " (" + this.getClass().getSimpleName()  + ") activated [" + new Date() + "]");
+    }
+    
+    // Leave trace
   }
 
   private void after() {

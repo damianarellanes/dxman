@@ -7,7 +7,6 @@ import com.dxman.thing.deployment.connectors.atomic.DXManDataUtil.PrecompiledOpe
 import com.dxman.utils.*;
 import java.util.*;
 import java.util.regex.Matcher;
-import org.json.*;
 
 /**
  * @author Damian Arellanes
@@ -16,17 +15,11 @@ public class DXManInvocationDataManager {
   
   private final DXManDataSpace dataSpace;  
   private final DXManDataUtil dataUtil;
-  private final String dSpaceParamType;
   
   public DXManInvocationDataManager(DXManDataSpace dataSpace, 
-    DXManMap<String, DXManOperation> operations) {
-    
+    DXManMap<String, DXManOperation> operations) {    
     this.dataSpace = dataSpace;    
-    dataUtil = new DXManDataUtil(operations, dataSpace.getDataEntityFactory());
-    
-    dSpaceParamType = dataSpace.getDataEntityFactory().createDataParameter("", "", "")
-      .getType();
-    
+    dataUtil = new DXManDataUtil(operations);    
   }
   
   public synchronized String read(String workflowId, String workflowTimestamp, 
@@ -35,30 +28,20 @@ public class DXManInvocationDataManager {
     String request = operationToInvoke.getBindingInfo().getRequestTemplate();
     
     if(operationToInvoke.getInputs().size() > 0) {
-    
-      List<String> inputNames = new ArrayList<>();
-      JSONArray inputRefs = new JSONArray();
-      for(DXManParameter input: operationToInvoke.getInputs().values()) {
-
-        inputNames.add(input.getName());
-        inputRefs.put("resource:" + dSpaceParamType + "#" 
-            + DXManIDGenerator.generateParameterUUID(input.getId(), workflowId));
-      }
       
       // Gets the values for all inputs from the dataspace
-      JSONArray values = dataSpace.readParameters(inputRefs, workflowTimestamp); 
+      DXManReadResult result = dataSpace.readParameters(
+        operationToInvoke.getInputs().values(), workflowId, workflowTimestamp
+      ); 
       
       // Parses input values for the request
-      for(int i = 0; i < values.length(); i++) {
-        try {
-            // Replaces input values in the request template
-            request = request.replaceAll(
-              DXManConfiguration.WILDCARD_START
-              + inputNames.get(i) 
-              + DXManConfiguration.WILDCARD_END,
-              values.getString(i) 
-          );
-        } catch (JSONException ex) { System.err.println(ex); }
+      for(int i = 0; i < result.getValues().length(); i++) {
+        // Replaces input values in the request template
+        request = request.replaceAll(
+          DXManConfiguration.WILDCARD_START
+          + result.getInputNames().get(i) 
+          + DXManConfiguration.WILDCARD_END,
+          result.getValue(i));
       }
     }
       
@@ -79,7 +62,7 @@ public class DXManInvocationDataManager {
       // Fixes the response to avoid any issue when matching with the pattern
       response = response.replace("\n", "").replace("\r", "");
 
-      List<DXManDataEntity> updates = new ArrayList<>();
+      List<DXManDataParameter> updates = new ArrayList<>();
       Matcher matcher = precompiledOp.getPattern().matcher(response);
       if(matcher.matches()) {
 
@@ -89,13 +72,13 @@ public class DXManInvocationDataManager {
             precompiledOp.getOutputIds()[i-1] + "-->" + matcher.group(i)
           );*/
           updates.add(
-            dataSpace.getDataEntityFactory().createDataParameter(
+            dataSpace.createDataParameter(
               precompiledOp.getOutputIds()[i-1], workflowId, matcher.group(i)
             )
           );
         }
 
-        dataSpace.writeDataEntities(updates);
+        dataSpace.writeParameters(updates);
 
       } else {
         //System.out.println("The JSON response does not match the template!");

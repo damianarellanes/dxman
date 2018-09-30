@@ -17,7 +17,7 @@ public class DXManCoapConnectorDispatcher extends ConcurrentCoapResource
   public DXManCoapConnectorDispatcher(DXManConnectorInstance connectorInstance, 
     String connectorResourceName) {
     
-    super(connectorResourceName, 1); // One thread for dipatching requests concurrently
+    super(connectorResourceName, 4); // Four threads for dipatching requests concurrently
     this.connectorInstance = connectorInstance;
   }
 

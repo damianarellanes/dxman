@@ -1,6 +1,5 @@
 package com.dxman.deployment.data;
 
-import com.dxman.dataspace.base.DXManDataProcessor;
 import com.dxman.design.data.*;
 import java.util.*;
 
@@ -9,16 +8,12 @@ import java.util.*;
  */
 public class DXManDataAlgorithm {
   
-  private final HashMap<String, DXManDataEntityType> types = new HashMap<>();
   private final HashMap<String, DXManDataProcessorTemplate> processors = new HashMap<>();
   
   private final HashMap<String, HashSet<String>> readers = new HashMap<>();
   private final HashMap<String, HashSet<String>> writers = new HashMap<>();
     
   public void analyze(DXManDataChannel dc) {
-    
-    types.putIfAbsent(dc.getOrigin().getDataEntityId(), dc.getOrigin().getDataEntityType());
-    types.putIfAbsent(dc.getDestination().getDataEntityId(), dc.getDestination().getDataEntityType());
     
     if(dc.getOrigin().isDataProcessor()) {      
       processors.putIfAbsent(
@@ -70,8 +65,7 @@ public class DXManDataAlgorithm {
     }
   }
   
-  public HashMap<String, DXManDataProcessorTemplate> getProcessors() { return processors; }  
-  public HashMap<String, DXManDataEntityType> getTypes() { return types; }
+  public HashMap<String, DXManDataProcessorTemplate> getProcessors() { return processors; }
   public HashMap<String, HashSet<String>> getReaders() { return readers; }
   public HashMap<String, HashSet<String>> getWriters() { return writers; }
 }

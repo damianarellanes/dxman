@@ -185,9 +185,6 @@ public class DXManLooperInstance extends DXManConnectorInstance {
   @Override
   public void activate(String workflowJSON) {
     
-    System.err.println(getName() 
-      + " (Looper Connector) activated [" + new Date() + "]");
-    
     DXManWfLooper flow = gson.fromJson(workflowJSON, DXManWfLooper.class);
     subNodeMappers = flow.getSubnodeMappers();
     workflowId = flow.getWorkflowId();

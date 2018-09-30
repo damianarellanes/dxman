@@ -149,9 +149,6 @@ public class DXManGuardInstance extends DXManConnectorInstance {
   @Override
   public void activate(String workflowJSON) {
     
-    System.err.println(getName() 
-      + " (Guard Connector) activated [" + new Date() + "]");
-    
     DXManWfGuard flow = gson.fromJson(workflowJSON, DXManWfGuard.class);
     subNodeMappers = flow.getSubnodeMappers();
     workflowId = flow.getWorkflowId();

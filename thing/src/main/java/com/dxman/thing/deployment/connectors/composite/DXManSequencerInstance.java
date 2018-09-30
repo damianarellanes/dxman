@@ -23,9 +23,6 @@ public class DXManSequencerInstance extends DXManConnectorInstance {
   @Override
   public void activate(String workflowJSON) {
     
-    System.err.println(this.getManagedService().getInfo().getName() 
-      + " (Sequencer Connector) activated [" + new Date() + "]");
-    
     DXManWfSequencer flow = gson.fromJson(workflowJSON, DXManWfSequencer.class);
     
     for(DXManWfNode subNode: flow.getSequence()) {

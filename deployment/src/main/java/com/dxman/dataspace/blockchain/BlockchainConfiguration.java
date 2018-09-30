@@ -10,6 +10,13 @@ public interface BlockchainConfiguration {
   public static String FABRIC_PASSWORD = "9avUTSeUHaeZ7Uy1MjXIi3_KJryOCB9p_MhF1gPsT0_w7ZmLM90f3i44tNyDQLVb";
   public static String FABRIC_URI = "https://blockchain-starter.eu-gb.bluemix.net/api/v1/networks/" + NETWORK_ID;
   
-  public static String CHAINCODE_INSTALL_URI = FABRIC_URI + "/chaincode/install";
-  public static String CHAINCODE_INSTANTIATE_URI = FABRIC_URI + "/channels/defaultchannel/chaincode/instantiate";  
+  public final String THING_CLASS = "com.dxman.blockchain.Thing";
+  public final String UPDATE_PARAM_CON = "com.dxman.blockchain.UpdateParameterConcept";
+  public final String PARAM_CLASS = "com.dxman.blockchain.Parameter";
+  public final String CREATE_PARAMS = "com.dxman.blockchain.CreateParameters";
+  public final String UPDATE_PARAM = "com.dxman.blockchain.UpdateParameter";
+  public final String UPDATE_PARAMS = "com.dxman.blockchain.UpdateParameters";
+  public final String READ_PARAM = "com.dxman.blockchain.ReadParameter";
+  public final String READ_PARAMS = "com.dxman.blockchain.ReadParameters";
+  public final String TIMESTAMP_CLASS = "com.dxman.blockchain.GetBlockchainTimestamp";
 }

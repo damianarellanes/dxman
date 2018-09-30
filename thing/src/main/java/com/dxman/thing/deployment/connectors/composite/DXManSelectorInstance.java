@@ -151,9 +151,6 @@ public class DXManSelectorInstance extends DXManConnectorInstance {
   @Override
   public void activate(String workflowJSON) {
     
-    System.err.println(this.getManagedService().getInfo().getName() 
-      + " (Selector Connector) activated [" + new Date() + "]");
-    
     DXManWfSelector flow = gson.fromJson(workflowJSON, DXManWfSelector.class);
     subNodeMappers = flow.getSubnodeMappers();
     workflowId = flow.getWorkflowId();
