@@ -8,23 +8,10 @@ import java.util.*;
  */
 public class DXManDataAlgorithm {
   
-  private final HashMap<String, DXManDataProcessorTemplate> processors = new HashMap<>();
-  
   private final HashMap<String, HashSet<String>> readers = new HashMap<>();
   private final HashMap<String, HashSet<String>> writers = new HashMap<>();
     
   public void analyze(DXManDataChannel dc) {
-    
-    if(dc.getOrigin().isDataProcessor()) {      
-      processors.putIfAbsent(
-        dc.getOrigin().getDataEntityId(), dc.getOrigin().getDataProcessor()
-      );
-    }
-    if(dc.getDestination().isDataProcessor()) {
-      processors.putIfAbsent(
-        dc.getDestination().getDataEntityId(), dc.getDestination().getDataProcessor()
-      );
-    }
     
     // Analyze right (writer)
     HashSet<String> right;    
@@ -65,7 +52,6 @@ public class DXManDataAlgorithm {
     }
   }
   
-  public HashMap<String, DXManDataProcessorTemplate> getProcessors() { return processors; }
   public HashMap<String, HashSet<String>> getReaders() { return readers; }
   public HashMap<String, HashSet<String>> getWriters() { return writers; }
 }

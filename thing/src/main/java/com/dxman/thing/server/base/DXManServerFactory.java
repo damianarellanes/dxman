@@ -9,22 +9,13 @@ import org.eclipse.californium.core.network.config.NetworkConfig;
  */
 public class DXManServerFactory {
     
-  public static DXManServer createCoap(int port) {
-
-    // Only starts the Coap server once
-    try {
-      
-      NetworkConfig config = NetworkConfig.createStandardWithoutFile();
+  public static DXManServer createCoap(int port) { 
+    
+    NetworkConfig config = NetworkConfig.createStandardWithoutFile();
       config.set(NetworkConfig.Keys.MAX_RESOURCE_BODY_SIZE, 2000000);
       
-      DXManCoapSingleton.createInstance(port);
-
-      DXManCoapSingleton.get().start();
-    } catch(Exception e) {
-      System.out.println("The server is already running");
-      System.exit(0);
-    }
-                  
+    DXManCoapSingleton.createInstance(port);
+    
     return new DXManCoapServer();
   }    
 }

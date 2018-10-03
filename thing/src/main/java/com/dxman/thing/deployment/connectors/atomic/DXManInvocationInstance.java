@@ -18,7 +18,6 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
   private final DXManMap<DXManProtocol, InvocationHandler> invocationHandlers;
   private final DXManInvocationDataManager invocationDataManager;
 
-  // TODO remove thingAlias from constructor arguments
   public DXManInvocationInstance(DXManAtomicServiceTemplate managedService, 
     DXManConnectorRequester requester, Gson gson, 
     DXManInvocationDataManager invocationDataManager) {
@@ -51,7 +50,7 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     String request = invocationDataManager.read(
       flow.getWorkflowId(), flow.getWorkflowTimestamp(), operationToInvoke
     );
-
+        
     // Invokes the operation        
     String result = invocationHandlers.get(
       DXManProtocol.valueOf(
@@ -60,10 +59,11 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     ).invokeJSON(bindingInfo, request);
 
     // Writes output parameters (if any) in background to maximize performance
-    ExecutorService executor = Executors.newSingleThreadExecutor();
+    invocationDataManager.write(flow.getWorkflowId(), operationToInvoke, result);
+    /*ExecutorService executor = Executors.newSingleThreadExecutor();
     executor.execute(() -> {
       invocationDataManager.write(flow.getWorkflowId(), operationToInvoke, result);
     });
-    executor.shutdown();
+    executor.shutdown();*/
   }
 }

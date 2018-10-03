@@ -5,15 +5,15 @@ import com.dxman.utils.DXManIDGenerator;
 /**
  * @author Damian Arellanes
  */
-public class DXManDataEntityTemplate {
+public class DXManDataEntity {
     
   private String id;
   private DXManDataEntityType dataEntityType;
   private String name;
   
-  public DXManDataEntityTemplate() {}
+  public DXManDataEntity() {}
 
-  public DXManDataEntityTemplate(String name, DXManDataEntityType dataEntityType) {
+  public DXManDataEntity(String name, DXManDataEntityType dataEntityType) {
     this.id = DXManIDGenerator.generateParameterID();
     this.name = name;
     this.dataEntityType = dataEntityType;

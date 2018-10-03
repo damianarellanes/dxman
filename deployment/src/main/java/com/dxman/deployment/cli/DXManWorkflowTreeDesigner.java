@@ -9,6 +9,7 @@ import com.dxman.execution.common.*;
 import com.dxman.dataspace.base.*;
 import com.dxman.deployment.common.DXManDeploymentUtils;
 import com.dxman.deployment.data.DXManDataAlgorithm;
+import com.dxman.deployment.data.DXManDataProcessorInstance;
 import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.data.*;
 import com.dxman.design.services.common.*;
@@ -28,7 +29,7 @@ import org.springframework.core.task.AsyncTaskExecutor;
  */
 public class DXManWorkflowTreeDesigner {
   
-  private final DXManDataSpace dataSpace;
+  private final DXManDataSpace dataspace;
   private final Gson SERIALIZATION_GSON;
   private final Gson DESERIALIZATION_GSON;
   
@@ -36,9 +37,8 @@ public class DXManWorkflowTreeDesigner {
   private final String COMPOSITE_EXTENSION = ".comp";
   private final String WT_EXTENSION = ".wt";
   
-  public DXManWorkflowTreeDesigner(String dataSpaceLocation) {    
-    
-    dataSpace = DXManDataSpaceFactory.createBlockchainManager(dataSpaceLocation);    
+  public DXManWorkflowTreeDesigner(String dataspaceEndpoint) {     
+    this.dataspace = DXManDataSpaceFactory.createBlockchainManager(dataspaceEndpoint);
     SERIALIZATION_GSON = DXManDeploymentUtils.buildSerializationGson();
     DESERIALIZATION_GSON = DXManDeploymentUtils.buildDeserializationGson();
   }
@@ -54,9 +54,9 @@ public class DXManWorkflowTreeDesigner {
     List<DXManDataParameter> wfInputs = new ArrayList<>();
     
     wtEditor.getInputs().forEach((paramId, paramValue)->{      
-      wfInputs.add(dataSpace.createDataParameter(paramId, wfId, paramValue));
+      wfInputs.add(dataspace.createDataParameter(paramId, wfId, paramValue));
     });
-    dataSpace.writeParameters(wfInputs);
+    dataspace.writeParameters(wfInputs);
     
     // Executes the workflow
     System.out.println("Executing the workflow " 
@@ -75,7 +75,7 @@ public class DXManWorkflowTreeDesigner {
     for(String outputId: wtEditor.getOutputs()) {
 
       // Only reads outputs that have been update during the workflow execution
-      String value = dataSpace.readParameter(
+      String value = dataspace.readParameter(
         outputId, wfId, wtEditor.getWorkflowTree().getCreationTimestamp()
       );
       if(!value.equals(DXManErrors.PARAMETER_VALUE_NOT_FOUND.name()))
@@ -91,7 +91,7 @@ public class DXManWorkflowTreeDesigner {
     DXManDataAlgorithm alg = new DXManDataAlgorithm();
     
     // Sets the workflow timestamp from the data space before deploying it
-    String wfTimestamp = dataSpace.getDataspaceTimestamp();
+    String wfTimestamp = dataspace.getDataspaceTimestamp();
     wtEditor.getWorkflowTree().setCreationTimestamp(wfTimestamp);
      
     wtEditor.design();
@@ -100,9 +100,14 @@ public class DXManWorkflowTreeDesigner {
       wtEditor.getWorkflowTree().getCompositeService().getId()
     ).deploy(alg, wtEditor.getWorkflowTree());
     
-    if(deployData) {      
+    if(deployData) {  
+      deployDataProcessors(wtEditor.getWorkflowTree().getDataProcessors());
       deployWorkflowDataChannels(alg, wtEditor.getWorkflowTree().getId());      
     }      
+  }
+  
+  private void deployDataProcessors(List<DXManDataProcessorInstance> processors) {    
+    processors.forEach((dataProcessor) -> { dataProcessor.connect(); });
   }
   
   private void deployWorkflowDataChannels(DXManDataAlgorithm alg, String wfId) {
@@ -114,14 +119,14 @@ public class DXManWorkflowTreeDesigner {
     
     alg.getReaders().forEach((readerId, writers) -> {
       
-      DXManDataParameter reader = dataSpace.createDataParameter(readerId, wfId, "null");
+      DXManDataParameter reader = dataspace.createDataParameter(readerId, wfId, "null");
       
       for(String writerId: writers) {
             
         DXManDataParameter writer = alreadyDeployed.get(writerId);
 
         if(writer == null) {
-          writer = dataSpace.createDataParameter(writerId, wfId, "null");
+          writer = dataspace.createDataParameter(writerId, wfId, "null");
           parametersToDeploy.add(writer);
           alreadyDeployed.put(writerId, writer);
         }
@@ -132,7 +137,7 @@ public class DXManWorkflowTreeDesigner {
       alreadyDeployed.put(readerId, reader);
     });
     
-    dataSpace.createParameters(parametersToDeploy, wfId);
+    dataspace.createParameters(parametersToDeploy, wfId);
   }
   
   public DXManWorkflowTree readWorkflowTreeDescription(String fileName) {
@@ -383,4 +388,6 @@ public class DXManWorkflowTreeDesigner {
       writer.close();
     } catch (IOException ex) { System.out.println(ex.toString()); }
   }
+  
+  public DXManDataSpace getDataspace() { return dataspace; }
 }

@@ -16,13 +16,13 @@ public class DXManInvocationDataManager {
   private final DXManDataSpace dataSpace;  
   private final DXManDataUtil dataUtil;
   
-  public DXManInvocationDataManager(DXManDataSpace dataSpace, 
-    DXManMap<String, DXManOperation> operations) {    
-    this.dataSpace = dataSpace;    
+  public DXManInvocationDataManager(DXManMap<String, DXManOperation> operations, 
+    DXManDataSpace dataspace) {    
+    this.dataSpace = dataspace;
     dataUtil = new DXManDataUtil(operations);    
   }
   
-  public synchronized String read(String workflowId, String workflowTimestamp, 
+  public String read(String workflowId, String workflowTimestamp, 
     DXManOperation operationToInvoke) {
     
     String request = operationToInvoke.getBindingInfo().getRequestTemplate();
@@ -48,7 +48,7 @@ public class DXManInvocationDataManager {
     return request;
   }
   
-  public synchronized void write(String workflowId, DXManOperation operationToInvoke, 
+  public void write(String workflowId, DXManOperation operationToInvoke, 
     String response) {    
     
     if(operationToInvoke.getBindingInfo().getAcceptType()

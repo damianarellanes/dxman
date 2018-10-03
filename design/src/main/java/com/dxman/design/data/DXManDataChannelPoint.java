@@ -7,7 +7,7 @@ public class DXManDataChannelPoint {
     
   private final String dataEntityId;
   private final DXManDataEntityType dataEntityType;
-  private final DXManDataProcessorTemplate dataProcessor;
+  private final DXManDataProcessor dataProcessor;
   
   public DXManDataChannelPoint(String dataEntityId) {
     this.dataEntityId = dataEntityId;
@@ -15,7 +15,7 @@ public class DXManDataChannelPoint {
     this.dataProcessor = null;
   }
   
-  public DXManDataChannelPoint(DXManDataProcessorTemplate dataProcessor) {
+  public DXManDataChannelPoint(DXManDataProcessor dataProcessor) {
     this.dataEntityId = dataProcessor.getId();
     this.dataEntityType = dataProcessor.getDataEntityType();
     this.dataProcessor = dataProcessor;
@@ -28,7 +28,7 @@ public class DXManDataChannelPoint {
 
   public String getDataEntityId() { return dataEntityId; }
   public DXManDataEntityType getDataEntityType() { return dataEntityType; }
-  public DXManDataProcessorTemplate getDataProcessor() { return dataProcessor; }
+  public DXManDataProcessor getDataProcessor() { return dataProcessor; }
 
   @Override
   public String toString() {

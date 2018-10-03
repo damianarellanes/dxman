@@ -1,7 +1,6 @@
 package com.dxman.dataspace.base;
 
 import com.dxman.design.data.DXManParameter;
-import com.dxman.execution.wttree.DXManWfOutputs;
 import java.util.*;
 
 /**
@@ -26,6 +25,8 @@ public interface DXManDataSpace {
     String newValue);
   
   public String getDataspaceTimestamp();
+  
+  public String getEndpoint();
   
   public DXManDataParameter createDataParameter(String parameterId, 
     String workflowId, String value);

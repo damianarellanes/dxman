@@ -11,6 +11,18 @@ import com.dxman.thing.server.base.DXManConnectorDispatcher;
 public class DXManCoapServer implements DXManServer {
   
   @Override
+  public void start() {
+    
+    // Only starts the Coap server once
+    try {      
+      DXManCoapSingleton.get().start();
+    } catch(Exception e) {
+      System.out.println("The server is already running");
+      System.exit(0);
+    }
+  }
+  
+  @Override
   public void initDeployerDispatcher(String resourceName, DXManDeployer deployer) {
     
     DXManCoapDeployerDispatcher d = new DXManCoapDeployerDispatcher(

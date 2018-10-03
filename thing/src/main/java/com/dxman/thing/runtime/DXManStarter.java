@@ -13,21 +13,21 @@ import java.util.Properties;
  */
 public class DXManStarter {
 
-  public static DXManRuntime start(String configPath) {
+  public static DXManThing createRuntime(String configPath) {
     
     Properties config = loadConfig(configPath);
-        
+    
     // Sets the data space up
-    DXManDataSpace dataSpace = setDataSpaceUp(config);
+    DXManDataSpace dataspace = setDataSpaceUp(config);
     
     // Sets the server up
     DXManServer server = DXManServerFactory.createCoap(
       Integer.valueOf(config.getProperty(DXManConfiguration.THING_PORT_TAG))
     );
-    DXManThing thing = setThingUp(config, server, dataSpace);
+    DXManThing thing = setThingUp(config, server, dataspace);
     
     // Initializes the deployer (running at e.g., deployer-thingAlias)
-    DXManDeployer deployer = new DXManDeployer(server, dataSpace);
+    DXManDeployer deployer = new DXManDeployer(server, dataspace);
     server.initDeployerDispatcher(
       DXManIDGenerator.getDeployerUUID(thing.getAlias()), deployer
     );
@@ -35,7 +35,7 @@ public class DXManStarter {
     System.out.println(thing.getAlias() + " listening at " 
       + "http://" + thing.getIp() + ":" + thing.getPort());
     
-    return new DXManRuntime(thing, dataSpace);
+    return thing; 
   }
   
   private static Properties loadConfig(String configPath) {
@@ -66,21 +66,21 @@ public class DXManStarter {
     return dataSpace;
   }
   
-  private static DXManThing setThingUp(Properties config, DXManServer server,
-    DXManDataSpace dataSpace) {
+  private static DXManThing setThingUp(Properties config, DXManServer server, 
+    DXManDataSpace dataspace) {
        
     DXManThing thing = new DXManThing(
       config.getProperty(DXManConfiguration.THING_ALIAS_TAG), 
       config.getProperty(DXManConfiguration.THING_IP_TAG), 
       Integer.valueOf(config.getProperty(DXManConfiguration.THING_PORT_TAG)),
-      server
+      server, dataspace
     );
     
-    int responseCode = dataSpace.registerThing(thing.getId(), thing.getAlias());
+    /*int responseCode = dataSpace.registerThing(thing.getId(), thing.getAlias());
     
     if(responseCode != 200) {
       System.exit(DXManErrors.THING_ALREADY_EXISTS.ordinal());
-    }
+    }*/
     
     return thing;
   }

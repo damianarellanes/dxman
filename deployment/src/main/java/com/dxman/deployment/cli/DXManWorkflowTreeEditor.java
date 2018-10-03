@@ -1,5 +1,9 @@
 package com.dxman.deployment.cli;
 
+import com.dxman.dataspace.base.DXManDataSpace;
+import com.dxman.dataspace.base.DXManDataSpaceFactory;
+import com.dxman.deployment.data.DXManMapperInstance;
+import com.dxman.deployment.data.DXManReducerInstance;
 import com.dxman.execution.wttree.*;
 import com.dxman.execution.sequencer.*;
 import com.dxman.execution.parallel.DXManWfParallelCustom;
@@ -9,19 +13,21 @@ import com.dxman.execution.guard.DXManWfGuardCustom;
 import com.dxman.execution.looper.DXManWfLooperCustomDyn;
 import com.dxman.execution.looper.DXManWfLooperCustomStatic;
 import com.dxman.execution.selector.DXManWfSelectorCustom;
-import com.dxman.utils.DXManIDGenerator;
-import java.util.ArrayList;
+import java.net.URISyntaxException;
 
 /**
  * @author Damian Arellanes
  */
 public abstract class DXManWorkflowTreeEditor {
   
-  private final DXManWorkflowTree workflowTree;  
+  private final DXManWorkflowTree workflowTree;
+  private final DXManDataSpace dataspace;
   
-  public DXManWorkflowTreeEditor(DXManWorkflowTree workflowTree, String wfId) {
+  public DXManWorkflowTreeEditor(DXManWorkflowTree workflowTree, String wfId, 
+    DXManDataSpace dataspace) {    
     this.workflowTree = workflowTree;
     this.workflowTree.setId(wfId);
+    this.dataspace = dataspace;
   }
   
   public void customiseOrder(String parentKey, String childKey, int... order) {    
@@ -85,9 +91,7 @@ public abstract class DXManWorkflowTreeEditor {
     DXManDataChannelPoint destination) {
     
     if(destination.isDataProcessor()) {      
-      destination.getDataProcessor().addWriter(
-        DXManIDGenerator.generateParameterUUID(origin.getDataEntityId(), workflowTree.getId())
-      );
+      destination.getDataProcessor().addWriter(origin.getDataEntityId());
     }
     
     workflowTree.getDataChannels().get(parentKey).add(
@@ -95,26 +99,34 @@ public abstract class DXManWorkflowTreeEditor {
     );
   }
   
-  public DXManMapperTemplate addMapper(String name, String processsorPath, 
-      DXManDataProcessorLang processorLang) {    
+  public DXManDataProcessor addMapper(DXManDataMapper mapper, String name) {
     
-    DXManMapperTemplate mapper = new DXManMapperTemplate(
-      name, processsorPath, processorLang
+    DXManDataProcessor template = new DXManDataProcessor(
+      DXManDataEntityType.MAPPER, name, workflowTree.getId(), mapper
     );
-    workflowTree.getDataProcessors().add(mapper);
     
-    return mapper;
+    DXManMapperInstance instance = null;
+    try {
+      instance = new DXManMapperInstance(template, dataspace);
+      workflowTree.getDataProcessors().add(instance);      
+    } catch (URISyntaxException ex) { System.out.println(ex); }        
+    
+    return template;
   }
   
-  public DXManReducerTemplate addReducer(String name, String processsorPath, 
-    DXManDataProcessorLang processorLang) {    
+  public DXManDataProcessor addReducer(DXManDataReducer reducer, String name) {
     
-    DXManReducerTemplate reducer = new DXManReducerTemplate(
-      name, processsorPath, processorLang
+    DXManDataProcessor template = new DXManDataProcessor(
+      DXManDataEntityType.REDUCER, name, workflowTree.getId(), reducer
     );
-    workflowTree.getDataProcessors().add(reducer);
     
-    return reducer;
+    DXManReducerInstance instance = null;
+    try {
+      instance = new DXManReducerInstance(template, dataspace);
+      workflowTree.getDataProcessors().add(instance);      
+    } catch (URISyntaxException ex) { System.out.println(ex); }    
+        
+    return template;
   }
   
   public void design() {

@@ -8,6 +8,7 @@ import com.dxman.thing.deployment.connectors.common.DXManConnectorInstance;
  */
 public interface DXManServer { 
   
+  public void start();
   public void initDeployerDispatcher(String resourceName, DXManDeployer deployer);
   public DXManConnectorDispatcher deploy(DXManConnectorInstance connectorInstance);
 }

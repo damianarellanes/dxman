@@ -2,11 +2,19 @@ package com.dxman.dataspace.blockchain;
 
 import com.dxman.dataspace.base.*;
 import com.dxman.design.data.DXManParameter;
-import com.dxman.execution.wttree.DXManWfOutputs;
 import com.dxman.utils.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.javalite.http.*;
 import org.json.*;
 
@@ -76,10 +84,10 @@ public class BlockChainManager implements DXManDataSpace {
 
         //System.out.println(transaction.toString());
 
-        Post result = post(blockChainEndpoint + 
+        String result = post(blockChainEndpoint + 
           "/api/" + BlockchainConfiguration.CREATE_PARAMS, transaction.toString());
 
-        System.out.println((to-from) + " parameters created: " + result.responseMessage());
+        System.out.println((to-from) + " parameters created");
 
       } catch (JSONException ex) { System.err.println(ex.toString()); }
     }
@@ -97,7 +105,15 @@ public class BlockChainManager implements DXManDataSpace {
       inputRefs.put("resource:" + BlockchainConfiguration.PARAM_CLASS + "#" 
         + DXManIDGenerator.generateParameterUUID(input.getId(), wfId));
     }
-    return new DXManReadResult(readParameters(inputRefs, wfTimestamp), inputNames);
+    
+    // Blocks until all parameters are read
+    JSONArray resultArray = new JSONArray();
+    do {
+      //System.out.println("Attempting reading...");
+      resultArray = readParameters(inputRefs, wfTimestamp);      
+    } while(resultArray.length() == 0);
+        
+    return new DXManReadResult(resultArray, inputNames);
   }
   
   private JSONArray readParameters(JSONArray paramRefs, 
@@ -112,14 +128,15 @@ public class BlockChainManager implements DXManDataSpace {
       
       //System.out.println(transaction.toString());
             
-      Post result = post(blockChainEndpoint + 
+      String result = post(blockChainEndpoint + 
         "/api/" + BlockchainConfiguration.READ_PARAMS, transaction.toString());
       
-      if(result.responseCode() != 200) {
+      /*if(result.responseCode() != 200) {
         System.err.println("Error reading parameters!");
-      }
-        
-      return new JSONArray(result.text());
+      }*/
+      
+      //System.out.println("READ OK");
+      return new JSONArray(result);
     } catch (JSONException ex) {}
     
     return new JSONArray();
@@ -137,15 +154,22 @@ public class BlockChainManager implements DXManDataSpace {
         + DXManIDGenerator.generateParameterUUID(parameterId, workflowId));
       transaction.put("workflowTimestamp", workflowTimestamp);
 
-      
-      Post result = post(blockChainEndpoint + 
-        "/api/" + BlockchainConfiguration.READ_PARAMS, transaction.toString());
-      
-      if(result.responseCode() != 200) {
+      //System.out.println(transaction.toString());      
+              
+      // Blocks until the parameter is read
+      String result = DXManErrors.PARAMETER_VALUE_NOT_FOUND.name();
+      do {
+        //System.out.println("Attempting reading...");
+        result = post(blockChainEndpoint + 
+        "/api/" + BlockchainConfiguration.READ_PARAMS, transaction.toString()); 
+      } while(result.equals(DXManErrors.PARAMETER_VALUE_NOT_FOUND.name()));
+            
+      /*if(result.responseCode() != 200) {
         System.err.println("Error reading parameters!");
-      }
+      }*/
         
-      return result.text();
+      //System.out.println("READ OK");
+      return result;
         
     } catch (JSONException ex) {       
       return DXManErrors.PARAMETER_VALUE_NOT_FOUND.name();
@@ -155,8 +179,9 @@ public class BlockChainManager implements DXManDataSpace {
   @Override
   public void writeParameters(List<DXManDataParameter> parameters) {
     
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    String instant = timestamp.toInstant().toString();
+    //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    //String instant = timestamp.toInstant().toString();
+    //String instant = getDataspaceTimestamp(); // TODO this in the blockchain model
     
     // Writes 20 parameters at a time to avoid any issue with the blockchain server
     int from = 0, to = 0;
@@ -178,7 +203,7 @@ public class BlockChainManager implements DXManDataSpace {
           updateJSON.put("$class", BlockchainConfiguration.UPDATE_PARAM_CON);
           updateJSON.put("parameter", param.toString());
           updateJSON.put("newValue", param.getValue());
-          updateJSON.put("timestamp", instant);
+          //updateJSON.put("timestamp", instant);
       
           updatesJSON.put(updateJSON);
         }
@@ -187,10 +212,10 @@ public class BlockChainManager implements DXManDataSpace {
         
         //System.out.println(transaction.toString());       
         
-        Post result = post(blockChainEndpoint + 
+        String result = post(blockChainEndpoint + 
           "/api/" + BlockchainConfiguration.UPDATE_PARAMS, transaction.toString());
         
-        result.responseMessage();
+        //result.responseMessage();
         
         /*if(result.responseCode() == 200) {
           System.out.println((to-from) + " data has been updated!");
@@ -204,53 +229,92 @@ public class BlockChainManager implements DXManDataSpace {
   public void writeParameter(String parameterId, String workflowId, 
     String newValue) {
     
-    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    String instant = timestamp.toInstant().toString();
+    //Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    //String instant = timestamp.toInstant().toString();
+    //String instant = getDataspaceTimestamp(); // TODO this in the blockchain model
     
     try {
       
       JSONObject transaction = new JSONObject();
-      transaction.put("$class", BlockchainConfiguration.UPDATE_PARAM);
+      transaction.put("$class", "com.dxman.blockchain.UpdateParameter");
       JSONObject updateJSON = new JSONObject();
-      updateJSON.put("$class", BlockchainConfiguration.UPDATE_PARAM_CON);
-      updateJSON.put("parameter", BlockchainConfiguration.PARAM_CLASS + "#" + 
+      updateJSON.put("$class", "com.dxman.blockchain.UpdateParameterConcept");
+      updateJSON.put("parameter", "com.dxman.blockchain.Parameter#" + 
         DXManIDGenerator.generateParameterUUID(parameterId, workflowId));
       updateJSON.put("newValue", newValue);
-      updateJSON.put("timestamp", instant);
+      //updateJSON.put("timestamp", instant);
       transaction.put("update", updateJSON);  
-
-      Post result = post(blockChainEndpoint + 
-        "/api/" + BlockchainConfiguration.UPDATE_PARAM, transaction.toString());
       
-      if(result.responseCode() == 200) {
+      //System.out.println(transaction.toString());
+
+      String result = post("http://148.100.108.114:3000" + 
+        "/api/com.dxman.blockchain.UpdateParameter", transaction.toString());
+      
+      /*if(result.responseCode() == 200) {
         System.out.println("Parameter " + parameterId + " has been updated!");
-      }
+      } else System.out.println("ERROR UPDATING");*/
         
     } catch (JSONException ex) { System.err.println(ex.toString()); }
   }
   
   @Override
   public String getDataspaceTimestamp() {    
+        
     return post(blockChainEndpoint + 
       "/api/" + BlockchainConfiguration.TIMESTAMP_CLASS, 
       "{\"$class\":\"" + BlockchainConfiguration.TIMESTAMP_CLASS + "\"}")
-      .text().replace("\"", "");
+      .replace("\"", "").replace("\n", "");
   }
       
-  private Post post(String url, String content) {
-    return Http.post(url, content.getBytes(), 60000, 60000)
-      .header("Accept", "application/json")
-      .header("Content-Type", "application/json");
-  }
+  private String post(String url, String content) {
     
-  private String get(String url) {
-    return Http.get(url).text();
+    HttpURLConnection con = null;        
+    byte[] postData = content.getBytes();
+    StringBuilder response = new StringBuilder();
+
+    try {
+
+        URL myurl = new URL(url);
+        con = (HttpURLConnection) myurl.openConnection();
+
+        con.setDoOutput(true);
+        con.setRequestMethod("POST");
+        con.setConnectTimeout(Integer.MAX_VALUE);
+        con.setRequestProperty("User-Agent", "Java client");
+        con.setRequestProperty("Accept", "application/json");
+        con.setRequestProperty("Content-Type", "application/json");
+
+        try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+            wr.write(postData);
+        }
+        
+        try (BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()))) {
+            String line;
+            while ((line = in.readLine()) != null) {
+                response.append(line);
+                response.append(System.lineSeparator());
+            }
+        }
+
+        //System.out.println(response.toString());
+
+    } catch (MalformedURLException ex) { System.out.println(ex);} 
+      catch (IOException ex) { System.out.println(ex); } 
+    finally { con.disconnect(); }
+    
+    return response.toString();
   }
   
   @Override
   public DXManDataParameter createDataParameter(String parameterId, 
     String workflowId, String value) {
     return new BlockchainParameter(parameterId, workflowId, value);
+  }
+  
+  @Override
+  public String getEndpoint() {
+    return blockChainEndpoint;
   }
   
   public static void main(String[] args) {

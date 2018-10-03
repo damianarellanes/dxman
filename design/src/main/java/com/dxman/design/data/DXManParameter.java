@@ -5,7 +5,7 @@ import com.dxman.utils.DXManIDGenerator;
 /**
  * @author Damian Arellanes
  */
-public class DXManParameter extends DXManDataEntityTemplate implements Cloneable {
+public class DXManParameter extends DXManDataEntity implements Cloneable {
           
   private DXManParameterType parameterType;
   private String valueType;

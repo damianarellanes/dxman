@@ -19,12 +19,11 @@ import com.google.gson.*;
 public class DXManDeployer {
   
   private final DXManServer server;
-  private final DXManDataSpace dataSpace;
+  private final DXManDataSpace dataspace;
   
-  public DXManDeployer(DXManServer server, DXManDataSpace dataSpace) {
-    
+  public DXManDeployer(DXManServer server, DXManDataSpace dataspace) {    
     this.server = server;
-    this.dataSpace = dataSpace;
+    this.dataspace = dataspace;
   }
   
   public String deployAtomicService(DXManAtomicServiceTemplate managedService) {
@@ -34,7 +33,9 @@ public class DXManDeployer {
     DXManInvocationInstance ic = new DXManInvocationInstance(
       managedService, DXManConnectorRequesterFactory.createCoapRequester(gson), 
       gson, 
-      new DXManInvocationDataManager(dataSpace, managedService.getOperations())
+      new DXManInvocationDataManager(
+        managedService.getOperations(), dataspace
+      )
     );    
     
     server.deploy(ic);
@@ -58,7 +59,7 @@ public class DXManDeployer {
         break;
       case SELECTOR:
         connectorInstance = new DXManSelectorInstance(
-          managedService, new DXManConnectorDataManager(dataSpace), 
+          managedService, new DXManConnectorDataManager(dataspace), 
           connectorRequester, gson
         );
         break;  
@@ -86,12 +87,12 @@ public class DXManDeployer {
       case GUARD:
         connectorInstance = new DXManGuardInstance(
           adapter.getId(), adapter.getName(), 
-          new DXManConnectorDataManager(dataSpace), connectorRequester, gson);
+          new DXManConnectorDataManager(dataspace), connectorRequester, gson);
         break;
       case LOOPER:
         connectorInstance = new DXManLooperInstance(
           adapter.getId(), adapter.getName(), 
-          new DXManConnectorDataManager(dataSpace), connectorRequester, gson);
+          new DXManConnectorDataManager(dataspace), connectorRequester, gson);
         break;
     }
     
