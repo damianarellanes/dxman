@@ -30,7 +30,8 @@ public abstract class DXManDataProcessorInstance extends WebSocketClient {
     
   @Override
   public void onOpen(ServerHandshake handshakedata) {
-    System.out.println(template.getName() + " is listening...");    
+    System.out.println(template.getName() + " is listening..."); 
+    //System.out.println(template.getName() + " id: " + outputId);
   }
 
   @Override

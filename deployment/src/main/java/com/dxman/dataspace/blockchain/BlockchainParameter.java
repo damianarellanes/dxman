@@ -14,13 +14,16 @@ public class BlockchainParameter implements DXManDataParameter {
   private final String parameterId;
   private final String workflowId;
   private String value;
+  private String updater;
   private List<DXManDataParameter> writers;
 
-  public BlockchainParameter(String parameterId, String workflowId, String value) {
+  public BlockchainParameter(String parameterId, String workflowId, String value,
+    String updater) {
     this.id = DXManIDGenerator.generateParameterUUID(parameterId, workflowId);
     this.parameterId = parameterId;
     this.workflowId = workflowId;
     this.value = value;
+    this.updater = updater;
     this.writers = new ArrayList<>();  
   }    
   
@@ -45,6 +48,7 @@ public class BlockchainParameter implements DXManDataParameter {
         writersJSON.put("resource:" + BlockchainConfiguration.PARAM_CLASS + "#"
           + DXManIDGenerator.generateParameterUUID(writer.getParameterId(), getWorkflowId()));
       }
+      parameterJSON.put("updater", updater);
       parameterJSON.put("writers", writersJSON);
     } catch (JSONException ex) { System.out.println(ex); }
     
@@ -61,6 +65,10 @@ public class BlockchainParameter implements DXManDataParameter {
   public void setValue(String value) { this.value = value; }
   @Override
   public String getValue() { return value; }
+  @Override
+  public void setUpdater(String updater) { this.updater = updater; }
+  @Override
+  public String getUpdater() { return updater; }
   @Override
   public List<DXManDataParameter> getWriters() { return writers; }  
   public void setReaders(List<DXManDataParameter> writers) {

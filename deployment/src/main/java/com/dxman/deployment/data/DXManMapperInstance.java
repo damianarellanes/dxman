@@ -22,12 +22,12 @@ public class DXManMapperInstance extends DXManDataProcessorInstance {
     try {
       
       JSONObject jsonEvent = new JSONObject(message);    
-      String parameter = jsonEvent.getString("parameter");
+      String updater = jsonEvent.getString("updater");
       
-      if(template.getWriterIdsTmp().containsKey(parameter)) {
+      if(template.getWriterIdsTmp().containsKey(updater)) {
       
         template.getInputs().add(jsonEvent.getString("newValue"));
-        template.getWriterIdsTmp().remove(parameter);
+        template.getWriterIdsTmp().remove(updater);
         
         if(template.getWriterIdsTmp().isEmpty()) {
                   
@@ -36,7 +36,7 @@ public class DXManMapperInstance extends DXManDataProcessorInstance {
           
           ArrayList<DXManDataParameter> parameters  = new ArrayList<>();
           mapping.forEach((key, value)-> {
-            parameters.add(dataspace.createDataParameter(key, template.getWfId(), value));
+            parameters.add(dataspace.createDataParameter(key, template.getWfId(), value, outputId));
           });
           
           dataspace.writeParameters(parameters);

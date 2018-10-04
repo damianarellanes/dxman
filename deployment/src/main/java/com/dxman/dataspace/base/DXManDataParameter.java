@@ -17,5 +17,7 @@ public interface DXManDataParameter {
   public String getWorkflowId();
   public void setValue(String value);
   public String getValue();
+  public void setUpdater(String updater);
+  public String getUpdater();
   public List<DXManDataParameter> getWriters();
 }

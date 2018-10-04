@@ -2,6 +2,7 @@ package com.dxman.deployment.data;
 
 import com.dxman.dataspace.base.DXManDataSpace;
 import com.dxman.design.data.*;
+import com.dxman.utils.DXManIDGenerator;
 import java.net.URISyntaxException;
 import org.json.*;
 
@@ -18,21 +19,21 @@ public class DXManReducerInstance extends DXManDataProcessorInstance {
   @Override
   public void onMessage(String message) {
     
-    //System.out.println(message);
+    //System.out.println("REDUCER:" + message);
 
     try {
       
       JSONObject jsonEvent = new JSONObject(message);    
-      String parameter = jsonEvent.getString("parameter");
+      String updater = jsonEvent.getString("updater");
       
-      if(template.getWriterIdsTmp().containsKey(parameter)) {
+      if(template.getWriterIdsTmp().containsKey(updater)) {
       
         template.getInputs().add(jsonEvent.getString("newValue"));
-        template.getWriterIdsTmp().remove(parameter);
+        template.getWriterIdsTmp().remove(updater);
         
         if(template.getWriterIdsTmp().isEmpty()) {
           String result = ((DXManDataReducer)template.getComputation()).reduce(template.getInputs());
-          dataspace.writeParameter(template.getId(), template.getWfId(), result);
+          dataspace.writeParameter(template.getId(), template.getWfId(), result,outputId);
           template.resetInputs();
           template.resetWriterIdsTmp();
         }

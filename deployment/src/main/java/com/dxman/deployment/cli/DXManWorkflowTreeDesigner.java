@@ -54,7 +54,7 @@ public class DXManWorkflowTreeDesigner {
     List<DXManDataParameter> wfInputs = new ArrayList<>();
     
     wtEditor.getInputs().forEach((paramId, paramValue)->{      
-      wfInputs.add(dataspace.createDataParameter(paramId, wfId, paramValue));
+      wfInputs.add(dataspace.createDataParameter(paramId, wfId, paramValue, "user"));
     });
     dataspace.writeParameters(wfInputs);
     
@@ -119,14 +119,14 @@ public class DXManWorkflowTreeDesigner {
     
     alg.getReaders().forEach((readerId, writers) -> {
       
-      DXManDataParameter reader = dataspace.createDataParameter(readerId, wfId, "null");
+      DXManDataParameter reader = dataspace.createDataParameter(readerId, wfId, "null", "none");
       
       for(String writerId: writers) {
             
         DXManDataParameter writer = alreadyDeployed.get(writerId);
 
         if(writer == null) {
-          writer = dataspace.createDataParameter(writerId, wfId, "null");
+          writer = dataspace.createDataParameter(writerId, wfId, "null", "none");
           parametersToDeploy.add(writer);
           alreadyDeployed.put(writerId, writer);
         }

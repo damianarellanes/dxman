@@ -73,7 +73,8 @@ public class DXManInvocationDataManager {
           );*/
           updates.add(
             dataSpace.createDataParameter(
-              precompiledOp.getOutputIds()[i-1], workflowId, matcher.group(i)
+              precompiledOp.getOutputIds()[i-1], workflowId, matcher.group(i),
+              DXManIDGenerator.generateParameterUUID(precompiledOp.getOutputIds()[i-1], workflowId)
             )
           );
         }

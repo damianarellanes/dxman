@@ -22,12 +22,12 @@ public interface DXManDataSpace {
   public void writeParameters(List<DXManDataParameter> parameters);
   
   public void writeParameter(String parameterId, String workflowId, 
-    String newValue);
+    String newValue, String updater);
   
   public String getDataspaceTimestamp();
   
   public String getEndpoint();
   
   public DXManDataParameter createDataParameter(String parameterId, 
-    String workflowId, String value);
+    String workflowId, String value, String updater);
 }
