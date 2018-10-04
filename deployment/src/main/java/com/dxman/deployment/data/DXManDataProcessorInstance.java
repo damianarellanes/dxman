@@ -25,6 +25,7 @@ public abstract class DXManDataProcessorInstance extends WebSocketClient {
     outputId = DXManIDGenerator.generateParameterUUID(template.getId(), template.getWfId());
     this.template = template;
     this.dataspace = dataspace;
+    setConnectionLostTimeout(0);
   }
     
   @Override

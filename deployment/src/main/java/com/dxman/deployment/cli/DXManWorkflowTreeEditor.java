@@ -107,7 +107,7 @@ public abstract class DXManWorkflowTreeEditor {
     
     DXManMapperInstance instance = null;
     try {
-      instance = new DXManMapperInstance(template, dataspace);
+      instance = new DXManMapperInstance(template, DXManDataSpaceFactory.createBlockchainManager(dataspace.getEndpoint()));
       workflowTree.getDataProcessors().add(instance);      
     } catch (URISyntaxException ex) { System.out.println(ex); }        
     
@@ -122,7 +122,7 @@ public abstract class DXManWorkflowTreeEditor {
     
     DXManReducerInstance instance = null;
     try {
-      instance = new DXManReducerInstance(template, dataspace);
+      instance = new DXManReducerInstance(template, DXManDataSpaceFactory.createBlockchainManager(dataspace.getEndpoint()));
       workflowTree.getDataProcessors().add(instance);      
     } catch (URISyntaxException ex) { System.out.println(ex); }    
         

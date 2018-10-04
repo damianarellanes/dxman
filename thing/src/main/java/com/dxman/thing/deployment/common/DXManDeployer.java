@@ -1,6 +1,7 @@
 package com.dxman.thing.deployment.common;
 
 import com.dxman.dataspace.base.DXManDataSpace;
+import com.dxman.dataspace.base.DXManDataSpaceFactory;
 import com.dxman.deployment.common.DXManDeploymentUtils;
 import com.dxman.design.connectors.common.DXManConnectorTemplate;
 import com.dxman.design.services.atomic.DXManAtomicServiceTemplate;
@@ -19,11 +20,11 @@ import com.google.gson.*;
 public class DXManDeployer {
   
   private final DXManServer server;
-  private final DXManDataSpace dataspace;
+  private final String dataspaceEndpoint;
   
-  public DXManDeployer(DXManServer server, DXManDataSpace dataspace) {    
+  public DXManDeployer(DXManServer server, String dataspaceEndpoint) {    
     this.server = server;
-    this.dataspace = dataspace;
+    this.dataspaceEndpoint = dataspaceEndpoint;    
   }
   
   public String deployAtomicService(DXManAtomicServiceTemplate managedService) {
@@ -34,7 +35,8 @@ public class DXManDeployer {
       managedService, DXManConnectorRequesterFactory.createCoapRequester(gson), 
       gson, 
       new DXManInvocationDataManager(
-        managedService.getOperations(), dataspace
+        managedService.getOperations(),
+        DXManDataSpaceFactory.createBlockchainManager(dataspaceEndpoint)
       )
     );    
     
@@ -59,7 +61,9 @@ public class DXManDeployer {
         break;
       case SELECTOR:
         connectorInstance = new DXManSelectorInstance(
-          managedService, new DXManConnectorDataManager(dataspace), 
+          managedService, new DXManConnectorDataManager(
+            DXManDataSpaceFactory.createBlockchainManager(dataspaceEndpoint)
+          ), 
           connectorRequester, gson
         );
         break;  
@@ -87,12 +91,16 @@ public class DXManDeployer {
       case GUARD:
         connectorInstance = new DXManGuardInstance(
           adapter.getId(), adapter.getName(), 
-          new DXManConnectorDataManager(dataspace), connectorRequester, gson);
+          new DXManConnectorDataManager(
+            DXManDataSpaceFactory.createBlockchainManager(dataspaceEndpoint)
+          ), connectorRequester, gson);
         break;
       case LOOPER:
         connectorInstance = new DXManLooperInstance(
           adapter.getId(), adapter.getName(), 
-          new DXManConnectorDataManager(dataspace), connectorRequester, gson);
+          new DXManConnectorDataManager(
+            DXManDataSpaceFactory.createBlockchainManager(dataspaceEndpoint)
+          ), connectorRequester, gson);
         break;
     }
     

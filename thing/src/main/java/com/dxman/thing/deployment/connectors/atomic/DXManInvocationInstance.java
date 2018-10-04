@@ -59,11 +59,11 @@ public class DXManInvocationInstance extends DXManConnectorInstance {
     ).invokeJSON(bindingInfo, request);
 
     // Writes output parameters (if any) in background to maximize performance
-    invocationDataManager.write(flow.getWorkflowId(), operationToInvoke, result);
-    /*ExecutorService executor = Executors.newSingleThreadExecutor();
+    //invocationDataManager.write(flow.getWorkflowId(), operationToInvoke, result);
+    ExecutorService executor = Executors.newSingleThreadExecutor();
     executor.execute(() -> {
       invocationDataManager.write(flow.getWorkflowId(), operationToInvoke, result);
     });
-    executor.shutdown();*/
+    executor.shutdown();
   }
 }

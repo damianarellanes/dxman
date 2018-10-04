@@ -9,13 +9,13 @@ import org.eclipse.californium.core.network.config.NetworkConfig;
  */
 public class DXManServerFactory {
     
-  public static DXManServer createCoap(int port) { 
+  public static DXManServer createCoap(String alias, String ip, int port) { 
     
     NetworkConfig config = NetworkConfig.createStandardWithoutFile();
       config.set(NetworkConfig.Keys.MAX_RESOURCE_BODY_SIZE, 2000000);
       
     DXManCoapSingleton.createInstance(port);
     
-    return new DXManCoapServer();
+    return new DXManCoapServer(alias, ip, port);
   }    
 }

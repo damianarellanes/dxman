@@ -110,7 +110,7 @@ public class BlockChainManager implements DXManDataSpace {
     JSONArray resultArray = new JSONArray();
     do {
       //System.out.println("Attempting reading...");
-      resultArray = readParameters(inputRefs, wfTimestamp);      
+      resultArray = readParameters(inputRefs, wfTimestamp);
     } while(resultArray.length() == 0);
         
     return new DXManReadResult(resultArray, inputNames);
@@ -157,22 +157,26 @@ public class BlockChainManager implements DXManDataSpace {
       //System.out.println(transaction.toString());      
               
       // Blocks until the parameter is read
-      String result = DXManErrors.PARAMETER_VALUE_NOT_FOUND.name();
+      String result;
       do {
         //System.out.println("Attempting reading...");
         result = post(blockChainEndpoint + 
         "/api/" + BlockchainConfiguration.READ_PARAMS, transaction.toString()); 
-      } while(result.equals(DXManErrors.PARAMETER_VALUE_NOT_FOUND.name()));
+      } while(result.equals("\"" + DXManErrors.PARAMETER_VALUE_NOT_FOUND.name() + "\""));
+      
+      //System.out.println(result);
+      //System.out.println(DXManErrors.PARAMETER_VALUE_NOT_FOUND.name());
+      //System.out.println(result.equals(DXManErrors.PARAMETER_VALUE_NOT_FOUND.name()));
             
       /*if(result.responseCode() != 200) {
         System.err.println("Error reading parameters!");
       }*/
         
-      //System.out.println("READ OK");
       return result;
         
-    } catch (JSONException ex) {       
-      return DXManErrors.PARAMETER_VALUE_NOT_FOUND.name();
+    } catch (JSONException ex) { 
+      System.out.println(ex);
+      return "NOOOO"; //DXManErrors.PARAMETER_VALUE_NOT_FOUND.name();
     }
   }
   
@@ -293,14 +297,13 @@ public class BlockChainManager implements DXManDataSpace {
             String line;
             while ((line = in.readLine()) != null) {
                 response.append(line);
-                response.append(System.lineSeparator());
             }
         }
 
-        //System.out.println(response.toString());
+        //System.out.println("RESP@ " + response.toString());
 
     } catch (MalformedURLException ex) { System.out.println(ex);} 
-      catch (IOException ex) { System.out.println(ex); } 
+      catch (IOException ex) { response = new StringBuilder(post(url, content)); } 
     finally { con.disconnect(); }
     
     return response.toString();

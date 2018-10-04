@@ -22,18 +22,19 @@ public class DXManStarter {
     
     // Sets the server up
     DXManServer server = DXManServerFactory.createCoap(
+      String.valueOf(config.getProperty(DXManConfiguration.THING_ALIAS_TAG)),
+      String.valueOf(config.getProperty(DXManConfiguration.THING_IP_TAG)),
       Integer.valueOf(config.getProperty(DXManConfiguration.THING_PORT_TAG))
     );
     DXManThing thing = setThingUp(config, server, dataspace);
     
     // Initializes the deployer (running at e.g., deployer-thingAlias)
-    DXManDeployer deployer = new DXManDeployer(server, dataspace);
+    DXManDeployer deployer = new DXManDeployer(
+      server, config.getProperty(DXManConfiguration.DATASPACE_ENDPOINT_TAG)
+    );
     server.initDeployerDispatcher(
       DXManIDGenerator.getDeployerUUID(thing.getAlias()), deployer
     );
-    
-    System.out.println(thing.getAlias() + " listening at " 
-      + "http://" + thing.getIp() + ":" + thing.getPort());
     
     return thing; 
   }

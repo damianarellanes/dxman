@@ -10,12 +10,23 @@ import com.dxman.thing.server.base.DXManConnectorDispatcher;
  */
 public class DXManCoapServer implements DXManServer {
   
+  private final String alias;
+  private final String ip;
+  private final int port;
+
+  public DXManCoapServer(String alias, String ip, int port) {
+    this.alias = alias;
+    this.ip = ip;
+    this.port = port;
+  }
+  
   @Override
   public void start() {
     
     // Only starts the Coap server once
     try {      
-      DXManCoapSingleton.get().start();
+      DXManCoapSingleton.get().start();      
+      System.out.println(alias + " listening at " + "http://" + ip + ":" + port);
     } catch(Exception e) {
       System.out.println("The server is already running");
       System.exit(0);
