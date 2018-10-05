@@ -12,6 +12,6 @@ public class DXManThingServer {
       System.err.println("Usage: DXManThingServer [propertiesPath]");
       System.exit(0);
     }
-    DXManStarter.createRuntime(args[0]);
+    DXManStarter.createRuntime(args[0]).start();
   }
 }
