@@ -1,0 +1,58 @@
+/**
+ * DX-MAN blockchain network model
+ */
+namespace com.dxman.blockchain
+
+/********************/
+/****PARTICIPANTS****/
+/********************/
+participant Thing identified by thingId {
+  o String thingId
+  o String alias
+}
+
+/********************/
+/*******ASSETS*******/
+/********************/
+asset Parameter identified by id {
+  o String id
+  o String parameterId
+  o String workflowId
+  o String value
+  o DateTime timestamp optional
+  o String updater
+  --> Parameter[] writers
+}
+
+/********************/
+/****TRANSACTIONS****/
+/********************/
+concept UpdateParameterConcept {
+  --> Parameter parameter
+  o String newValue
+  o String updater
+}
+
+event UpdateParameterEvent {
+  o String parameter
+  o String newValue
+  o String updater
+}
+
+transaction CreateParameters {
+  o Parameter[] parameters
+}
+
+transaction UpdateParameter {
+  o UpdateParameterConcept update
+}
+
+transaction UpdateParameters {
+  o UpdateParameterConcept[] updates
+}
+
+@returns(String[])
+transaction ReadParameters {
+  --> Parameter[] parameters  
+  o DateTime workflowTimestamp
+}
