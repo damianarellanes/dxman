@@ -123,7 +123,7 @@ public class BlockChainManager implements DXManDataSpace {
       transaction.put("parameters", paramRefs);
       transaction.put("workflowTimestamp", workflowTimestamp);
       
-      //System.out.println(transaction.toString());
+      System.out.println(transaction.toString());
             
       String result = post(blockChainEndpoint + 
         "/api/" + BlockchainConfiguration.READ_PARAMS, transaction.toString());

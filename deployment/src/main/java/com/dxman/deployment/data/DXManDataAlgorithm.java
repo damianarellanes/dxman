@@ -27,18 +27,19 @@ public class DXManDataAlgorithm {
     if(!dc.getDestination().isDataProcessor() && writers.containsKey(dc.getDestination().getDataEntityId())) {
       
       left = writers.get(dc.getDestination().getDataEntityId());
-      for(String reader: left) {
-        
+      for(String reader: left) {        
         readers.get(reader).remove(dc.getDestination().getDataEntityId());
         readers.get(reader).addAll(right);
       }
+      
     } else {      
+      
       left = new HashSet<>();
       left.add(dc.getDestination().getDataEntityId());
+      updateMap(readers, dc.getDestination().getDataEntityId(), right);
+      
     }
-    
-    // Creates or adds: right to all readers and left to all writers
-    for(String reader: left) { updateMap(readers, reader, right); }    
+      
     for(String writer: right) { updateMap(writers, writer, left); }        
   }
   

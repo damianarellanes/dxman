@@ -10,7 +10,7 @@ import com.dxman.execution.common.DXManWfConditionOperator;
 /**
  * @author Damian Arellanes
  */
-public class WfTreeTest extends DXManWorkflowTreeEditor {
+public class WfTreeTest /*extends DXManWorkflowTreeEditor*/ {
   
   private final String CUSTOMER = "86a2f163-29ae-4797-9076-ca4301ad26f9";
   private final String CUSTOMER_CREATE_NAME = "2ef8490d-e0df-4899-ae75-24aeb7f05172";
@@ -43,11 +43,11 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
   private final String GUA_INPUT = "3f078876-e355-4f3b-b20e-d806c8c40791";
   
 
-  public WfTreeTest(DXManWorkflowTree workflowTree, String wfId) {
+  /*public WfTreeTest(DXManWorkflowTree workflowTree, String wfId) {
     super(workflowTree, wfId);
-  }
+  }*/
 
-  @Override
+  /*@Override
   public void designControl() {
 
     // TODO the workflow tree can also include invocation nodes so the argument should be only the invocationNodeId
@@ -62,12 +62,12 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
     // SenderService, EmailService.sendWelcEmail
     customiseOrder(SENDER, EMAIL_WELCEMAIL, 1);
     
-    /*// PostService, Courier1.sendWelcStd, SEL1.addr
+    // PostService, Courier1.sendWelcStd, SEL1.addr
     customiseSelector(POST, COURIER1_STD, 
       SEL1_ADDR, DXManWfConditionOperator.EQUAL, "Oxford St");
     // PostService, Courier2.sendWelcFast, SEL1.addr
     customiseSelector(POST, COURIER2_FAST, SEL1_ADDR, 
-      DXManWfConditionOperator.EQUAL, "Oxford St");*/
+      DXManWfConditionOperator.EQUAL, "Oxford St");
     
     // PostService, Courier1.sendWelcStd
     //customiseParallel(POST, COURIER1_STD, 1);
@@ -82,7 +82,7 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
   @Override
   public void designData() {
     
-    /*// Post.sendWelcStd.addr --> SEL1.addr 
+    // Post.sendWelcStd.addr --> SEL1.addr 
     DXManDataChannelPoint origin = new DXManDataChannelPoint(POST_STD_ADDR);
     DXManDataChannelPoint destination = new DXManDataChannelPoint(SEL1_ADDR);
     addDataChannel(POST, origin, destination);//Post,origin,dest
@@ -90,7 +90,7 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
     // Post.sendWelcFast.addr --> SEL1.addr 
     DXManDataChannelPoint origin2 = new DXManDataChannelPoint(POST_FAST_ADDR);
     DXManDataChannelPoint destination2 = new DXManDataChannelPoint(SEL1_ADDR);
-    addDataChannel(POST, origin2, destination2);//Post,origin,dest*/
+    addDataChannel(POST, origin2, destination2);//Post,origin,dest
     
     // Post.sendWelcFast.addr --> SEL1.addr 
     DXManDataChannelPoint origin3 = new DXManDataChannelPoint(POST_STD_ADDR);
@@ -125,6 +125,6 @@ public class WfTreeTest extends DXManWorkflowTreeEditor {
     //wfOutputs.add("Customer.sendWelcEmail.res");
     
     return wfOutputs;
-  }
+  }*/
     
 }

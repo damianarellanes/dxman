@@ -228,7 +228,7 @@ public class DesignerTest {
     // GENERATE WORKFLOW FILES    
     //wfTreeManager.buildWorkflowTree(workflowTreeFile, customer);
     
-    // READS WORKFLOW FROM FILE
+    /*// READS WORKFLOW FROM FILE
     DXManWorkflowTree wfTree = wfTreeManager.readWorkflowTreeDescription(workflowTreeFile);    
     WfTreeTest wtEditor = new WfTreeTest(wfTree, "Workflow-Test-100");
     //WfTreeTest wtEditor = new WfTreeTest(wfTree, "ANOTHERWF");
@@ -250,6 +250,6 @@ public class DesignerTest {
     
     // TODO force to overwrite parameters in the blockchain, even if they already exist
     
-    //simulate(wfTree.getWt().get(topService));
+    //simulate(wfTree.getWt().get(topService));*/
   }
 }
