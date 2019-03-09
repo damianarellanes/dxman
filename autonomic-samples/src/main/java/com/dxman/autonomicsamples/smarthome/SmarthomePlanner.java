@@ -60,8 +60,11 @@ public class SmarthomePlanner extends Observable implements Observer {
     
     NondominatedPopulation result = new Executor()
       .withProblemClass(SmarthomePlannerNSGAII.class)
-      .withAlgorithm("NSGAII")
-      .withMaxEvaluations(10000)
+      .withAlgorithm("NSGAII")      
+      .withMaxEvaluations(20)
+      .withProperty("populationSize", 8)
+      .withProperty("de.crossoverRate", 0.5)
+      .withProperty("pm.rate", 0.2)
       .distributeOnAllCores()
       .run();
     
