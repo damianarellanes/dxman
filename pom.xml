@@ -13,6 +13,7 @@
     <module>thing</module>
     <module>deployment</module>
     <module>dxman-platform</module>
+    <module>autonomic-samples</module>
   </modules>
     
   <properties>

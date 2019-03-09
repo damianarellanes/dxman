@@ -167,14 +167,22 @@ public class BlockChainManager implements DXManDataSpace {
             
       /*if(result.responseCode() != 200) {
         System.err.println("Error reading parameters!");
-      }*/
-        
-      return result;
+      }*/      
+      
+      return fixValueRead(result);
         
     } catch (JSONException ex) { 
       System.out.println(ex);
       return "NOOOO"; //DXManErrors.PARAMETER_VALUE_NOT_FOUND.name();
     }
+  }
+  
+  private String fixValueWrite(String value) {
+    return "##" + value + "##";
+  }
+  
+  private String fixValueRead(String value) {
+    return value.replace("\"##", "").replace("##\"", "");
   }
   
   @Override
@@ -203,7 +211,7 @@ public class BlockChainManager implements DXManDataSpace {
           JSONObject updateJSON = new JSONObject();
           updateJSON.put("$class", BlockchainConfiguration.UPDATE_PARAM_CON);
           updateJSON.put("parameter", param.toString());
-          updateJSON.put("newValue", param.getValue());
+          updateJSON.put("newValue", fixValueWrite(param.getValue()));
           updateJSON.put("updater", param.getUpdater());
           //updateJSON.put("timestamp", instant);
       
@@ -217,6 +225,7 @@ public class BlockChainManager implements DXManDataSpace {
         String result = post(blockChainEndpoint + 
           "/api/" + BlockchainConfiguration.UPDATE_PARAMS, transaction.toString());
         
+        //System.out.println("Result written:" + result);
         //result.responseMessage();
         
         /*if(result.responseCode() == 200) {
@@ -243,7 +252,7 @@ public class BlockChainManager implements DXManDataSpace {
       updateJSON.put("$class", "com.dxman.blockchain.UpdateParameterConcept");
       updateJSON.put("parameter", "com.dxman.blockchain.Parameter#" + 
         DXManIDGenerator.generateParameterUUID(parameterId, workflowId));
-      updateJSON.put("newValue", newValue);
+      updateJSON.put("newValue", fixValueWrite(newValue));
       updateJSON.put("updater", updater);
       //updateJSON.put("timestamp", instant);
       transaction.put("update", updateJSON);  
@@ -252,6 +261,8 @@ public class BlockChainManager implements DXManDataSpace {
 
       String result = post("http://148.100.108.114:3000" + 
         "/api/com.dxman.blockchain.UpdateParameter", transaction.toString());
+      
+      //System.out.println("Result written:" + result);
       
       /*if(result.responseCode() == 200) {
         System.out.println("Parameter " + parameterId + " has been updated!");

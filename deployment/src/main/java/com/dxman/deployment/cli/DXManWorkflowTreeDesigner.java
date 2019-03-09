@@ -85,7 +85,7 @@ public class DXManWorkflowTreeDesigner {
     return outputValues;
   }
   
-  public void deployWorkflow(DXManWorkflowTreeEditor wtEditor, 
+  public void customizeConcreteWfTree(DXManWorkflowTreeEditor wtEditor, 
     boolean deployData) {
     
     DXManDataAlgorithm alg = new DXManDataAlgorithm();

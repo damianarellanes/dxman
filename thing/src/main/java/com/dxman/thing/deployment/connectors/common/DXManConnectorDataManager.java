@@ -16,7 +16,7 @@ public class DXManConnectorDataManager {
   
   public boolean matches(String wfId, String wfTimestamp, 
     DXManWfCondition condition) {
-        
+    
     String dataSpaceVal = dataSpace.readParameter(
       condition.getParameterId(), wfId, wfTimestamp
     );
